@@ -1,0 +1,10 @@
+{
+  "decision": {
+    "verdict": "upheld",
+    "governing_rule": "rule 2: lower level governs a split (applied to Meridian's own L3/L4 anchors); rule 6: title in source document is evidence, not input",
+    "final_level": "L3",
+    "reasoning": "The advocate's evidence is admissible (scope evidence, not title), but it argues from Nyx's own MTS I/II anchors, not from Meridian's framework -- and per section 7, only this framework governs the ruling. Applying Meridian's own L3 vs. L4 anchors to the same underlying facts: unsupervised, end-to-end ownership of a single analog block (bandgap + LDO) through one tapeout is squarely 'owns a block or module end to end' (factor 5a, L3), not 'owns a subsystem across a full development cycle' (5a, L4). Autonomy at L4 requires setting approach on ambiguous, undefined problems and being consulted rather than directed -- bandgap/LDO design here is described as a well-understood problem with known solution paths, matching L3's autonomy and problem-complexity anchors, not L4's. Scope of impact remains contained to the block/team, not the function, so under rule 1 (scope of impact as primary tiebreaker) and rule 2 (lower level governs unless scope is unambiguously higher), there is no basis to move to L4. The fact that the role exceeds Nyx's own MTS I description is evidence about Nyx's internal calibration, not evidence that Meridian's L4 anchors are met. The original mapping already correctly declined to use the MTS I title as an input (rule 6) and derived L3 purely from described scope, which is the correct procedure. No misapplied factor variant or misread anchor is shown under this framework."
+  },
+  "input_tokens": 10040,
+  "output_tokens": 642
+}

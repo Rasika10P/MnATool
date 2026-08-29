@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L4",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L4",
+        "evidence": "Owns the RF transceiver front-end (LNA and mixer design) for the NX-220 PHY through 2 tapeouts -- impact on a subsystem across the function, but bounded by the senior architect's floor plan rather than spanning multiple teams independently."
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L3",
+        "evidence": "Has not yet led a design independent of the senior architect's floor plan -- indicates approach is still set within someone else's framework, closer to outcomes-reviewed than fully self-directed on ambiguous problems."
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L4",
+        "evidence": "Achieving target noise figure on first silicon across LNA and mixer design requires constructing solution paths for ambiguous RF tradeoffs, not just choosing among known approaches."
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L4",
+        "evidence": "Deep in RF/analog discipline (LNA, mixer, noise figure) and credible in adjacent disciplines (consulted by layout and test teams on DFT tradeoffs), but no evidence of authority across multiple disciplines or company-wide sought-out status."
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L4",
+        "evidence": "Owns a subsystem (RF transceiver front-end) across a full development cycle (2 tapeouts) -- matches 5a L4 anchor precisely; not yet a full derivative product or major subsystem spanning generations."
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L4",
+        "evidence": "Consulted by layout and test teams on RF-specific design-for-test tradeoffs -- influences adjacent teams, representing RF design expertise to partner functions."
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.72,
+    "governing_rule": "rule 2: lower level governs a split (autonomy rates L3 while other factors rate L4; scope of impact, the tiebreaker, is squarely at L4 subsystem-level, not unambiguously higher, so lower adjacent level does not apply here -- L4 stands as the consistent level across scope, complexity, ownership, and influence)",
+    "alternative_level": "L3",
+    "alternative_reasoning": "If autonomy were weighted as the controlling factor (rather than scope of impact per rule 1), the explicit statement that the engineer 'has not yet led a design independent of the senior architect's floor plan' would push the role down to L3, where outcomes are reviewed but approach is more directed. This was not chosen because rule 1 explicitly designates scope of impact, not autonomy, as the tiebreaker when factors split, and scope of impact (subsystem ownership across a full tapeout cycle, function-wide impact) is unambiguously at L4.",
+    "escalate": false,
+    "escalation_factor": "autonomy -- specifically whether operating within the senior architect's floor plan reflects L3-style directed approach or L4-style consultation on an otherwise self-set approach; resolving exactly how much independence is exercised in the LNA/mixer design decisions would settle whether L4 or L3 governs",
+    "reasoning": "Five of six factors (scope, complexity, technical depth, ownership, influence) converge cleanly on L4: subsystem ownership (RF front-end) through a full development cycle (2 tapeouts), ambiguous noise-figure problems requiring constructed solutions, deep RF expertise credible to adjacent teams, and cross-team influence via DFT consultation. Autonomy alone trails at L3 because the role operates within the senior architect's floor plan rather than setting fully independent direction. Per rule 1, scope of impact is the primary tiebreaker when factors split, and scope is unambiguously L4 (subsystem/function-wide), so the role is leveled at L4 rather than dragged down to L3 by the single lagging autonomy factor. This is also consistent with rule 3: while the work is deep in RF (a narrow discipline), the role does not claim cross-domain breadth or organizational influence sufficient for L6 consideration, so L5/L6 were not seriously in play.\n\nSource organization calibration: source is a small company (104 employees, late-stage private, whole-company, org_depth 4, low platform dependency). Per section 6, small companies (<150 people) typically show title inflation, with titles mapping down 1-2 levels. The title 'Senior MTS' suggests a senior-sounding role, but the evidence-based result (L4, Staff Engineer equivalent) is consistent with this expected downward drift from title to level -- the described scope is that of a strong subsystem owner, not yet a senior architect-level role. Low platform dependency means no cap adjustment needed on technical depth/breadth. This result is consistent with the prior, which supports confidence, though the explicit statement that autonomy is not yet independent of the senior architect keeps this a reasonably close call between L3 and L4."
+  },
+  "input_tokens": 9682,
+  "output_tokens": 1833
+}

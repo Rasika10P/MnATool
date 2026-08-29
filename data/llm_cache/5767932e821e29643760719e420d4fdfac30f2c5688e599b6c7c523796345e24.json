@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L6",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L6",
+        "evidence": "Regarded across the company as the person to bring in when a tapeout's analog closure is stuck; has personally unblocked sign-off on 6 of the last 8 difficult closure escalations company-wide -- impact spans across the business unit and multiple product tapeouts, not confined to one team or subsystem."
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L6",
+        "evidence": "Brought in as the go-to authority for unblocking company-wide closure escalations, implying he sets his own direction on these engagements without oversight -- accountable for outcomes across sign-off efforts."
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L6",
+        "evidence": "Difficult closure escalations that have stumped other teams on 8 separate tapeouts are strategic, open-ended problems where framing the blocking issue is itself part of the work."
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L5",
+        "evidence": "Description centers on deep analog closure expertise; no evidence of breadth across multiple disciplines beyond analog design itself, and no external recognition (no patents or publications) that would support authority sought out beyond the company."
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L5",
+        "evidence": "No description of owning architecture for a product line across generations (5a L6); evidence is of ad hoc closure rescue engagements across products rather than sustained ownership of a subsystem, product, or platform roadmap -- closer to a major-subsystem-level ownership pattern applied repeatedly."
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L6",
+        "evidence": "Regarded across the company as the escalation point for analog closure -- influence extends across the business unit and is credible enough that leadership routes the hardest problems to him company-wide."
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.55,
+    "governing_rule": "rule 3: deep-but-narrow technical work caps at L5 without cross-domain breadth and organizational influence; rule 4: L7+ requires external recognition",
+    "alternative_level": "L5",
+    "alternative_reasoning": "If ownership_scope and technical_depth_breadth are weighted as co-equal with scope_of_impact rather than treating scope as the tiebreaker, the deep-but-narrow cap (rule 3) would hold this at L5, since all evidence is within a single discipline (analog closure) with no cross-domain breadth demonstrated. This was not chosen because rule 1 explicitly designates scope of impact as the primary tiebreaker in a split, and the company-wide, cross-tapeout escalation pattern described is unambiguous enough to satisfy rule 2's exception for assigning the higher level.",
+    "escalate": false,
+    "escalation_factor": "technical_depth_breadth / ownership_scope -- specifically whether the closure-rescue work constitutes genuine cross-tapeout platform ownership (supporting L6) or is purely deep single-discipline problem-solving repeated across projects (capping at L5 per rule 3)",
+    "reasoning": "Scope of impact, autonomy, problem complexity and influence all point to L6 -- this is not merely deep technical work confined to one team, but company-wide impact as the escalation point of last resort across multiple tapeouts, which itself constitutes organizational influence and cross-tapeout scope beyond a single subsystem. However, technical depth/breadth and ownership scope only clearly support L5, since the evidence is entirely within analog design (no demonstrated breadth across disciplines) and ownership is framed as rescue engagements rather than sustained platform/roadmap ownership. Explicit disqualification of L7 applies regardless: rule 4 requires external recognition (publications, patents, standards bodies) for L7+, and the description explicitly states no patents or publications exist -- internal reputation, however strong, cannot be inferred into external recognition. Per rule 1, scope of impact is the primary tiebreaker when factors split across adjacent levels, and scope here is unambiguously at L6 (company-wide, cross-tapeout), which per rule 2 justifies assigning the higher of the two adjacent levels rather than defaulting to the lower L5. Source organization context (104-person late-stage private company, org_depth 4, low platform dependency) sets a prior that titles typically map down 1-2 levels for small companies; L6 against a 'Distinguished MTS' title is a modest compression from title-implied Fellow/Distinguished-equivalent scope, which is roughly consistent with that prior rather than contradicting it. Low platform dependency means no capping adjustment needed on technical depth/breadth beyond what the narrow-domain evidence already indicates."
+  },
+  "input_tokens": 9682,
+  "output_tokens": 1753
+}

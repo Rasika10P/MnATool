@@ -10,7 +10,11 @@ langchain-anthropic
 langchain-openai
 langgraph
 langgraph-checkpoint-sqlite
+langsmith
+pinecone
 pydantic
+
+statsmodels
 
 streamlit
 plotly

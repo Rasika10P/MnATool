@@ -1,0 +1,10 @@
+{
+  "decision": {
+    "is_offer_defensible": false,
+    "primary_concern": "Offer is below the p25 market floor for the role/level/geo, and there is no internal peer data to validate equity, leaving the number unsupported by either external or internal benchmarks.",
+    "reasoning": "Converting the 15,000,000 INR offer to USD (~$171,630) and comparing it to the directly-matched market survey for engineering L5 in US-SJC (p25\u2248$181,904, p50\u2248$216,552, p75\u2248$255,532) shows the offer falls below the p25 floor, with a compa-ratio of ~0.79 against the p50 midpoint and negative range penetration (~-14%). It would take roughly $10,274 more just to reach the p25 floor. Additionally, the internal equity check returned zero incumbents in this exact job/geo slice, so there is no internal peer data to support or further justify the number.",
+    "recommended_next_step": "escalate to comp lead"
+  },
+  "input_tokens": 5114,
+  "output_tokens": 381
+}

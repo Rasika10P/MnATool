@@ -1,0 +1,10 @@
+{
+  "decision": {
+    "critical_employee_ids": [
+      "DEMO-CRITICAL"
+    ],
+    "reasoning": "Evaluated the two underwater employees on role scope/seniority, not compa-ratio magnitude:\n\n- DEMO-CRITICAL (L7, compa-ratio 0.79): Flagged as critical. Evidence: holds company-wide final sign-off authority on analog PLL/clock-generation IP that is reused across every product line; every tapeout in the company depends on this person's approval before closure. Eleven years of sustained escalation-of-last-resort technical ownership, and explicitly no viable internal successor. This is a single point of failure at the top individual-contributor/technical-authority level -- losing this person would create an organization-wide bottleneck risk, not just a local team gap. This clearly meets the bar of 'genuine loss to the organization.'\n\n- DEMO-JUNIOR (L2, compa-ratio 0.68): Not flagged as critical, despite having the larger compa-ratio gap. Evidence: second-year analog designer contributing to a single sub-block, working under senior guidance. This is a narrow-scope, early-career role with oversight from more senior staff -- there is no indication of unique institutional knowledge, broad organizational dependency, or irreplaceability. The pay gap is a real retention risk worth addressing through normal comp mechanisms, but it does not rise to the level of organizational criticality that would justify a special retention flag; plenty of qualified successors/hires exist for this scope of role.\n\nPer instructions, criticality is being judged on role scope and seniority/irreplaceability, not on the size of the compa-ratio gap -- hence DEMO-CRITICAL is flagged despite a smaller gap, and DEMO-JUNIOR is not despite a larger one."
+  },
+  "input_tokens": 1310,
+  "output_tokens": 631
+}

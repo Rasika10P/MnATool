@@ -1,0 +1,20 @@
+{
+  "decision": {
+    "reports_to": {
+      "stated": false,
+      "value": null
+    },
+    "span_of_control": {
+      "stated": false,
+      "value": null
+    },
+    "budget_authority": {
+      "stated": false,
+      "value": null
+    },
+    "decision_scope": "Works independently within the group's current experimental scope.",
+    "ownership_scope": "Owns the waveguide loss characterization flow for the co-packaged optics program end to end, including the test-structure design and the measurement methodology now used by the rest of the group."
+  },
+  "input_tokens": 338,
+  "output_tokens": 129
+}

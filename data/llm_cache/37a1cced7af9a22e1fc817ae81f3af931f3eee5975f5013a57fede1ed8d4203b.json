@@ -1,0 +1,20 @@
+{
+  "decision": {
+    "reports_to": {
+      "stated": false,
+      "value": null
+    },
+    "span_of_control": {
+      "stated": false,
+      "value": null
+    },
+    "budget_authority": {
+      "stated": false,
+      "value": null
+    },
+    "decision_scope": "Pioneering work on high-speed SerDes equalization; led design of adaptive DFE architecture; go-to authority on link-budget modeling for every high-speed interface program company-wide.",
+    "ownership_scope": "Holds 3 patents in equalizer architecture; recognized externally for pioneering work; leads design of adaptive DFE architecture; sole company-wide authority on link-budget modeling for high-speed interfaces."
+  },
+  "input_tokens": 517,
+  "output_tokens": 153
+}

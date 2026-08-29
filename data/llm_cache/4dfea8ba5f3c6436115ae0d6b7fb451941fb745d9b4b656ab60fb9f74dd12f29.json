@@ -1,0 +1,53 @@
+{
+  "decision": {
+    "track": "MGR",
+    "assigned_level": "M3",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "M3",
+        "evidence": "Manages a 4-person RTL sub-team on one block (digital front-end of NX-400); impact contained to that sub-team and the block, not the function"
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L4",
+        "evidence": "Owns sprint planning and code review sign-off for the group, and sets own approach on the clock/reset RTL block, but scope is a single sub-team, not an area spanning multiple teams"
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L4",
+        "evidence": "Still personally solving ambiguous RTL design problems on clock/reset architecture; managerial complexity is limited to running one small sub-team's process"
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L4",
+        "evidence": "Deep in RTL/digital design discipline, personally owns clock/reset architecture; no evidence of cross-disciplinary breadth"
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L4",
+        "evidence": "Owns a subsystem (clock/reset RTL) across a development cycle -- factor 5a L4 anchor; no evidence of platform or multi-generation architecture ownership"
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L4",
+        "evidence": "Influence limited to the sub-team and sign-off authority within it; no evidence of cross-functional or executive influence described"
+      },
+      {
+        "factor": "span_and_budget",
+        "level_indicated": "M3",
+        "evidence": "4 direct reports, all individual contributors, no budget authority beyond headcount requisitions -- matches M3 anchor exactly"
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.82,
+    "governing_rule": "Manager level from scope of impact and span & budget corroboration (section 4, span & budget table); rule 6 -- title 'Senior MTS' is evidence, not input",
+    "alternative_level": "M4",
+    "alternative_reasoning": "Considered M4 given the 'Senior' title modifier and performance-review authority, but rejected: span (4 ICs) falls well below the M4 anchor (10-25, may include a team lead), there is no program budget, and scope of impact is confined to a single sub-team/block rather than spanning multiple teams -- rule 5 explicitly warns manager level is not automatic from headcount or title, and rule 6 requires leveling from described scope, not title.",
+    "escalate": false,
+    "escalation_factor": "scope_of_impact -- if the NX-400 digital front-end sub-team's work is shown to shape decisions across multiple teams/blocks rather than being contained to this one block, M4 would be indicated",
+    "reasoning": "Despite the 'Senior' modifier in the title, the described scope is a first-line manager of a 4-person IC sub-team with no budget authority beyond requisitions -- this matches the M3 anchor exactly (4-10 direct reports, all ICs, no budget authority beyond requisitions). Scope of impact is contained to a single sub-team/block, not spanning multiple teams or the function, which would be required for M4. The individual continuing to personally own the clock/reset RTL block is itself L4-level IC work (owns a subsystem across a full development cycle per factor 5a), reinforcing M3 (M3's IC equivalent is L4). All non-span factors point to L4-equivalent scope, and span & budget confirms M3. No factor indicates M4 (which requires 10-25 people, a program budget, or impact across the function). Source org context: whole company, 104 headcount (small/growth-adjacent), org_depth 4, low platform dependency. Small-company titles are expected to map down 1-2 levels per section 6 -- 'Senior MTS, Engineering Manager' mapping to M3 is consistent with this prior, raising confidence rather than contradicting it."
+  },
+  "input_tokens": 9669,
+  "output_tokens": 1475
+}

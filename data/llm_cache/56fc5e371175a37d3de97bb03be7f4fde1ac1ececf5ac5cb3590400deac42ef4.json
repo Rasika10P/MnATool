@@ -1,0 +1,20 @@
+{
+  "decision": {
+    "reports_to": {
+      "stated": false,
+      "value": null
+    },
+    "span_of_control": {
+      "stated": false,
+      "value": null
+    },
+    "budget_authority": {
+      "stated": false,
+      "value": null
+    },
+    "decision_scope": "Owns the clock-tree synthesis and skew-budgeting methodology used across every NX-400 and NX-500 physical design handoff, a role that started as one person's personal scripts and is now the mandatory sign-off gate company-wide for CTS closure.",
+    "ownership_scope": "Owns the clock-tree synthesis and skew-budgeting methodology used across every NX-400 and NX-500 physical design handoff, a role that started as one person's personal scripts and is now the mandatory sign-off gate company-wide for CTS closure."
+  },
+  "input_tokens": 362,
+  "output_tokens": 190
+}

@@ -1,0 +1,10 @@
+{
+  "decision": {
+    "argument_basis": "scope evidence not reflected in the mapping",
+    "proposed_level": "L6",
+    "evidence_cited": "The role summary describes current work as leading a single product's RF subsystem (NX-600 PHY) with two other RF engineers coordinating under this person \u2014 that is subsystem ownership within one discipline, matching Nyx's own Senior MTS anchor (\"owns a full block or subsystem across multiple tapeouts... may informally mentor one or two more junior engineers\") rather than the Distinguished MTS anchor, which requires \"company-wide authority on a technical domain... domain ownership spanning the product roadmap rather than one product.\" The summary explicitly notes no cross-product-line work since NX-400, meaning the roadmap-spanning breadth that defines Distinguished MTS per Section 4 is absent from the current scope being mapped. Section 3 states re-leveling must read what the person actually did, not the title held \u2014 so the three-year title tenure doesn't itself substitute for evidence of domain-spanning current scope. Proposed L4, if L4 corresponds to Meridian's analog of a mid-tier IC level, may itself understate this \u2014 the described work (leading RF design, coordinating multiple engineers) plausibly still sits above single-component ownership, closer to Nyx's Principal MTS band (cross-team/cross-tapeout authority setting a pattern others build on) than to Senior. Given the ambiguity Nyx itself acknowledges in Section 4 about band overlap, the safest correction is to argue the current scope evidence supports something in the Senior-to-Principal range, not the Distinguished-equivalent level implied if L4 maps that high, but the specific gap is that the record leans toward a Principal-equivalent read given the coordination and design-leadership responsibility described.",
+    "framework_section": "Section 4 (Level Anchors) and Section 3 (Leveling Principle)"
+  },
+  "input_tokens": 4871,
+  "output_tokens": 698
+}

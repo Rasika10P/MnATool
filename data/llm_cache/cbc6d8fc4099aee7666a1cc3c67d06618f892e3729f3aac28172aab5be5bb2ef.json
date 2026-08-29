@@ -1,0 +1,20 @@
+{
+  "decision": {
+    "reports_to": {
+      "stated": true,
+      "value": "group lead"
+    },
+    "span_of_control": {
+      "stated": false,
+      "value": null
+    },
+    "budget_authority": {
+      "stated": false,
+      "value": null
+    },
+    "decision_scope": "running characterization sweeps on grating-coupler test structures for the co-packaged optics program under the group lead's direction",
+    "ownership_scope": "running characterization sweeps on grating-coupler test structures for the co-packaged optics program"
+  },
+  "input_tokens": 336,
+  "output_tokens": 127
+}

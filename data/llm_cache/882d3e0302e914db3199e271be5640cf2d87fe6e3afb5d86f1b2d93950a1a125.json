@@ -1,0 +1,20 @@
+{
+  "decision": {
+    "reports_to": {
+      "stated": false,
+      "value": null
+    },
+    "span_of_control": {
+      "stated": false,
+      "value": null
+    },
+    "budget_authority": {
+      "stated": false,
+      "value": null
+    },
+    "decision_scope": "Coordinates with two other engineers on integration but hasn't yet had a tapeout where the block was entirely his own from spec through sign-off.",
+    "ownership_scope": "Primary responsibility for the descriptor-fetch pipeline this generation."
+  },
+  "input_tokens": 490,
+  "output_tokens": 118
+}

@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L3",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L3",
+        "evidence": "Owns a defined block (bandgap reference and LDO regulator) within the NX-100 PMIC; impact contained to that block/team, not a subsystem or function-wide scope."
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L3",
+        "evidence": "Individual contributor scope described as owning a single analog block end to end, consistent with independent execution on a defined problem rather than setting approach on ambiguous, undefined problems."
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L3",
+        "evidence": "Designing bandgap and LDO circuits are well-understood analog design problems with known solution approaches; success measured by first-pass silicon on a single block, not novel cross-domain problem framing."
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L3",
+        "evidence": "Demonstrates proficiency in analog circuit design (bandgap/LDO) sufficient to deliver reliably through tapeout, but no evidence of credibility in adjacent disciplines or breadth beyond the single block."
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L3",
+        "evidence": "Explicitly 'single analog block owned end to end' through one tapeout -- matches 5a L3 anchor of owning a block or module end to end, not a subsystem across a full development cycle."
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L3",
+        "evidence": "No evidence of influence beyond own work product; success is demonstrated through the delivered block (first-pass silicon), consistent with peer influence via demonstrated work."
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.78,
+    "governing_rule": "rule 2: lower level governs a split (though here all factors converge cleanly at L3, no split present)",
+    "alternative_level": "L2",
+    "alternative_reasoning": "Considered L2 given the narrow single-block scope, but L2 anchors describe 'developing proficiency' and work reviewed in detail, whereas this role independently delivered a full block through tapeout with first-pass silicon success -- indicating reliable, independent delivery consistent with L3, not developing-proficiency L2.",
+    "escalate": false,
+    "escalation_factor": "technical_depth_breadth -- if additional evidence showed adjacent-discipline credibility (e.g., mixed-signal or systems-level integration work beyond the single block), this could push toward L4",
+    "reasoning": "All six factors converge consistently on L3: a single, well-scoped analog block (bandgap + LDO) owned end to end through one tapeout with first-pass success, executed independently on a known problem type, with impact contained to the block/team level and no evidence of cross-block breadth or influence beyond demonstrated work. This matches the L3 anchors for scope, autonomy, problem complexity, technical depth, ownership (5a), and influence exactly. Title 'MTS I' is from the source company's own framework and is not used as the level per rule 6; leveling is based purely on described scope."
+  },
+  "input_tokens": 9646,
+  "output_tokens": 1184
+}

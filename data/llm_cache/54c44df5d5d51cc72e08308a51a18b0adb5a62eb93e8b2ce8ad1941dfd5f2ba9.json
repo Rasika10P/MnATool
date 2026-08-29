@@ -1,0 +1,20 @@
+{
+  "decision": {
+    "reports_to": {
+      "stated": true,
+      "value": "Not explicitly stated"
+    },
+    "span_of_control": {
+      "stated": true,
+      "value": "Not explicitly stated"
+    },
+    "budget_authority": {
+      "stated": true,
+      "value": "Not explicitly stated"
+    },
+    "decision_scope": "Has been picking up more responsibility on the PMIC team including some layout review",
+    "ownership_scope": "Strong analog designer, has been picking up more responsibility on the PMIC team including some layout review"
+  },
+  "input_tokens": 313,
+  "output_tokens": 130
+}

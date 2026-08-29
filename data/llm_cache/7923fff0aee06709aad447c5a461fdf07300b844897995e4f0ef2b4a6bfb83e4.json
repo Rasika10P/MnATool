@@ -1,0 +1,10 @@
+{
+  "decision": {
+    "argument_basis": "scope evidence not reflected in the mapping",
+    "proposed_level": "L4",
+    "evidence_cited": "Employee \"built and owns the branch predictor sizing model for the NX-500 core, which directly set the BTB capacity used in the final tapeout\" and required only \"light-touch\" review compared to a typical new grad. Per Nyx's own anchors (section 4), this is full, unsupervised ownership of a tapeout-scale piece of work with reduced oversight -- the defining indicator of MTS II (\"Owns a component or sub-block independently, start to finish; makes routine technical judgment calls without asking... Full, unsupervised ownership of at least one tapeout-scale piece of work\"), not MTS I (\"Works within an established area under a more senior engineer's direction; contributes a defined piece of a larger block rather than owning one outright... supervised sign-off\"). The role summary describes ownership and lightened supervision, not a defined sub-piece under direction. The proposed L3 mapping appears calibrated to the MTS I label on record rather than to this described scope, and section 3 is explicit that title/level labels are the record of a past decision, not evidence for a new one.",
+    "framework_section": "Section 4 (Level anchors: MTS I vs. MTS II) and Section 3 (Leveling principle -- title is not self-executing)"
+  },
+  "input_tokens": 4860,
+  "output_tokens": 514
+}

@@ -1,0 +1,60 @@
+{
+  "content": [
+    {
+      "id": "toolu_0117i5tqt9LjyNBMNFRqC6Nn",
+      "caller": {
+        "type": "direct"
+      },
+      "input": {
+        "family_group": "engineering",
+        "level_code": "L5",
+        "geo_code": "US-SJC",
+        "as_of_date": "2026-08-01",
+        "annual_growth_rate": 0.035
+      },
+      "name": "lookup_market_data",
+      "type": "tool_use",
+      "toolset_name": null
+    },
+    {
+      "id": "toolu_01FC3hodSwFT86oEJkQtArBW",
+      "caller": {
+        "type": "direct"
+      },
+      "input": {
+        "job_id": "DD-UARCH-L5",
+        "geo_code": "US-SJC",
+        "candidate_salary": 210000
+      },
+      "name": "check_internal_equity",
+      "type": "tool_use",
+      "toolset_name": null
+    }
+  ],
+  "tool_calls": [
+    {
+      "name": "lookup_market_data",
+      "args": {
+        "family_group": "engineering",
+        "level_code": "L5",
+        "geo_code": "US-SJC",
+        "as_of_date": "2026-08-01",
+        "annual_growth_rate": 0.035
+      },
+      "id": "toolu_0117i5tqt9LjyNBMNFRqC6Nn",
+      "type": "tool_call"
+    },
+    {
+      "name": "check_internal_equity",
+      "args": {
+        "job_id": "DD-UARCH-L5",
+        "geo_code": "US-SJC",
+        "candidate_salary": 210000
+      },
+      "id": "toolu_01FC3hodSwFT86oEJkQtArBW",
+      "type": "tool_call"
+    }
+  ],
+  "input_tokens": 2800,
+  "output_tokens": 281
+}

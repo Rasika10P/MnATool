@@ -1,0 +1,20 @@
+{
+  "decision": {
+    "reports_to": {
+      "stated": false,
+      "value": null
+    },
+    "span_of_control": {
+      "stated": false,
+      "value": null
+    },
+    "budget_authority": {
+      "stated": false,
+      "value": null
+    },
+    "decision_scope": "Makes the calls on link-budget tradeoffs without needing sign-off from the group lead.",
+    "ownership_scope": "Leads the optical-electrical co-design work between the photonics group and the SerDes team for the co-packaged optics program, the first cross-group technical integration the Photonics team has attempted."
+  },
+  "input_tokens": 494,
+  "output_tokens": 137
+}

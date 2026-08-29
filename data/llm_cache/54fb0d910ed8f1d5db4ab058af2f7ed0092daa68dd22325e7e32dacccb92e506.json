@@ -1,0 +1,33 @@
+{
+  "content": [
+    {
+      "signature": "EqoCCpABCBEYAipAq2uKe+GW1UXaMeCe7hGO8QkHTbMCcoEV24D4PS62lvPypWwAHODWEK/3IzE+figmCtlI+JlDqE4/Hy2k3Jkn6TIPY2xhdWRlLXNvbm5ldC01OABCCHRoaW5raW5nWiRjMzk3NzM1Ni1mOGU3LTRlNTAtOWE0Ni00NjQzYjY0ZDY4YzioAffwy9QGEgxE8sbpruxIQwUyH2UaDOUC4wPIFBasHlWzciIwKSn/dJZyl15YcYaKAK+3ldE5OWsaApyDJS9Q8pRKMNiO2+SihGJ0qjvkRQxTfLvEKke7NseYeyV4UxPStFPZQtkJfuF/qx7YH4OzxPDQ47dVkvkd7x9wyFb627hw33fUkFNrUVwEPXwupA1yVtpLr68N8EXHVaarIRgB",
+      "thinking": "",
+      "type": "thinking"
+    },
+    {
+      "id": "toolu_01FGoKEwipu3r3RndyYX8AFD",
+      "caller": {
+        "type": "direct"
+      },
+      "input": {
+        "job_id": "DD-UARCH-L5"
+      },
+      "name": "read_job_architecture",
+      "type": "tool_use",
+      "toolset_name": null
+    }
+  ],
+  "tool_calls": [
+    {
+      "name": "read_job_architecture",
+      "args": {
+        "job_id": "DD-UARCH-L5"
+      },
+      "id": "toolu_01FGoKEwipu3r3RndyYX8AFD",
+      "type": "tool_call"
+    }
+  ],
+  "input_tokens": 1768,
+  "output_tokens": 89
+}

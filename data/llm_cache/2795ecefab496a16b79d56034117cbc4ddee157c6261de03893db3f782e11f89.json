@@ -1,0 +1,20 @@
+{
+  "decision": {
+    "reports_to": {
+      "stated": false,
+      "value": null
+    },
+    "span_of_control": {
+      "stated": false,
+      "value": null
+    },
+    "budget_authority": {
+      "stated": false,
+      "value": null
+    },
+    "decision_scope": "Individual contributor scope, single analog block owned end to end.",
+    "ownership_scope": "Designed the bandgap reference and LDO regulator circuits for the NX-100 power management IC, taking the block through 1 tapeout with first-pass silicon success."
+  },
+  "input_tokens": 340,
+  "output_tokens": 128
+}

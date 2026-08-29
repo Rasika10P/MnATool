@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L5",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L5",
+        "evidence": "Founded and leads the Photonics group, a single technical area within the company; impact contained to that group/function, not yet shown across business unit or company (program has not shipped in a product)."
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L6",
+        "evidence": "Every technical decision the group has made in its two-year existence has gone through her -- sets direction for the domain without oversight."
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L5",
+        "evidence": "Founding a new photonics program from a research background involves cross-domain, competing-constraint problems, but no evidence of company-wide strategic framing beyond the single program."
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L5",
+        "evidence": "Deep authority in photonics (research background, sole technical decision-maker for the group), but no evidence of credibility or influence across multiple disciplines company-wide."
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L5",
+        "evidence": "Owns a major/foundational subsystem-level program (the entire Photonics effort) but it has not yet shipped in a product, so it has not reached platform/roadmap scope across product lines."
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L5",
+        "evidence": "Drives all decisions within her group and presumably interfaces with adjacent functions to integrate photonics, but no documented influence at business-unit or executive/company-strategy level, nor external recognition."
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.55,
+    "governing_rule": "rule 4: external recognition required for L7+; rule 3: deep-but-narrow caps at L5; rule 2: lower level governs unless scope unambiguously higher",
+    "alternative_level": "L6",
+    "alternative_reasoning": "If the Photonics group's work is deemed to have business-unit-level impact (e.g., it is strategically central to Nyx's product roadmap) and her sole ownership of all technical decisions is read as domain-level direction-setting akin to L6 autonomy, the role could be argued at L6. This was not selected because the program has not yet shipped in a product, there is no cross-domain breadth beyond photonics, and no evidence of influence at the business-unit/executive level or external recognition -- all of which rule 3 requires to move past L5.",
+    "escalate": false,
+    "escalation_factor": "scope_of_impact -- whether the unshipped Photonics program is judged to already carry business-unit-level impact (supporting L6) or remains function-contained pending product shipment (supporting L5) would settle this.",
+    "reasoning": "Title 'Distinguished MTS' is evidence, not the level (rule 6). The role shows strong autonomy and deep technical authority within photonics, and she is clearly the sole technical authority for a two-year-old group she founded. However, per rule 4, L7/L8 require external recognition (publications, patents, standards bodies, external reputation) -- the description states only internal authority and a research background 'before' Nyx, with no engineering track record at Nyx beyond this one unshipped program. That fails the external-recognition bar for L7, and per rule 3, deep-but-narrow technical work without demonstrated cross-domain breadth and organizational (business-unit/company-wide) influence caps at L5. Scope of impact is confined to a single function/group whose output has not yet shipped, which is not unambiguously business-unit-level (L6), so scope does not override the cap. Autonomy alone (L6-indicating) does not outweigh the combination of capped technical breadth, unproven scope, and lack of external recognition -- per rule 2, when factors split, the lower level governs unless scope is unambiguously at the higher level, which it is not here. Source org context (104-person late-stage private, whole-company, org_depth 4, low platform dependency) suggests title inflation is plausible at a small company, consistent with landing below the 'Distinguished'-implied L7. This result is consistent with the expected drift prior (small company titles map down 1-2 levels from title-implied level), raising confidence somewhat, but the ambiguity between L5 and L6 on scope/autonomy keeps confidence moderate."
+  },
+  "input_tokens": 9648,
+  "output_tokens": 1567
+}

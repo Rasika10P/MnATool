@@ -1,0 +1,10 @@
+{
+  "decision": {
+    "verdict": "upheld",
+    "governing_rule": "rule 2: lower level governs a split (scope of impact not unambiguously at the higher level)",
+    "final_level": "L4",
+    "reasoning": "The advocate's own cited evidence confirms rather than contradicts the original mapping. Scope of impact is primary (rule 1) and is evidenced by a single subsystem (NX-600 PHY RF front-end) coordinated with two peer engineers, with no cross-product-line ownership since NX-400 -- this is squarely L4 under factor 5a (\"owns a subsystem across a full development cycle\") and does not reach L5's \"major subsystem or full derivative product\" bar, let alone L6's \"architecture for a product line across generations.\" The advocate's proposed L6 is inadmissible on the evidence: even the advocate's own argument concedes the current scope lacks roadmap-spanning breadth and is closer to a Senior/Principal read under the acquired framework, not Distinguished/Principal-equivalent territory. Under this framework, technical depth alone (rated L5) cannot pull the level up per rule 3 (deep-but-narrow caps at L5 absent cross-domain breadth and organizational influence) combined with rule 1 (scope of impact governs) and rule 2 (lower level governs a split absent unambiguous higher scope of impact). Influence here is rated L3, well short of the L6 anchor requiring business-unit-level credibility with executives. The advocate's argument does not surface scope evidence beyond what the original mapping already considered -- it in fact reinforces the narrowing-to-single-subsystem read the crosswalk agent used. Title tenure and title inflation are evidence only (rule 6) and cannot substitute for described current scope. The mapping is upheld at L4."
+  },
+  "input_tokens": 10622,
+  "output_tokens": 659
+}

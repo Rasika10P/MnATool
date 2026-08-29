@@ -1,0 +1,20 @@
+{
+  "decision": {
+    "reports_to": {
+      "stated": false,
+      "value": null
+    },
+    "span_of_control": {
+      "stated": false,
+      "value": null
+    },
+    "budget_authority": {
+      "stated": false,
+      "value": null
+    },
+    "decision_scope": "Every technical decision the group has made in its two years of existence has gone through her.",
+    "ownership_scope": "Founded and leads Nyx's Photonics group; has no engineering track record here beyond this one program, which itself has not yet shipped in a product."
+  },
+  "input_tokens": 497,
+  "output_tokens": 129
+}

@@ -1,0 +1,20 @@
+{
+  "decision": {
+    "reports_to": {
+      "stated": true,
+      "value": "Not specified in the description"
+    },
+    "span_of_control": {
+      "stated": true,
+      "value": "4-person RTL sub-team"
+    },
+    "budget_authority": {
+      "stated": true,
+      "value": "No budget authority beyond headcount requisitions"
+    },
+    "decision_scope": "Sprint planning, code review sign-off, and performance reviews for the group; continues to personally own the clock/reset architecture RTL for the block",
+    "ownership_scope": "Clock/reset architecture RTL for the block"
+  },
+  "input_tokens": 351,
+  "output_tokens": 137
+}

@@ -1,0 +1,20 @@
+{
+  "decision": {
+    "reports_to": {
+      "stated": true,
+      "value": "Not specified in the text."
+    },
+    "span_of_control": {
+      "stated": true,
+      "value": "Not specified in the text."
+    },
+    "budget_authority": {
+      "stated": true,
+      "value": "Not specified in the text."
+    },
+    "decision_scope": "Owns the register-transfer implementation of the NX-210 interconnect fabric end to end, including arbitration and clock-domain-crossing logic, and has carried it through 2 tapeouts without escalation.",
+    "ownership_scope": "Owns the register-transfer implementation of the NX-210 interconnect fabric end to end, including arbitration and clock-domain-crossing logic, and has carried it through 2 tapeouts without escalation. Increasingly the person other RTL engineers check designs with before sign-off, though this hasn't been made official."
+  },
+  "input_tokens": 353,
+  "output_tokens": 199
+}

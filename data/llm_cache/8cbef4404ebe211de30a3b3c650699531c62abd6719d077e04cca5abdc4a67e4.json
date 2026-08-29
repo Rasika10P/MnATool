@@ -1,0 +1,20 @@
+{
+  "decision": {
+    "reports_to": {
+      "stated": false,
+      "value": null
+    },
+    "span_of_control": {
+      "stated": false,
+      "value": null
+    },
+    "budget_authority": {
+      "stated": false,
+      "value": null
+    },
+    "decision_scope": "Owned the high-speed SerDes transmitter driver and equalizer circuits for the NX-210/NX-220 PHYs across 3 tapeouts, closing timing and jitter to a 25Gbps target with margin verified in silicon.",
+    "ownership_scope": "Increasingly asked to review other engineers' high-speed IO work before tapeout sign-off, informally."
+  },
+  "input_tokens": 366,
+  "output_tokens": 153
+}

@@ -1,0 +1,10 @@
+{
+  "decision": {
+    "verdict": "upheld",
+    "governing_rule": "rule 2: lower level governs a split",
+    "final_level": "L3",
+    "reasoning": "The advocate's evidence is the same evidence the original mapping already weighed: ownership of the branch predictor sizing model feeding the NX-500 tapeout, plus \"light-touch\" review. Under this framework, end-to-end ownership of a block/module with outcomes-reviewed-not-approach oversight maps squarely to the L3 anchors for ownership scope (factor 5a: \"owns a block or module end to end\") and autonomy (\"outcomes reviewed, approach not\"). Reaching L4 requires the role to be \"setting own approach on ambiguous problems; consulted rather than directed\" (autonomy) and \"owns a subsystem across a full development cycle\" (factor 5a) -- neither is established here. Lighter review than a peer group is evidence of reduced oversight, not evidence that the employee is defining the approach to an ambiguous problem; the original mapping already accounted for this and correctly declined to infer L4 autonomy from tone alone. Influence remains at L2, with no evidence of persuading peers or adjacent teams. This is a genuine split between L2/L3 factors and no factor is unambiguously at L4, so rule 2 (lower level governs a split, since scope of impact is not unambiguously higher) controls and yields L3. The advocate's citation of Nyx's own MTS I/II anchors is evidence about described scope, not a competing framework to weigh -- and that same described scope (a defined sizing model feeding one tapeout milestone, reviewed by senior architects) is exactly what this framework's L3 ownership and autonomy anchors capture. This is a close, ordinary factor split that rule 2 resolves on its own terms, not a case where the framework's ordinary anchors would otherwise support L4 -- so red-circling is not the right posture here. The original mapping stands."
+  },
+  "input_tokens": 10400,
+  "output_tokens": 707
+}

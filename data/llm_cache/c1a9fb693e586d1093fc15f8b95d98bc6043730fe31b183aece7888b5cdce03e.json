@@ -1,0 +1,20 @@
+{
+  "decision": {
+    "reports_to": {
+      "stated": false,
+      "value": null
+    },
+    "span_of_control": {
+      "stated": true,
+      "value": "Two more junior photonics engineers"
+    },
+    "budget_authority": {
+      "stated": false,
+      "value": null
+    },
+    "decision_scope": "Has final say on every design tradeoff the group makes",
+    "ownership_scope": "Owns the overall optical link architecture for the co-packaged optics program"
+  },
+  "input_tokens": 342,
+  "output_tokens": 114
+}

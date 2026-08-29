@@ -1,0 +1,67 @@
+{
+  "content": [
+    {
+      "signature": "EsoECpABCBEYAipAVD6eAbyJ7UFrJbOsbpZDgxC5FJCefgK/OeAzoN17gVT7fFkjUDQmO958sn+5MkS10ymUR3qMwlfBFZKdx5kxHjIPY2xhdWRlLXNvbm5ldC01OABCCHRoaW5raW5nWiRjMzk3NzM1Ni1mOGU3LTRlNTAtOWE0Ni00NjQzYjY0ZDY4YzioAfrwy9QGEgxi1ugwOX2Pt3dHxJMaDFW7sqdvj03A06elfSIwf3eD1ZMtLJPrc09gzU4+l9fLw+71oevoKVLjaBXBTwhRcaUWTIS4iIESg901CokqKuYCRTwT6zuRHoLHHpiCdZ3dUi1vgD3Cw6PHMGAP7MUyfxK6XoT0mUQnmB6ZvGyuZ13beuNivICxPaWLZzXOK0q4DukWGd3SQJSLE7xkDDt8vxDOCjPi1XOgPGJs97K7yFwEJBYEpSJneht547PIloOUFNPP5M+P9sa/VNZerBYdNqzsAaCJM1j9B20CH03UV9Nkdrvn4NtpfeXvLafXBZymJyPHuS4BMJwNPYk3dFS/PGJpItOuUdycJ+VcUPo4L11gqmysMLbxc9z11CPRNwOxGTRrYQcbA98Z8hJJ3JbodJLx+JNDpMn7gQPGAdm7KMHQD8Cw6GwyagO2rMLzqPuWXX2PR3jF4tSG/tniOnd1fTg/z+fDa3bETPwWLRxgLXZOxOxV51WJziQXyFlngMFvwUns/velrLxxyI7RYq1WxUB5HI0GsRGHS7TzKgXbWEWlR8faOpRrLw2/ngxWnQCewxr7On3flhgB",
+      "thinking": "",
+      "type": "thinking"
+    },
+    {
+      "id": "toolu_018GYmecXBnUSKM2WMHuUPMK",
+      "caller": {
+        "type": "direct"
+      },
+      "input": {
+        "family_group": "engineering",
+        "level_code": "L5",
+        "geo_code": "US-SJC",
+        "as_of_date": "2026-08-01",
+        "annual_growth_rate": 0.035
+      },
+      "name": "lookup_market_data",
+      "type": "tool_use",
+      "toolset_name": null
+    },
+    {
+      "id": "toolu_0185wZhBe1ds33azLTtLTkg4",
+      "caller": {
+        "type": "direct"
+      },
+      "input": {
+        "amount": 15000000,
+        "from_currency": "INR",
+        "to_currency": "USD",
+        "as_of_date": "2026-08-01"
+      },
+      "name": "convert_currency",
+      "type": "tool_use",
+      "toolset_name": null
+    }
+  ],
+  "tool_calls": [
+    {
+      "name": "lookup_market_data",
+      "args": {
+        "family_group": "engineering",
+        "level_code": "L5",
+        "geo_code": "US-SJC",
+        "as_of_date": "2026-08-01",
+        "annual_growth_rate": 0.035
+      },
+      "id": "toolu_018GYmecXBnUSKM2WMHuUPMK",
+      "type": "tool_call"
+    },
+    {
+      "name": "convert_currency",
+      "args": {
+        "amount": 15000000,
+        "from_currency": "INR",
+        "to_currency": "USD",
+        "as_of_date": "2026-08-01"
+      },
+      "id": "toolu_0185wZhBe1ds33azLTtLTkg4",
+      "type": "tool_call"
+    }
+  ],
+  "input_tokens": 2249,
+  "output_tokens": 430
+}

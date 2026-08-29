@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L7",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L7",
+        "evidence": "Go-to authority on link-budget modeling for every high-speed interface program company-wide; work referenced in trade press covering flagship NX-220 PHY product"
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L7",
+        "evidence": "Led design of adaptive DFE architecture as the recognized authority, implying self-directed judgment trusted without review on link-budget modeling across programs"
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L6",
+        "evidence": "Adaptive DFE equalization for high-speed SerDes is a leading-edge, previously unsolved architecture problem within the company, but no explicit statement that it is unprecedented in the field"
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L7",
+        "evidence": "Externally recognized via two major industry conference presentations, trade-press coverage, and 3 patents in equalizer architecture -- meets the external-recognition bar for L7/L8"
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L7",
+        "evidence": "Owns link-budget modeling methodology and equalizer architecture direction spanning every high-speed interface program company-wide, not just a single product"
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L7",
+        "evidence": "Recognized as the company-wide go-to authority across all high-speed interface programs, plus external industry visibility through conferences and trade press"
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.68,
+    "governing_rule": "rule 4: external recognition required for L7+, satisfied here by conference presentations, trade-press coverage, and patents; rule 2 applied on the L6/L7 split with scope of impact (company-wide authority) as unambiguous tiebreaker toward L7",
+    "alternative_level": "L6",
+    "alternative_reasoning": "If the source-org small-company prior is weighted heavily, or if the conference/trade-press recognition is judged to be adjacent-to-external rather than fully establishing field-wide external reputation (e.g., trade coverage of the product rather than the individual, conferences that are company-sponsored rather than independent industry bodies), the role would cap at L6: company-wide internal authority and deep technical ownership without fully meeting the strict external-recognition bar of rule 4. This is the more conservative read and the reason confidence is not higher.",
+    "escalate": false,
+    "escalation_factor": "Whether the two conference presentations and trade-press writeup constitute genuine external field recognition of the individual (supporting L7) versus recognition of the company/product that the individual merely contributed to (capping at L6 per rule 3/4) -- this determination would settle the close call, compounded by the small-source-org prior suggesting title deflation caution.",
+    "reasoning": "The role clears the L7 bar because it has verifiable external recognition (two industry conference presentations, trade-press coverage of the NX-220 PHY, three patents) rather than only internal reputation, satisfying rule 4. Scope of impact is company-wide (authority on link-budget modeling for every high-speed interface program, not one product line), and influence extends externally into the industry, both squarely at L7 anchors. Problem complexity evidence is strong but stops short of explicitly stating no precedent exists in the field (which would support L8), and there is no evidence of the strategic, company-strategy-shaping scope (L8 anchor) beyond the discipline. This is a title of 'Fellow' but per rule 6 the level is set from scope evidence, which happens to corroborate the title here. Source organization context: a 104-person late-stage private company with org_depth 4 and low platform dependency is a small-company archetype where the expected drift is titles mapping down 1-2 levels due to title inflation. An L7 Fellow-equivalent result at this source size is somewhat inconsistent with that prior -- flatter orgs of this size rarely produce genuine L7-caliber, externally-recognized authorities. However, the evidence for external recognition (conferences, trade press, patents) is concrete and absolute rather than relative/inflated language, which is exactly the kind of hard evidence the framework says should override the size-based prior. I am flagging this contradiction explicitly and lowering confidence accordingly rather than adjusting the level itself, per section 6 rule 1-2."
+  },
+  "input_tokens": 9698,
+  "output_tokens": 1616
+}

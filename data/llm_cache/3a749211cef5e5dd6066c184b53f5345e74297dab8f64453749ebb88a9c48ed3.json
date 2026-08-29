@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L3",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L3",
+        "evidence": "Owns a sub-block end to end; impact contained to defined component/workstream, felt across the team rather than the function"
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L3",
+        "evidence": "No indication of setting own approach on ambiguous problems; role description implies independent execution on a defined block, consistent with 'works independently on defined problems; outcomes reviewed, approach not'"
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L3",
+        "evidence": "Sub-block ownership implies defined problems requiring judgment among known RTL design approaches, not open-ended ambiguity requiring constructed solution paths"
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L3",
+        "evidence": "Title 'Senior Engineer' and sub-block scope indicate proficiency in RTL design discipline, delivering reliably without support, but no evidence of depth extending credibly into adjacent disciplines"
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L3",
+        "evidence": "Explicitly owns a sub-block end to end -- matches 5a anchor 'owns a block or module end to end'"
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L3",
+        "evidence": "No mention of influencing adjacent teams or partners; scope limited to peer-level influence through demonstrated work on the block"
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.85,
+    "governing_rule": "rule 1: scope of impact is primary, and all factors here converge cleanly at L3",
+    "alternative_level": "L4",
+    "alternative_reasoning": "L4 requires ownership of a full subsystem across a development cycle and impact across the function, with ambiguous problems requiring constructed solution paths. The description specifies only a 'sub-block,' a narrower unit than a subsystem, and gives no evidence of cross-function impact, ambiguous problem framing, or influence beyond the immediate team, so L4 is not supported by the evidence provided.",
+    "escalate": false,
+    "escalation_factor": null,
+    "reasoning": "All six IC factors point consistently to L3: the role owns a defined sub-block end to end (matching the L3 anchor for factor 5a exactly -- 'owns a block or module end to end'), with impact contained to the team, independent execution on defined problems, discipline-level proficiency without adjacent-domain breadth, and peer-level influence. No direct reports confirms IC track. Title 'Senior Engineer' is consistent with but not determinative of the L3 assignment -- the scope description (sub-block ownership, no cross-team or cross-function impact) is what drives the level per rule 6."
+  },
+  "input_tokens": 9540,
+  "output_tokens": 1053
+}

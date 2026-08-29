@@ -1,0 +1,10 @@
+{
+  "decision": {
+    "argument_basis": "scope evidence not reflected in the mapping",
+    "proposed_level": "L8",
+    "evidence_cited": "The employee is described as \"Nyx's go-to authority on link-budget modeling for every high-speed interface program company-wide\" \u2014 domain ownership spanning the entire product roadmap rather than a single product or team, which is the Distinguished MTS indicator, not the Principal MTS indicator of cross-team-but-bounded ownership. This is paired with sustained external recognition (two industry-conference presentations, trade-press coverage, three patents), the specific evidentiary bar Nyx's own document sets for the Fellow honorific. Fellow alone doesn't dictate a level, but here the underlying scope evidence \u2014 company-wide, cross-program authority rather than a defined technical area \u2014 matches Nyx's top-band anchor, not the level below it.",
+    "framework_section": "Section 4 (Level anchors \u2014 Distinguished MTS row) and Section 6 (Fellow)"
+  },
+  "input_tokens": 4906,
+  "output_tokens": 396
+}

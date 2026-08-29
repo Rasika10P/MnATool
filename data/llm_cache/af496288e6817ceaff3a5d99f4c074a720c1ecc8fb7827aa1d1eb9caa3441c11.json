@@ -1,0 +1,10 @@
+{
+  "decision": {
+    "verdict": "upheld",
+    "governing_rule": "rule 2: lower level governs a split",
+    "final_level": "L3",
+    "reasoning": "The advocate's evidence (multi-tapeout execution without escalation, informal peer deference) is the same evidence already weighed in the original mapping under autonomy and influence -- it does not introduce new scope-of-impact evidence. Rule 1 makes scope of impact the primary tiebreaker, and per this framework's anchors the interconnect fabric remains a single owned block/workstream with impact felt across the team, not yet across the function -- squarely L3 under both the scope-of-impact and factor 5a ownership-scope anchors. Cross-tapoint sign-off deference from peers is influence 'through demonstrated work' (L3 anchor), not representation to adjacent teams or partners (L4 anchor), and sustained execution without escalation speaks to autonomy, not to a change in the scope of impact. Since scope of impact is not unambiguously at L4, rule 2 requires the lower level to govern the split between the L4-leaning autonomy/problem-complexity ratings and the L3-anchored scope/ownership/influence ratings. The advocate's citation to Nyx's own Senior MTS anchor is evidence about described scope, not a second framework to weigh -- and that same evidence, read against this framework's anchors, still lands the scope-of-impact factor at L3. No new absolute scope evidence (e.g., subsystem spanning multiple teams, or function-wide impact) is cited that would move scope of impact to L4. The mapping is upheld."
+  },
+  "input_tokens": 10222,
+  "output_tokens": 597
+}

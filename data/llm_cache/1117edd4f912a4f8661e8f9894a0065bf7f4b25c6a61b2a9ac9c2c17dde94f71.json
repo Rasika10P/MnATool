@@ -1,0 +1,10 @@
+{
+  "decision": {
+    "verdict": "upheld",
+    "governing_rule": "rule 2: lower level governs a split (scope of impact not unambiguously at the higher level)",
+    "final_level": "L4",
+    "reasoning": "The advocate's own cited evidence confirms rather than contradicts the original mapping. Even by the advocate's characterization -- leading a single subsystem (NX-600 PHY) with two coordinating engineers, no cross-product-line work since NX-400 -- scope of impact remains confined to one subsystem of one product. Under this framework, that is squarely the L4 anchor for scope of impact (\"own a subsystem or complex workstream; impact across the function\") and factor 5a (\"owns a subsystem across a full development cycle\"), not L5 or L6, which require impact across multiple teams/the business unit and ownership of a major subsystem or full derivative product/architecture across generations. The advocate's proposed L6 is not supported by any scope evidence cited -- indeed the advocate's own argument (via the source document's anchors) walks the proposal back to a \"Senior-to-Principal\" range, conceding the Distinguished/company-wide-authority anchor doesn't fit. Influence is rated L3 (two peer engineers only), and rule 3 caps deep-but-narrow technical work without cross-domain breadth and organizational influence at L5 regardless. With scope of impact, autonomy, problem complexity, ownership, and influence all at or below L4, and only technical depth reaching L5 in isolation, rule 1 (scope of impact is primary) and rule 2 (lower level governs a split absent unambiguously higher scope) both resolve to L4. The title evidence (\"Distinguished MTS,\" \"Principal MTS band\") is inadmissible as a leveling input per rule 6 -- it is evidence of the source organization's label, not of Meridian-relevant scope. No new absolute scope evidence was introduced that the original mapping failed to consider; the advocate reargues the same facts toward a title-anchored comparison rather than a scope-anchored one. The original mapping stands."
+  },
+  "input_tokens": 10623,
+  "output_tokens": 750
+}

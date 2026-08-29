@@ -1,0 +1,10 @@
+{
+  "decision": {
+    "argument_basis": "scope evidence not reflected in the mapping",
+    "proposed_level": "L8",
+    "evidence_cited": "Employee has personally unblocked sign-off on 6 of the last 8 difficult closure escalations company-wide over 11 years -- this is company-wide, cross-tapeout, cross-team final technical authority on analog closure, not scope confined to a single team or product line. Section 4's Distinguished MTS anchor describes exactly this pattern: 'the person other Principal MTS engineers escalate to,' with 'final technical sign-off authority within the domain' spanning the roadmap rather than one product. The absence of patents or publications does not undercut this -- Section 6 is explicit that the Fellow honorific (and by extension external recognition) is a separate, optional track-record marker, not a component of the level anchor itself; Distinguished MTS's anchor requires only that decisions 'shape how Nyx builds silicon for years,' which is what company-wide closure escalation authority reflects.",
+    "framework_section": "Section 4 (Level anchors, Distinguished MTS row) and Section 6 (Fellow)"
+  },
+  "input_tokens": 4887,
+  "output_tokens": 445
+}

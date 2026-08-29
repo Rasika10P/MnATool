@@ -1,0 +1,20 @@
+{
+  "decision": {
+    "reports_to": {
+      "stated": false,
+      "value": null
+    },
+    "span_of_control": {
+      "stated": false,
+      "value": null
+    },
+    "budget_authority": {
+      "stated": false,
+      "value": null
+    },
+    "decision_scope": "Owns the out-of-order load-store microarchitecture for the NX-400 core family across 2 tapeouts, including a new memory disambiguation scheme adopted for NX-410 after measuring an 8% IPC gain in simulation.",
+    "ownership_scope": "Owns the out-of-order load-store microarchitecture for the NX-400 core family across 2 tapeouts, including a new memory disambiguation scheme adopted for NX-410 after measuring an 8% IPC gain in simulation."
+  },
+  "input_tokens": 362,
+  "output_tokens": 185
+}

@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L1",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L1",
+        "evidence": "Scope limited to a single sub-block (CDC synchronizer and register-map RTL) within one larger PHY controller block; impact contained within the immediate team."
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L1",
+        "evidence": "Wrote and verified RTL 'under supervision' as a new-grad -- work assigned and reviewed in detail."
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L2",
+        "evidence": "CDC synchronizer and register-map design have known solution paths/patterns, though require some proficiency to implement correctly."
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L1",
+        "evidence": "Described as a new-grad RTL designer developing proficiency in RTL design under supervision; no evidence of independent mastery yet."
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L1",
+        "evidence": "Owned a sub-block, not a full block or module end to end -- below the L3 anchor of 'owns a block or module end to end'; carried it through only 1 tapeout under supervision."
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L1",
+        "evidence": "No evidence of influence beyond immediate team; communicates within the team on the sub-block work."
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.75,
+    "governing_rule": "rule 2: lower level governs a split (autonomy/ownership indicate L1, problem complexity edges toward L2)",
+    "alternative_level": "L2",
+    "alternative_reasoning": "Problem complexity around CDC synchronization could be read as requiring judgment among known approaches (L2/L3 anchor), and carrying work through an actual tapeout is a real deliverable. However, autonomy ('under supervision') and scope (sub-block only, not a full block) are clearly L1, and per rule 2 the lower level governs absent unambiguous higher-level scope of impact.",
+    "escalate": false,
+    "escalation_factor": "problem_complexity -- whether the CDC synchronizer work reflects genuine judgment among known approaches (pushing toward L2) or fully directed execution (L1) would sharpen this call",
+    "reasoning": "Consistency check per section 6: source is a small company (headcount 104, late-stage private, whole-company, org_depth 4, low platform dependency). Per the expected-drift table, small-company titles map down 1-2 levels due to title inflation and shallow org depth. 'MTS I' (their entry-level title) mapping to Meridian L1 is consistent with this prior -- no title inflation contradiction observed, and low platform dependency means no cap adjustment needed on technical depth/breadth. This strengthens confidence in the L1 assignment."
+  },
+  "input_tokens": 9677,
+  "output_tokens": 1517
+}

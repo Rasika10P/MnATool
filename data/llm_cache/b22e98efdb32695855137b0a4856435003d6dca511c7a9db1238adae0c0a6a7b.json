@@ -1,0 +1,20 @@
+{
+  "decision": {
+    "reports_to": {
+      "stated": false,
+      "value": null
+    },
+    "span_of_control": {
+      "stated": false,
+      "value": null
+    },
+    "budget_authority": {
+      "stated": false,
+      "value": null
+    },
+    "decision_scope": "Owns the RF transceiver front-end for the NX-220 PHY, taking the LNA and mixer design through 2 tapeouts with the target noise figure met on first silicon. Consulted by the layout and test teams on RF-specific design-for-test tradeoffs.",
+    "ownership_scope": "Owns the RF transceiver front-end for the NX-220 PHY, taking the LNA and mixer design through 2 tapeouts with the target noise figure met on first silicon. Consulted by the layout and test teams on RF-specific design-for-test tradeoffs, but has not yet led a design independent of the senior architect's floor plan."
+  },
+  "input_tokens": 512,
+  "output_tokens": 208
+}

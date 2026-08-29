@@ -1,0 +1,33 @@
+{
+  "content": [
+    {
+      "signature": "EqkCCpABCBEYAipAv+VxMjcBg0CcO6pJe/c9ig7yxihMjkhcRwUjZH9I+r88NJepss4XJk2ijSwnJDDS+Y4xtYwBbQGWhry6TryFUTIPY2xhdWRlLXNvbm5ldC01OABCCHRoaW5raW5nWiRjMzk3NzM1Ni1mOGU3LTRlNTAtOWE0Ni00NjQzYjY0ZDY4YzioAYSnzNQGEgw//mVJci+HGRXbE9waDN2c/D5a3VBLXaOb0iIwK4HAmwDatfjtobpFWiFH6kMPN9O9j4RUFzExVlPp/pLoNtrhfI/XD5VrhrooG1uVKkY2fW96ccRkw4yji3yr8iIY0OLW1pFnTMScWAYvbRBM3k4+Z3ZhcKGLffCkRmwUVsa02hcEKa1kytaPiDIHJDvq0CQQY9MDGAE=",
+      "thinking": "",
+      "type": "thinking"
+    },
+    {
+      "id": "toolu_01Cn5bTjdUenPqRwoNJKbv9t",
+      "caller": {
+        "type": "direct"
+      },
+      "input": {
+        "job_id": "PD-PNR-L4"
+      },
+      "name": "read_job_architecture",
+      "type": "tool_use",
+      "toolset_name": null
+    }
+  ],
+  "tool_calls": [
+    {
+      "name": "read_job_architecture",
+      "args": {
+        "job_id": "PD-PNR-L4"
+      },
+      "id": "toolu_01Cn5bTjdUenPqRwoNJKbv9t",
+      "type": "tool_call"
+    }
+  ],
+  "input_tokens": 2318,
+  "output_tokens": 87
+}

@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L3",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L3",
+        "evidence": "Owns the RTL implementation of the NX-210 interconnect fabric end to end, including arbitration and CDC logic -- a defined component/workstream, impact felt across the team, not yet described as spanning the function"
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L4",
+        "evidence": "Has carried the block through 2 tapeouts without escalation, indicating the person sets their own approach on ambiguous problems without needing direction"
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L4",
+        "evidence": "Arbitration and clock-domain-crossing logic within an interconnect fabric are ambiguous, cross-cutting problems requiring constructed solution paths, not just judgment among known approaches"
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L3",
+        "evidence": "Deep in RTL design of a single subsystem; no evidence of credible breadth into adjacent disciplines (e.g. physical design, verification methodology) described"
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L3",
+        "evidence": "Owns a block/module (the interconnect fabric RTL) end to end across tapeouts -- matches L3 'owns a block or module end to end' rather than L4 subsystem-across-full-development-cycle with broader organizational ownership"
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L3",
+        "evidence": "Other RTL engineers informally check designs with this person before sign-off, but this is unofficial peer influence through demonstrated work, not representation to adjacent teams or partners"
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.6,
+    "governing_rule": "rule 2: lower level governs a split (autonomy/problem complexity point to L4, but scope of impact, ownership scope, and influence anchor at L3, and scope of impact is not unambiguously at L4)",
+    "alternative_level": "L4",
+    "alternative_reasoning": "If the informal design-review role were judged to constitute real influence over adjacent engineers' work (L4 anchor: 'influences adjacent teams') and the sustained multi-tapeout ownership without escalation were read as evidence of subsystem-level ownership across a full development cycle (5a L4), the role could be leveled at L4. This was not chosen because the review role is explicitly described as unofficial and the ownership described is still block-level (one subsystem's RTL, not a broader subsystem-across-teams scope), and scope of impact -- the primary tiebreaker -- reads as L3.",
+    "escalate": false,
+    "escalation_factor": "influence (whether the informal pre-sign-off design review role constitutes L4-level cross-team influence or remains L3 peer influence)",
+    "reasoning": "The role shows clear L3 anchors on scope of impact (single block/subsystem owned end-to-end, impact within team), ownership scope (block-level ownership per 5a), and influence (informal peer influence, not yet formalized or extended to adjacent teams). Autonomy and problem complexity show L4-leaning evidence (ambiguous CDC/arbitration problems, sustained execution across two tapeouts without escalation implying trusted judgment). Per rule 1, scope of impact is the primary tiebreaker, and it is squarely L3 -- the interconnect fabric is a component/workstream with team-level impact, not yet function-wide. Per rule 2, since scope of impact is not unambiguously at the higher level, the lower level (L3) governs. The informal, not-yet-official nature of the peer sign-off role also supports holding at L3 rather than crediting L4 influence. Source org context (104 headcount, late-stage private, whole company) creates a prior that titles map down 1-2 levels; a title of 'MTS II' plausibly maps to Meridian's L3, which is consistent with this evidence-based result, raising confidence somewhat. Org depth of 4 and low platform dependency don't cap any factors here. This is a reasonably close call between L3 and L4 driven mainly by whether the informal sign-off influence and cross-tapeout autonomy should be read as crossing into L4 territory."
+  },
+  "input_tokens": 9667,
+  "output_tokens": 1562
+}

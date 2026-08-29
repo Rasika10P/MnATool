@@ -1,0 +1,10 @@
+{
+  "decision": {
+    "argument_basis": "scope evidence not reflected in the mapping",
+    "proposed_level": "L4",
+    "evidence_cited": "Employee owns the RTL implementation of the NX-210 interconnect fabric end to end (arbitration and CDC logic) across 2 tapeouts without escalation, and other RTL engineers now check their own designs with this person before sign-off. Per Nyx's Level 4 (Senior MTS) anchor, this is multi-tapeout ownership of a subsystem with technical decisions rarely second-guessed within the team -- squarely Senior MTS scope, not the single-tapeout, single-area independent ownership described for MTS II. The 'MTS II' label on record predates this multi-tapeout, cross-engineer-deference pattern and reflects an earlier leveling decision, not the scope described here.",
+    "framework_section": "Section 4 (Level anchors: MTS II vs. Senior MTS) and Section 3 (title as record of a past decision, not evidence for a new one)"
+  },
+  "input_tokens": 4879,
+  "output_tokens": 404
+}

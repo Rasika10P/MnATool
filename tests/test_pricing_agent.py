@@ -91,3 +91,41 @@ def test_write_mapping_decision_is_not_among_the_bound_tools():
     from agents.pricing_agent import TOOLS
 
     assert "write_mapping_decision" not in {t.name for t in TOOLS}
+
+
+def test_retrieve_similar_survey_jobs_is_among_the_bound_tools():
+    from agents.pricing_agent import TOOLS
+
+    assert "retrieve_similar_survey_jobs" in {t.name for t in TOOLS}
+
+
+def test_model_can_choose_to_call_retrieval_as_a_sixth_tool(monkeypatch):
+    import tools.retrieval_tools as retrieval_tools
+
+    monkeypatch.setattr(retrieval_tools, "get_embedding_model", lambda: type("E", (), {"embed_query": lambda self, t: [0.1]})())
+    monkeypatch.setattr(retrieval_tools, "get_client", lambda api_key: "fake-client")
+    monkeypatch.setattr(
+        retrieval_tools, "query_similar",
+        lambda client, index_name, query_vector, top_k: [
+            {"id": "SYN-001", "score": 0.6, "metadata": {"survey_job_title": "Senior Engineer - RTL Design", "discipline": "Digital Design", "survey_level_label": "X-L3", "survey_job_description": "desc"}}
+        ],
+    )
+
+    responses = [
+        FakeAIMessage(
+            tool_calls=[
+                {"name": "retrieve_similar_survey_jobs", "args": {"query_text": "RTL design engineer", "top_k": 3}, "id": "call-1"}
+            ]
+        ),
+        FakeAIMessage(content="Checked comparable survey postings."),
+    ]
+    model = FakeToolCallingModel(responses, _judgment())
+
+    result = price_role(
+        job_id=JOB_ID, geo_code=GEO_CODE, candidate_salary=180_000, candidate_currency="USD",
+        as_of_date="2026-08-01", model=model,
+    )
+
+    assert result.tool_calls[0].tool_name == "retrieve_similar_survey_jobs"
+    assert result.tool_calls[0].error is None
+    assert result.tool_calls[0].result[0]["survey_code"] == "SYN-001"

@@ -1,0 +1,65 @@
+{
+  "content": [
+    {
+      "signature": "EqIDCpABCBEYAipAYpbLZ9gFylGKVKvPtCKnIbMFy9SalDRINm9ZdSB3uE+zu8d2idlIk2861UmQ3gz9WyEhOSGpos9cF7iIvBWJIDIPY2xhdWRlLXNvbm5ldC01OABCCHRoaW5raW5nWiRjMzk3NzM1Ni1mOGU3LTRlNTAtOWE0Ni00NjQzYjY0ZDY4YzioAYWnzNQGEgysi7vsgDlE21aQuIoaDLaFNkXjbN8ptupEZiIw9hWyQqbtWJ8Ij0pXXkCQpiQDl4sAuM414/skpEVtKse3g2sBAs7z3sI57/fIJ8ESKr4BPJ9vjdbF2L8MEGKGiNrxzj8UHpL3fIQakQ4ZQTpO2JcZrZLH/zZy40prjRt9h6U0oO5T03ga/3Bb/bzOdmMzIB0Ho73x483mrv5QavsRlg7wsDL6x2ZAW2cf9YmLxqrEf1jUnlRJeIIuFnaH8u9ILKeDJQXfIhFm57Flt9VZApJ0wH3cmYnRhPWgxdiH5CPwvAMw6ElRg4PO5VqX09+2YAnlae2+9zedp59226spZ2Bd95l7JnPK3CIaC/vgkxgB",
+      "thinking": "",
+      "type": "thinking"
+    },
+    {
+      "id": "toolu_01KzTktLnyrDsTDr37Med4Q4",
+      "caller": {
+        "type": "direct"
+      },
+      "input": {
+        "family_group": "engineering",
+        "level_code": "L4",
+        "geo_code": "US-SJC",
+        "as_of_date": "2026-08-01",
+        "annual_growth_rate": 0.035
+      },
+      "name": "lookup_market_data",
+      "type": "tool_use",
+      "toolset_name": null
+    },
+    {
+      "id": "toolu_01Hz3zbPvfNtFc4vi8srEr3r",
+      "caller": {
+        "type": "direct"
+      },
+      "input": {
+        "job_id": "PD-PNR-L4",
+        "geo_code": "US-SJC",
+        "candidate_salary": 195000
+      },
+      "name": "check_internal_equity",
+      "type": "tool_use",
+      "toolset_name": null
+    }
+  ],
+  "tool_calls": [
+    {
+      "name": "lookup_market_data",
+      "args": {
+        "family_group": "engineering",
+        "level_code": "L4",
+        "geo_code": "US-SJC",
+        "as_of_date": "2026-08-01",
+        "annual_growth_rate": 0.035
+      },
+      "id": "toolu_01KzTktLnyrDsTDr37Med4Q4",
+      "type": "tool_call"
+    },
+    {
+      "name": "check_internal_equity",
+      "args": {
+        "job_id": "PD-PNR-L4",
+        "geo_code": "US-SJC",
+        "candidate_salary": 195000
+      },
+      "id": "toolu_01Hz3zbPvfNtFc4vi8srEr3r",
+      "type": "tool_call"
+    }
+  ],
+  "input_tokens": 2769,
+  "output_tokens": 359
+}

@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L6",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L6",
+        "evidence": "Company-wide final authority on core performance/power/area tradeoffs across the entire NX-400 through NX-600 roadmap; decisions shape multiple product generations"
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L6",
+        "evidence": "Sign-off authority across every core team's performance model before tapeout, indicating accountability for outcomes without oversight"
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L6",
+        "evidence": "Cross-generation PPA tradeoffs across multiple cores implies strategic, open-ended framing of tradeoffs rather than execution against a defined spec"
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L6",
+        "evidence": "Sought out as company-wide sign-off authority on microarchitecture PPA across an entire roadmap of core families, indicating authority across the discipline sought out company-wide"
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L6",
+        "evidence": "Owns architecture direction (PPA tradeoffs) for a product line (NX-400 through NX-600) across generations -- factor 5a L6 anchor"
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L6",
+        "evidence": "Every core team's performance model requires his sign-off -- influences business-unit level engineering decisions and is credible enough to gate tapeout company-wide"
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.72,
+    "governing_rule": "rule 4: external recognition required for L7+, cannot be inferred from internal reputation alone",
+    "alternative_level": null,
+    "alternative_reasoning": "Scope of impact, autonomy, ownership, and influence evidence read on their face as L7 (company-wide impact, authority spanning the full roadmap, sign-off gating every team). L7 was not assigned because rule 4 makes external recognition a hard gate for L7+, and the JD explicitly states no publications, patents, or external presentations -- the reputation is internal only. Per rule 4 this cannot be inferred or waived, so L7 is unavailable regardless of how strong the internal-scope case is.</alternative_reasoning>\n<parameter name=\"escalation_factor\">Whether any external-facing activity (standards body participation, patents, publications) exists but was simply omitted from this JD -- if such evidence surfaces, this would move to L7. Given the explicit statement of purely internal reputation, confidence is reasonably high but not certain since scope evidence is unusually strong for L6.",
+    "escalate": false,
+    "escalation_factor": null,
+    "reasoning": "All six factors point clearly to L6 or above: scope is company-wide across an entire multi-generation roadmap (NX-400 through NX-600), autonomy is final sign-off authority without further review, problem complexity involves cross-core strategic PPA tradeoffs, ownership scope (5a) is architecture direction for a product line across generations, and influence spans every core team company-wide. This would ordinarily push toward L7 given the breadth of company-wide authority described. However, rule 4 is explicit and non-negotiable: L7 and above require external recognition (publications, patents, standards bodies, external reputation), and this cannot be inferred from internal reputation alone. The job description explicitly states the incumbent has never published, patented, or presented outside the company and that the reputation is entirely internal. This caps the role at L6 regardless of the strength of the internal scope/influence evidence. Note: the eight-years-in-role detail is experience/tenure and was explicitly excluded from the rating rationale per the experience-is-not-a-factor rule.\n\nSource organization calibration: source is a 104-person late-stage private company (small, under ~150 headcount), which per section 6 carries an expected drift of titles mapping DOWN 1-2 levels due to title inflation and shallow org depth (org_depth=4 here, consistent with a flatter small-org structure). The assigned L6 is one level below the internally-implied L7 scope, which is directionally consistent with that small-company drift prior -- the external-recognition gate happens to align with what the size-based prior would also predict, which raises confidence somewhat. Platform dependency is low, so no cap was applied to technical depth/breadth. Overall this result is consistent with the section 6 prior rather than contradicting it.</reasoning>\n<parameter name=\"alternative_level\">L7"
+  },
+  "input_tokens": 9674,
+  "output_tokens": 1600
+}

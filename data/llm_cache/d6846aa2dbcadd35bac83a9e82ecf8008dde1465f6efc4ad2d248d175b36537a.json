@@ -1,0 +1,10 @@
+{
+  "decision": {
+    "argument_basis": "scope evidence not reflected in the mapping",
+    "proposed_level": "M7",
+    "evidence_cited": "Role summary states company-wide final authority on core performance/power/area tradeoffs across the entire NX-400 through NX-600 roadmap, with every core team's performance model requiring his sign-off before tapeout -- domain ownership spanning the full product roadmap plus final technical sign-off authority, sustained over eight years. Under Nyx's own anchors this is the Distinguished MTS indicator set verbatim, not the Principal MTS pattern of a methodology or IP block reused cross-team/cross-tapeout but bounded to a defined technical area. The absence of external publication or patents does not diminish this: section 6 is explicit that Fellow recognition (and by extension external reputation) is never required for level, only for the separate honorific, and section 4's Distinguished MTS anchor itself notes external recognition is 'often, but not always' present.",
+    "framework_section": "Section 4 (Level anchors -- Distinguished MTS row) and Section 6 (Fellow)"
+  },
+  "input_tokens": 4884,
+  "output_tokens": 432
+}

@@ -1,0 +1,20 @@
+{
+  "decision": {
+    "reports_to": {
+      "stated": false,
+      "value": null
+    },
+    "span_of_control": {
+      "stated": false,
+      "value": null
+    },
+    "budget_authority": {
+      "stated": false,
+      "value": null
+    },
+    "decision_scope": "Day to day the work looks like ordinary core-team microarchitecture spec work on the current NX-500 generation, shared with two peers at the Senior MTS level doing comparable scope.",
+    "ownership_scope": "Day to day the work looks like ordinary core-team microarchitecture spec work on the current NX-500 generation, shared with two peers at the Senior MTS level doing comparable scope."
+  },
+  "input_tokens": 488,
+  "output_tokens": 156
+}

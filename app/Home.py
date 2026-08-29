@@ -29,7 +29,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from agents.cost_logging import get_session_stats, reset_session_stats
+from agents.instrumented_model import DemoModeCacheMissError
+from agents.secrets import sync_secrets_to_env
 from agents.spend_guard import BudgetExceededError, reset_default_budget
+from app.demo_mode import render_and_apply_gate
 from app.pipeline import (
     NYX_LADDER,
     NYX_LADDER_NOTE,
@@ -44,6 +47,8 @@ from app.pipeline import (
     run_scope_extraction_stage,
     validate_uploaded_census,
 )
+
+sync_secrets_to_env()
 
 st.set_page_config(page_title="Meridian Crosswalk", layout="wide")
 
@@ -191,6 +196,11 @@ def _run_pipeline(budget_cap: float) -> None:
         progress_bar.progress(1.0)
     except BudgetExceededError as e:
         st.error(f"Run stopped — spend limit exceeded: {e}")
+    except DemoModeCacheMissError as e:
+        st.error(
+            f"Run stopped — this needs a live API call that demo mode blocks: {e} "
+            "Enter the unlock password in the sidebar to run live."
+        )
 
     status_text.empty()
     progress_bar.empty()
@@ -633,6 +643,8 @@ def _render_leveling_failures_summary() -> None:
 
 
 def main() -> None:
+    render_and_apply_gate()
+
     st.title("Meridian Crosswalk")
     st.caption("Map an acquired workforce into your job architecture — and see the reasoning behind every placement.")
 

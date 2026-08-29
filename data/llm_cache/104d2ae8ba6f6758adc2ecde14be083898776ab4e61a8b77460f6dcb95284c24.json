@@ -1,0 +1,10 @@
+{
+  "decision": {
+    "verdict": "upheld",
+    "governing_rule": "rule 2 (lower level governs a split, unless scope of impact is unambiguously higher) and L8 anchor requirements (section 4: scope of impact / problem complexity)",
+    "final_level": "L7",
+    "reasoning": "The advocate's evidence -- company-wide, cross-program authority on link-budget modeling, plus external recognition via conferences, trade press, and patents -- is exactly the evidence already credited in the original mapping to reach L7 under rule 4 and the L7 anchors for scope of impact, technical depth/breadth, and influence. It does not add new scope evidence beyond what was already weighed; it re-labels the same facts against Nyx's own Fellow/Distinguished MTS anchors, which is inadmissible as a governing framework (section 7: the advocate may cite scope evidence, not import the acquired company's anchor definitions as the rule of decision). Under this framework, L8 requires impact on company strategy and on the industry (scope of impact anchor) and problems with no precedent in the company or the field (problem complexity anchor). The cited evidence shows authority across high-speed interface programs within Meridian's discipline -- squarely the L7 anchor ('impact across the company; recognized authority beyond the company in the discipline') -- not evidence that this person shapes company strategy or that the DFE architecture problem is unprecedented in the field generally, as opposed to novel within the company. The original mapping already applied rule 2 correctly on the L6/L7 split, resolving it toward L7 via unambiguous company-wide scope of impact; the advocate has not shown the split actually sits at L7/L8 with scope of impact unambiguously at L8. Absent that showing, the mapping stands."
+  },
+  "input_tokens": 10222,
+  "output_tokens": 649
+}

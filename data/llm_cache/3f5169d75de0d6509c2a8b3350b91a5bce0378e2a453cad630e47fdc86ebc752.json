@@ -1,0 +1,20 @@
+{
+  "decision": {
+    "reports_to": {
+      "stated": true,
+      "value": "Not specified in the text"
+    },
+    "span_of_control": {
+      "stated": true,
+      "value": "No direct reports mentioned"
+    },
+    "budget_authority": {
+      "stated": true,
+      "value": "No budget authority beyond headcount requisitions mentioned"
+    },
+    "decision_scope": "Day-to-day work consists of ordinary core-team microarchitecture spec work on the current NX-500 generation, shared with two peers at the Senior MTS level doing comparable scope.",
+    "ownership_scope": "Day-to-day work consists of ordinary core-team microarchitecture spec work on the current NX-500 generation, shared with two peers at the Senior MTS level doing comparable scope."
+  },
+  "input_tokens": 340,
+  "output_tokens": 175
+}

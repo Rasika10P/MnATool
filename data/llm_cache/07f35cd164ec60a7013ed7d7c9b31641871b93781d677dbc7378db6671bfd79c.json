@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L4",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L4",
+        "evidence": "Leading RF front-end design for the NX-600 PHY, a single product's RF subsystem -- impact contained to one subsystem of one product, not the function or business unit."
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L4",
+        "evidence": "Leading the design work and coordinating two other RF engineers implies setting own approach on the subsystem, consulted rather than directed -- consistent with L4, not evidence of L5+ area-wide prioritization."
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L4",
+        "evidence": "Front-end RF design for a single PHY subsystem is an ambiguous, construct-the-solution-path problem, but confined to one subsystem rather than spanning domains or competing multi-team constraints."
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L5",
+        "evidence": "Three years operating as Distinguished MTS/RF lead with deep RF front-end mastery suggests authority within the discipline, but no evidence of credible breadth across adjacent disciplines is given."
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L4",
+        "evidence": "Owns a single product's RF subsystem across its development (NX-600 PHY) -- matches 5a L4 'owns a subsystem across a full development cycle'; last multi-product-line ownership was NX-400, several generations ago, so current ownership does not meet the L5 bar of a major subsystem/full derivative product with cross-product reach."
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L3",
+        "evidence": "Coordinates with two other RF engineers on the same subsystem team -- influence is limited to immediate peers on the subsystem, not adjacent teams or partners."
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.62,
+    "governing_rule": "rule 2: lower level governs a split (scope of impact not unambiguously at the higher level)",
+    "alternative_level": "L5",
+    "alternative_reasoning": "If the sustained three-year tenure at \"Distinguished\" scope and deep RF authority were read as corroborating an L5 technical authority claim, one might argue for L5. However, ownership has not spanned multiple product lines since NX-400, current ownership scope is a single subsystem, and influence is confined to two peer engineers -- none of which meet L5 anchors for scope of impact, ownership scope, or influence. Rule 3's cap on deep-but-narrow work reinforces that depth alone cannot carry the level to L5 when scope and influence lag.",
+    "escalate": false,
+    "escalation_factor": "ownership_scope -- specifically whether the NX-600 PHY RF subsystem should be read as a 'major subsystem' (L5) rather than a standard subsystem (L4) given no explicit sizing/criticality detail was provided",
+    "reasoning": "The title \"Distinguished MTS\" is evidence only, not the level (rule 6), and current described scope is a single product's RF subsystem coordinated with two peers -- squarely L4 anchors for scope of impact, autonomy, problem complexity, and ownership (5a). Technical depth arguably reaches L5 given the sustained RF authority, but rule 3 caps deep-but-narrow technical work without cross-domain breadth and organizational influence at L5, and here influence is rated only L3 (limited to two peer engineers), so even L5 on depth alone cannot pull the overall level up per rule 1 (scope of impact is primary and is L4) and rule 2 (lower level governs a split absent unambiguous higher scope). The role has not held multi-product-line ownership since NX-400, confirming a narrowing of scope consistent with L4 rather than a sustained L5 book. Overall this rates L4 (Staff Engineer equivalent), not L6 (Principal), despite the Distinguished title -- title inflation is explicitly flagged as an anchor-only signal.\n\nSource organization calibration: source is a small (104-employee), late-stage private, whole-company acquisition with shallow org depth (4) and low platform dependency. Per section 6, small companies under ~150 people typically show titles mapping down 1-2 levels due to title inflation and shallow org depth -- this result (Distinguished MTS mapping to L4, well below the Distinguished Engineer/L7 anchor) is consistent with that expected drift, which raises confidence in the mapping. Low platform dependency means no cap adjustment was needed on technical depth/breadth. This result does not contradict the prior."
+  },
+  "input_tokens": 9663,
+  "output_tokens": 1686
+}

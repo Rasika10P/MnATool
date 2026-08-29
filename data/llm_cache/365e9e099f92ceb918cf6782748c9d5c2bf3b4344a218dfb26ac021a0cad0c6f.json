@@ -1,0 +1,18 @@
+{
+  "decision": {
+    "conflicts": [
+      {
+        "description": "Cost recommends phasing the funding for both employees 50/50 across two phases (comp_philosophy.md standard schedule), which reduces day-one budget impact. But DEMO-CRITICAL is flagged by retention as a genuine organizational-criticality risk (sole sign-off authority company-wide, no successor) and is underwater at 0.79 compa-ratio. Under the phased schedule, DEMO-CRITICAL's cost gap and retention award are only half-closed at close (phase 1 brings partial relief; the remaining 46,895.18 USD cost gap and 30,696.5 USD retention award don't land until phase 2), meaning this critical, underwater employee remains only partially remediated for a full phase period after close.",
+        "cost_position": "Phasing is justified purely on aggregate budget concentration: two employees drive 147,942.32 USD in combined cost, with DEMO-CRITICAL's 93,790.35 USD gap alone being the majority of that. Splitting 50/50 per the standard schedule cuts the immediate hit to 73,971.16 USD while still fully closing both gaps within a year -- this is a budget-timing decision, not a judgment about any individual's risk profile.",
+        "retention_position": "DEMO-CRITICAL is a flagged single point of failure with no internal successor and company-wide sign-off dependency -- an organization-wide bottleneck risk. Retention's award schedule mirrors the same phased split (30,696.5 / 30,696.5), meaning this critical employee remains underwater on both pay and award for the entirety of phase 1, which is exactly the period of highest flight risk exposure for someone in this position.",
+        "affected_employee_ids": [
+          "DEMO-CRITICAL"
+        ]
+      }
+    ],
+    "recommended_plan": "Both agents agree on the underlying numbers: total day-one cost of 147,942.32 USD (DEMO-CRITICAL 93,790.35 + DEMO-JUNIOR 54,151.97) and total retention award of 105,129.00 USD, with cost proposing a standard 50/50 phased schedule and retention independently arriving at a matching 50/50 phased award schedule. There is no disagreement on the figures themselves.\n\nThe tension is about timing risk for one person, not about numbers. Cost's phasing rationale is a legitimate, aggregate budget-concentration argument -- two employees account for a large combined gap, and spreading it over two phases meaningfully softens the close-day hit while still fully resolving both gaps within a year. Retention's rationale is a legitimate, person-specific argument -- DEMO-CRITICAL is a flagged single point of failure (company-wide sign-off authority, 11 years of escalation-of-last-resort ownership, no viable successor) whose flight risk is highest precisely during the period they remain underwater, and phasing leaves them only half-remediated through phase 1.\n\nRecommended plan: fund DEMO-JUNIOR on the standard phased schedule as cost proposes (54,151.97 gap / 43,736.00 award split 50/50) since retention did not flag this employee as critical and normal comp mechanisms are deemed sufficient. For DEMO-CRITICAL, consider an accelerated or day-one funding path (full 93,790.35 cost gap and/or full 61,393.00 retention award at close) given the organization-wide bottleneck risk retention identified, even though this raises the immediate budget hit relative to cost's preferred aggregate phasing. This is not a numbers reconciliation but a genuine tradeoff between budget-timing discipline and single-point-of-failure retention risk, and it should be escalated for a human decision rather than resolved by this synthesis.",
+    "requires_human_judgment": true
+  },
+  "input_tokens": 2896,
+  "output_tokens": 1300
+}

@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L2",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L2",
+        "evidence": "Job description states only that the role is a 'valued contributor to the RF design team' -- no defined component, workstream, or subsystem ownership is described; impact appears contained within the immediate team."
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L2",
+        "evidence": "No language indicating independent ownership of approach or being consulted rather than directed; description gives no evidence of autonomy beyond team contribution."
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L2",
+        "evidence": "No problem framing, ambiguity, or constructed solution paths are described -- the text gives no evidence of complexity beyond contributing to defined team work."
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L2",
+        "evidence": "Description does not establish proficiency level beyond generic team membership in RF design; no evidence of independent, reliable delivery without support."
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L1",
+        "evidence": "No block, module, or subsystem ownership described -- text indicates contribution to the team's work, consistent with 5a L1-L2 'contributes to a block or module under direction.'"
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L1",
+        "evidence": "No influence beyond the immediate team is described; the description only frames the person as a team contributor."
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.35,
+    "governing_rule": "rule 6: title in the source document is evidence, not input -- level from described scope, never from the title",
+    "alternative_level": "L1",
+    "alternative_reasoning": "If 'valued contributor' is read as purely task-level work with detailed assignment and review, all factors point to L1 (Associate Engineer) rather than L2. The description does not contain enough evidence to confidently distinguish 'developing proficiency' (L1-L2 shared anchor) from a slightly more established L2 contributor, so L1 remains a live alternative.",
+    "escalate": false,
+    "escalation_factor": "scope_of_impact and technical_depth_breadth -- the job description lacks any absolute scope evidence (specific block/module owned, deliverables, or outcomes) needed to distinguish L1 from L2; obtaining a fuller description of what this person actually owns or delivers would resolve the call.",
+    "reasoning": "The job description is extremely thin: it names a title (MTS II - RF) and department, and describes the role only as a 'valued contributor to the RF design team.' Per rule 6, the title (including the acquired company's MTS II designation) cannot be used to infer level. The only substantive scope language given is generic team-contributor language, which under the anchors maps to L1-L2 across nearly every factor -- there is no evidence of independent ownership, defined workstream, ambiguity resolution, or influence beyond the team. I assigned L2 rather than L1 because 'design team' membership in a technical discipline like RF implies some developing proficiency beyond a pure associate/trainee role, but this is a weak signal and the description does not clearly distinguish L1 from L2. Per rule 2, when factors split across adjacent levels, the lower level governs unless scope of impact is unambiguously at the higher level -- here scope of impact is if anything the weakest-evidenced factor, so L2 (already the lower plausible level) stands, and I would not push to L3 or beyond.\n\nSource organization calibration (section 6): source is a whole-company, late-stage private, ~104 headcount org with org_depth 4 and low platform_dependency. This is a small company (under ~150 people), so the prior expects titles to map down, often 1-2 levels, consistent with title inflation. An 'MTS II' title mapping to L2 (or possibly L1) is consistent with this prior, which raises confidence somewhat. However, I am setting confidence low (0.35) because the job description itself provides almost no absolute scope evidence (no artifacts, systems, or outcomes named) -- per section 6, only absolute scope evidence should drive leveling, and this description is entirely relative/generic ('valued contributor'). This is a case where the extreme thinness of the JD, not just the source-org prior, is the source of uncertainty."
+  },
+  "input_tokens": 9583,
+  "output_tokens": 1570
+}

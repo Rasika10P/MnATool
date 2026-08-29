@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L4",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L4",
+        "evidence": "Owned the SerDes transmitter driver and equalizer circuits for the NX-210/NX-220 PHYs across 3 tapeouts -- ownership of a subsystem across a full development cycle, impact felt across the function (multiple PHY products) rather than a single team."
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L4",
+        "evidence": "Closed timing and jitter to a 25Gbps target with margin verified in silicon, implying self-directed circuit design and debug approach; being asked (informally) to review others' work suggests consulted-rather-than-directed status, but no evidence of setting direction for a domain."
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L4",
+        "evidence": "Closing timing and jitter margins to an aggressive 25Gbps target across multiple tapeouts requires constructing solution paths for ambiguous, silicon-dependent problems -- consistent with L4, not yet the multi-domain competing-constraints framing of L5."
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L4",
+        "evidence": "Deep in one discipline (high-speed SerDes analog/mixed-signal circuit design) and credible in adjacent IO/PHY work as shown by informal review requests, but no evidence of authority spanning several disciplines or company-wide influence -- caps at L4/L5 boundary, and per rule 3 deep-but-narrow work without cross-domain breadth cannot reach L6."
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L4",
+        "evidence": "Owns a subsystem (transmitter driver and equalizer circuits) across a full development cycle spanning 3 tapeouts -- matches 5a L4 anchor exactly ('owns a subsystem across a full development cycle'), not yet a full derivative product or major subsystem at L5 scale."
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L3",
+        "evidence": "Informally asked to review other engineers' high-speed IO work before tapeout sign-off -- influence through demonstrated work with peers, not yet a formal cross-team representation role that would indicate L4 influence."
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.68,
+    "governing_rule": "rule 2: lower level governs a split (scope of impact not unambiguously at the higher level)",
+    "alternative_level": "L5",
+    "alternative_reasoning": "Could argue L5 if the informal review responsibility and 3-tapeoff track record signaled area-spanning authority and function-level influence. However, 'informally' asked to review and single-subsystem (not full product/major subsystem) ownership do not meet the L5 anchors for ownership scope (major subsystem/full derivative product) or influence (function-level decisions, cross-functional alignment). Rejected in favor of L4 per rule 2.",
+    "escalate": false,
+    "escalation_factor": "influence -- whether the informal pre-tapeout review responsibility should be read as early L4 cross-team influence or still L3 peer-level influence is the swing factor between confirming L4 cleanly versus a closer L4/L5 call",
+    "reasoning": "Five of six factors (scope, autonomy, problem complexity, technical depth, ownership scope) point cleanly to L4: subsystem ownership across a full development cycle (3 tapeouts), self-directed closure of timing/jitter margins, and deep single-discipline mastery with only adjacent credibility. Influence lags at L3 -- the review responsibility is informal and peer-level, not yet the formal cross-team representation anchor for L4. Per rule 1, scope of impact is the primary tiebreaker when factors split, and scope here sits squarely at L4 (subsystem/function-level impact, not yet multi-team/adjacent-function L5 scope). Per rule 3, this is deep-but-narrow analog design work without demonstrated cross-domain breadth or organizational influence, so it cannot reach L6 regardless of tenure signals. Title 'Sr. MTS' is evidence only, not the level (rule 6) -- the described scope maps to Staff Engineer (L4), not Senior Staff (L5), since the informal/early-stage review influence and single-subsystem ownership don't yet clear the L5 bar of area-spanning-multiple-teams ownership or function-level influence.\n\nSource organization calibration: source is a small company (~104 employees, under the ~150 threshold), late-stage private, whole-company source, org_depth 4, low platform dependency. The framework's expected drift prior for small companies is that titles map down 1-2 levels due to title inflation. 'Sr. MTS' mapping to L4 (Staff Engineer, one level below Senior Staff) is consistent with this prior -- the title suggests a more senior mapping than the evidence supports, which matches expected drift. Low platform dependency means no cap adjustment needed on technical depth/breadth per section 6 rule 3. This result is consistent with the prior, which supports reasonable confidence, though I'm flagging moderate uncertainty because influence is the one factor pulling toward L3/ambiguity about whether the informal review role is nascent L4 influence."
+  },
+  "input_tokens": 9689,
+  "output_tokens": 1914
+}

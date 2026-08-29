@@ -1,0 +1,20 @@
+{
+  "decision": {
+    "reports_to": {
+      "stated": false,
+      "value": null
+    },
+    "span_of_control": {
+      "stated": true,
+      "value": "7-person microarchitecture team"
+    },
+    "budget_authority": {
+      "stated": true,
+      "value": "Discretionary tooling budget of roughly $150K/year"
+    },
+    "decision_scope": "Final sign-off on performance model gates before RTL freeze",
+    "ownership_scope": "Manages the 7-person microarchitecture team for the NX-500/NX-600 core roadmap, with hire/fire authority"
+  },
+  "input_tokens": 511,
+  "output_tokens": 140
+}

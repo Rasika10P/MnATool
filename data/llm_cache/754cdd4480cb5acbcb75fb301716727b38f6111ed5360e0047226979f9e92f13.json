@@ -1,0 +1,44 @@
+{
+  "candidates": [
+    {
+      "survey_code": "SYN-007-DD-RTL-L1",
+      "score": 0.55235666,
+      "survey_job_title": "Associate Engineer - RTL Design",
+      "discipline": "RTL Design",
+      "survey_level_label": "Radleigh-L1",
+      "survey_job_description": "This benchmark role leads work in RTL Design within the Digital Design discipline. At the L1 scope, the role owns technical direction, delivery quality, and decisions that affect partner teams and the reliability of the product. The incumbent translates ambiguous requirements into an operating plan, sets measurable outcomes, and resolves risks using sound professional judgment. Typical work includes defining priorities, reviewing complex deliverables, coaching colleagues, documenting tradeoffs, and communicating status to technical and business stakeholders. The role is expected to understand relevant methods and tools deeply enough to challenge assumptions and improve the way work is performed. Scope expands with level: senior roles influence multiple projects, while the highest roles shape standards, architecture, and long-range capability. Success is measured by durable technical outcomes, predictable execution, and the quality of decisions made under uncertainty."
+    },
+    {
+      "survey_code": "SYN-016-DD-RTL-L2",
+      "score": 0.551834106,
+      "survey_job_title": "Engineer - RTL Design",
+      "discipline": "RTL Design",
+      "survey_level_label": "Radleigh-L2",
+      "survey_job_description": "This benchmark role leads work in RTL Design within the Digital Design discipline. At the L2 scope, the role owns technical direction, delivery quality, and decisions that affect partner teams and the reliability of the product. The incumbent translates ambiguous requirements into an operating plan, sets measurable outcomes, and resolves risks using sound professional judgment. Typical work includes defining priorities, reviewing complex deliverables, coaching colleagues, documenting tradeoffs, and communicating status to technical and business stakeholders. The role is expected to understand relevant methods and tools deeply enough to challenge assumptions and improve the way work is performed. Scope expands with level: senior roles influence multiple projects, while the highest roles shape standards, architecture, and long-range capability. Success is measured by durable technical outcomes, predictable execution, and the quality of decisions made under uncertainty."
+    },
+    {
+      "survey_code": "SYN-025-DD-RTL-L3",
+      "score": 0.548019409,
+      "survey_job_title": "Senior Engineer - RTL Design",
+      "discipline": "RTL Design",
+      "survey_level_label": "Radleigh-L3",
+      "survey_job_description": "This benchmark role leads work in RTL Design within the Digital Design discipline. At the L3 scope, the role owns technical direction, delivery quality, and decisions that affect partner teams and the reliability of the product. The incumbent translates ambiguous requirements into an operating plan, sets measurable outcomes, and resolves risks using sound professional judgment. Typical work includes defining priorities, reviewing complex deliverables, coaching colleagues, documenting tradeoffs, and communicating status to technical and business stakeholders. The role is expected to understand relevant methods and tools deeply enough to challenge assumptions and improve the way work is performed. Scope expands with level: senior roles influence multiple projects, while the highest roles shape standards, architecture, and long-range capability. Success is measured by durable technical outcomes, predictable execution, and the quality of decisions made under uncertainty."
+    },
+    {
+      "survey_code": "SYN-034-DD-RTL-L4",
+      "score": 0.547439635,
+      "survey_job_title": "Staff Engineer - RTL Design",
+      "discipline": "RTL Design",
+      "survey_level_label": "Radleigh-L4",
+      "survey_job_description": "This benchmark role leads work in RTL Design within the Digital Design discipline. At the L4 scope, the role owns technical direction, delivery quality, and decisions that affect partner teams and the reliability of the product. The incumbent translates ambiguous requirements into an operating plan, sets measurable outcomes, and resolves risks using sound professional judgment. Typical work includes defining priorities, reviewing complex deliverables, coaching colleagues, documenting tradeoffs, and communicating status to technical and business stakeholders. The role is expected to understand relevant methods and tools deeply enough to challenge assumptions and improve the way work is performed. Scope expands with level: senior roles influence multiple projects, while the highest roles shape standards, architecture, and long-range capability. Success is measured by durable technical outcomes, predictable execution, and the quality of decisions made under uncertainty."
+    },
+    {
+      "survey_code": "SYN-043-DD-RTL-L5",
+      "score": 0.546863556,
+      "survey_job_title": "Senior Staff Engineer - RTL Design",
+      "discipline": "RTL Design",
+      "survey_level_label": "Radleigh-L5",
+      "survey_job_description": "This benchmark role leads work in RTL Design within the Digital Design discipline. At the L5 scope, the role owns technical direction, delivery quality, and decisions that affect partner teams and the reliability of the product. The incumbent translates ambiguous requirements into an operating plan, sets measurable outcomes, and resolves risks using sound professional judgment. Typical work includes defining priorities, reviewing complex deliverables, coaching colleagues, documenting tradeoffs, and communicating status to technical and business stakeholders. The role is expected to understand relevant methods and tools deeply enough to challenge assumptions and improve the way work is performed. Scope expands with level: senior roles influence multiple projects, while the highest roles shape standards, architecture, and long-range capability. Success is measured by durable technical outcomes, predictable execution, and the quality of decisions made under uncertainty."
+    }
+  ]
+}

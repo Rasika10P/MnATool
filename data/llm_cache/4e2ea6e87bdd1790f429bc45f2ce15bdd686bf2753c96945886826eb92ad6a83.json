@@ -1,0 +1,10 @@
+{
+  "decision": {
+    "verdict": "red_circled",
+    "governing_rule": "rule 4: external recognition is required for L7 and above, not optional and not inferable from internal reputation",
+    "final_level": "L6",
+    "reasoning": "The advocate's evidence is admissible as scope evidence, and it is genuinely strong: scope of impact, autonomy, problem complexity, ownership scope (5a), and influence all rate at L6 with the described company-wide, cross-generation PPA sign-off authority arguably pushing toward L7-level breadth. But the advocate's argument leans on Nyx's own document (the 'Distinguished MTS indicator set,' the claim that external recognition is 'often but not always present,' and the Fellow-honorific carve-out) as if it were a second framework to weigh against Meridian's. Per the framework's own terms, Nyx's document is evidence about described scope only, not a governing standard here -- this framework's rule 4 is unambiguous and non-negotiable: external recognition (publications, patents, standards bodies, external reputation) is required for L7 and above, and cannot be inferred from internal reputation alone, however extensive. The role summary explicitly concedes no external publication, patents, or presentation -- reputation is entirely internal. That fact is dispositive under rule 4 regardless of how compelling the internal-scope case is. The proposed M7 is also not supportable: this is an IC role with no span-and-budget evidence, and track is not admissibly contested. This is precisely the shape of case section 7 anticipates for red-circling: the evidence would support a higher level (L7) under the ordinary anchors, but a specific named rule (rule 4) holds the level down regardless of scope strength. The mapping is upheld at L6, but the case is flagged as meritorious and pay-protection treatment should apply."
+  },
+  "input_tokens": 10276,
+  "output_tokens": 663
+}

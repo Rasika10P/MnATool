@@ -1,0 +1,20 @@
+{
+  "decision": {
+    "reports_to": {
+      "stated": false,
+      "value": null
+    },
+    "span_of_control": {
+      "stated": false,
+      "value": null
+    },
+    "budget_authority": {
+      "stated": false,
+      "value": null
+    },
+    "decision_scope": "Company-wide final authority on core performance/power/area tradeoffs across the entire NX-400 through NX-600 roadmap",
+    "ownership_scope": "Every core team's performance model gets his sign-off before tapeout"
+  },
+  "input_tokens": 508,
+  "output_tokens": 122
+}

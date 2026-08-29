@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L3",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L3",
+        "evidence": "Has taken primary responsibility for the descriptor-fetch pipeline this generation; impact contained to the block/team, coordinating with two other engineers on integration -- not yet an independently owned subsystem across the function."
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L3",
+        "evidence": "Works independently on the descriptor-fetch pipeline but hasn't had a tapeout where the block was entirely his own from spec through sign-off, indicating outcomes are still coordinated/reviewed with others rather than fully self-directed."
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L3",
+        "evidence": "Solid RTL engineer executing on a defined block; no evidence of constructing novel solution paths across ambiguous, unscoped problems."
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L3",
+        "evidence": "Described as a 'solid RTL engineer' proficient in the discipline, delivering reliably, with no evidence of credible adjacent-discipline depth expected at L4."
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L3",
+        "evidence": "Owns a block (descriptor-fetch pipeline) but has not yet taken it end-to-end through a full tapeout from spec through sign-off -- matches 'owns a block or module end to end' only partially, evidence explicitly notes the full-cycle ownership hasn't occurred yet."
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L3",
+        "evidence": "Coordinates with two other engineers on integration -- influence limited to close peers on the immediate team, not yet representing the team to adjacent partners."
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.72,
+    "governing_rule": "rule 2: lower level governs a split (adjacent L3/L4 split, scope of impact not unambiguously at L4)",
+    "alternative_level": "L4",
+    "alternative_reasoning": "L4 was considered given 'primary responsibility' language and the Sr MTS title, which could suggest subsystem-level ownership across a full development cycle. However, the explicit caveat that the engineer 'hasn't yet had a tapeout where the block was entirely his own from spec through sign-off' is direct evidence against full end-to-end ownership autonomy required at L4, and coordination with two other engineers on integration suggests reviewed/shared ownership rather than L4's 'consulted rather than directed' autonomy. This kept the rating at L3 under rule 2.",
+    "escalate": false,
+    "escalation_factor": "ownership_scope -- specifically whether 'primary responsibility this generation' without a completed independent tapeout should be read as de facto subsystem ownership (favoring L4) or as not-yet-demonstrated full-cycle ownership (favoring L3)",
+    "reasoning": "All six factors point to L3 or a borderline L3/L4: the engineer has primary responsibility for a block (descriptor-fetch pipeline) but explicitly has not yet carried it through a full tapeout cycle from spec to sign-off independently, and still coordinates closely with two peers on integration. This falls short of L4's bar of 'owns a subsystem across a full development cycle' with autonomy to set approach on ambiguous problems while being merely consulted rather than directed. Per rule 2, where evidence splits between adjacent levels and scope of impact is not unambiguously at the higher level, the lower level (L3) governs. Title 'Sr MTS' is evidence only, not determinative (rule 6), and is disregarded in favor of the described scope.\n\nSource organization calibration: source is a small company (104 employees, under the ~150 threshold), late-stage private, whole-company acquisition, org_depth 4, low platform dependency. The framework's expected drift prior for small companies is that titles map down, often 1-2 levels, due to title inflation and shallow org depth. A 'Sr MTS' (senior title) mapping to L3 is consistent with this prior -- title inflation explains the seniority-sounding title against comparatively narrower demonstrated scope. This strengthens confidence in the L3 result rather than contradicting it. Low platform dependency means no cap adjustment was needed on technical depth/breadth per section 6 rule 3."
+  },
+  "input_tokens": 9658,
+  "output_tokens": 1605
+}

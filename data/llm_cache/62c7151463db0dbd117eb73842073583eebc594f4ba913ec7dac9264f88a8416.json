@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L6",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L6",
+        "evidence": "PLL and clock generation IP reused across three product lines (NX-400, NX-500, NX-600) spanning 6 tapeouts; phase-noise budget methodology adopted company-wide, indicating decisions shape multiple product generations across the business unit"
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L6",
+        "evidence": "Final sign-off authority on PLL closure for every tapeout in the set, implying accountability for outcomes without oversight and setting direction for the domain"
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L5",
+        "evidence": "Owning phase-noise budget methodology across reused IP requires resolving competing constraints across product lines, but the problem is bounded within analog/PLL domain rather than open-ended strategic framing"
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L5",
+        "evidence": "Deep authority in PLL/clock generation analog design; no evidence of cross-disciplinary breadth beyond analog design or external recognition, so this is deep-but-narrow expertise (rule 3 caps at L5)"
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L6",
+        "evidence": "Owns architecture (PLL/clock IP) reused across a product line's multiple generations (NX-400/500/600) and owns a company-wide methodology, matching 'owns architecture for a product line across generations' and touching enterprise-level methodology ownership"
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L5",
+        "evidence": "Mentors 4 designers and methodology adopted company-wide, but no evidence of influence on business-unit strategy or executive-level credibility -- more consistent with function-level influence and cross-functional alignment"
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.6,
+    "governing_rule": "rule 3: deep-but-narrow technical work caps at L5 absent cross-domain breadth and organizational influence",
+    "alternative_level": "L5",
+    "alternative_reasoning": "If problem complexity, technical depth/breadth, and influence are weighted as strongly as scope of impact and ownership, the role reads as a deep specialist (rule 3: deep-but-narrow caps at L5) -- highly skilled in one discipline (analog PLL design) without demonstrated cross-domain breadth or business-unit/executive-level influence. The mentoring of 4 designers and lack of external recognition (ruling out L7 per rule 4) are consistent with a strong L5 Senior Staff Engineer rather than L6 Principal.",
+    "escalate": false,
+    "escalation_factor": "technical_depth_breadth vs scope_of_impact -- whether the company-wide adoption of the phase-noise methodology and cross-product-line IP reuse constitutes sufficient cross-domain breadth/organizational influence to overcome the deep-but-narrow cap in rule 3",
+    "reasoning": "Scope of impact and ownership scope point clearly to L6 (methodology adopted company-wide, IP reused across three product lines spanning 6 tapeouts, sign-off authority across the whole set). However, technical depth/breadth is narrow -- deep analog/PLL expertise without demonstrated cross-disciplinary breadth -- and influence is limited to mentoring 4 designers and internal methodology adoption, not business-unit strategy or executive-level credibility, so per rule 3 this caps the depth/breadth factor at L5. Scope of impact is the designated tiebreaker per rule 1, and it is unambiguously at L6 (impact across the business unit, decisions shaping multiple product generations), which per rule 2's exception (scope unambiguously at the higher level) governs the final call despite the narrower depth/breadth and influence ratings. This is a close call between L5 and L6."
+  },
+  "input_tokens": 9687,
+  "output_tokens": 1460
+}

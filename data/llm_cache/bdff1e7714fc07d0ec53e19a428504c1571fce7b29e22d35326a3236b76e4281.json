@@ -1,0 +1,8 @@
+{
+  "decision": {
+    "strategy": "phased",
+    "reasoning": "The total day-one cost of 71,388.78 USD is dominated by a single large individual gap: USD-EMP (DD-RTL-L1, US-SJC) alone accounts for 38,579.28 USD of the total, more than half of the population's aggregate cost_gap, versus 11,964.55 USD for INR-EMP and 20,844.96 USD for EUR-EMP. This concentration in one very large individual gap (38,579.28 USD out of 71,388.78 USD) means the cost is not evenly distributed across the three-person population, which favors phasing to manage budget impact rather than absorbing the full amount at once. Applying the standard [0.5, 0.5] schedule splits the total into phase 1: 35,694.39 USD and phase 2: 35,694.39 USD, cutting the immediate budget hit roughly in half while still fully funding the gap within a year."
+  },
+  "input_tokens": 1354,
+  "output_tokens": 346
+}

@@ -1,0 +1,8 @@
+{
+  "decision": {
+    "strategy": "phased",
+    "reasoning": "The total day-one cost is 194,512.40 USD, which is a substantial gap concentrated in only 6 of the 15 employees (the rest show 0.00 cost_gap). Within those 6, the individual gaps are large in absolute terms: NYX-007 at 51,491.89 USD, NYX-013 at 49,361.95 USD, NYX-016 at 40,465.45 USD, NYX-006 at 16,760.66 USD, NYX-012 at 14,982.82 USD, and NYX-001 at 21,449.61 USD. Three of these six gaps individually exceed 40,000 USD, meaning the cost is concentrated in a few very large individual adjustments rather than spread evenly across the population. This concentration, combined with a total that is meaningful relative to a population of just 15 employees, favors phasing to manage budget impact. Applying the standard [0.5, 0.5] schedule from comp_philosophy.md splits the total evenly into phase 1: 97,256.20 USD and phase 2: 97,256.20 USD, softening the immediate budget hit while still resolving the gaps within a year."
+  },
+  "input_tokens": 2254,
+  "output_tokens": 427
+}

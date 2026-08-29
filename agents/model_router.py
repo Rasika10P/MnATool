@@ -17,12 +17,11 @@ scripts/smoke_test_nebius.py and agents/cost_logging.py's PRICING comment carry 
 
 from __future__ import annotations
 
-import os
-
 from langchain_anthropic import ChatAnthropic
-from langchain_openai import ChatOpenAI
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 
 from agents.instrumented_model import InstrumentedModel
+from agents.secrets import get_secret
 
 # Leveling adjudication, pricing judgment, the reviewer agent, crosswalk arbitration, and
 # M&A synthesis all stay on Claude per CLAUDE.md's model routing table.
@@ -34,17 +33,55 @@ _JUDGMENT_MODEL = "claude-sonnet-5"
 _NEBIUS_BASE_URL = "https://api.tokenfactory.nebius.com/v1"
 _VOLUME_MODEL = "Qwen/Qwen3-30B-A3B-Instruct-2507"
 
+# CLAUDE.md's stack table names BAAI/bge-en-icl -- confirmed via a live GET /v1/models call
+# (this session) that it does not exist on the current Token Factory catalog (404). The only
+# embedding model actually live there right now is Qwen/Qwen3-Embedding-8B, confirmed to
+# return exactly the 4096-dim vectors the locked stack's Pinecone index config requires (same
+# "verify against live, not docs" drift this file's chat model name already documents).
+_EMBEDDING_MODEL = "Qwen/Qwen3-Embedding-8B"
+EMBEDDING_DIMENSION = 4096
+
 
 def get_model(tier: str):
     if tier == "judgment":
         return InstrumentedModel(ChatAnthropic(model=_JUDGMENT_MODEL, max_tokens=2048))
     if tier == "volume":
+        # ChatOpenAI (unlike ChatAnthropic) raises OpenAIError at construction time -- not
+        # at the first real call -- when it has no api_key and no OPENAI_API_KEY env var at
+        # all. Demo mode's whole point is running with zero API keys present, and its
+        # cache-only guard (agents.instrumented_model) only intercepts a call at .invoke()
+        # time, after this constructor has already run -- so a placeholder string here (used
+        # only if no real key is configured) keeps construction from crashing before demo
+        # mode ever gets a chance to serve a cache hit or refuse a miss. The placeholder is
+        # never sent anywhere: cache-only mode raises before this client's transport is used
+        # on a miss, and any cache hit never touches the network at all.
         return InstrumentedModel(
             ChatOpenAI(
                 base_url=_NEBIUS_BASE_URL,
-                api_key=os.environ["NEBIUS_API_KEY"],
+                api_key=get_secret("NEBIUS_API_KEY", default="demo-mode-no-key-configured"),
                 model=_VOLUME_MODEL,
                 max_tokens=2048,
             )
         )
     raise ValueError(f"Unknown model tier: {tier!r}")
+
+
+def get_embedding_model() -> InstrumentedModel:
+    """Nebius Qwen3-Embedding-8B, wrapped for the same caching/cost-logging/demo-mode
+    guard as every other model this router returns -- a live query embedding at pricing
+    time must not be a hole in the demo-mode guarantee that no live API call happens
+    without the unlock password (agents.instrumented_model / app.demo_mode).
+
+    check_embedding_ctx_length=False is required, not optional, against this endpoint:
+    LangChain's OpenAIEmbeddings default pre-tokenizes long inputs with tiktoken and sends
+    integer token arrays instead of raw text; Nebius's endpoint rejects that with "Tokenized
+    input is not supported" (confirmed live). Disabling it sends plain strings instead.
+    """
+    return InstrumentedModel(
+        OpenAIEmbeddings(
+            base_url=_NEBIUS_BASE_URL,
+            api_key=get_secret("NEBIUS_API_KEY", default="demo-mode-no-key-configured"),
+            model=_EMBEDDING_MODEL,
+            check_embedding_ctx_length=False,
+        )
+    )

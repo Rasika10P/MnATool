@@ -1,0 +1,10 @@
+{
+  "decision": {
+    "is_offer_defensible": true,
+    "primary_concern": "No Place & Route-specific market benchmark exists (only a generic engineering-L4 proxy) and there are zero internal peers to confirm internal equity, so the modest above-P50 positioning cannot be fully validated against either external discipline-specific data or internal comparators.",
+    "reasoning": "Candidate salary of $195,000 is ~4% above the best-available market P50 (~$187,219) for engineering L4 in US-SJC, aged to 2026-08-01. However, this market figure is a generic engineering-L4 proxy (identical P25/P50/P75/P90 replicated across nine unrelated survey codes - RTL, analog, ASIC, DV, etc.), since no Place & Route-specific survey code exists (job architecture shows survey_code_primary/secondary = null, blend_weight 0.0). retrieve_similar_survey_jobs confirmed no Place & Route survey job exists in the corpus; closest matches are templated RTL Design descriptions, reinforcing that this is a level-based proxy rather than a discipline-specific benchmark. Internal equity check returned zero peers (peer_count=0) in this job/geo, so internal consistency could not be verified at all. The offer is reasonably positioned against the only available (proxy) external data, but confidence is limited by the lack of a discipline-specific market cut and complete absence of internal peer data.",
+    "recommended_next_step": "Proceed with the offer, but flag to comp lead that this job lacks both a discipline-specific survey mapping and any internal peer population in US-SJC; recommend building/confirming a Physical Design-specific market cut and revisiting once internal incumbents exist in this job/geo."
+  },
+  "input_tokens": 7892,
+  "output_tokens": 643
+}

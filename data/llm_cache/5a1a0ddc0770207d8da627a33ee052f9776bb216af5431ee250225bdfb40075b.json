@@ -1,0 +1,10 @@
+{
+  "decision": {
+    "argument_basis": null,
+    "proposed_level": null,
+    "evidence_cited": null,
+    "framework_section": null
+  },
+  "input_tokens": 4892,
+  "output_tokens": 11
+}

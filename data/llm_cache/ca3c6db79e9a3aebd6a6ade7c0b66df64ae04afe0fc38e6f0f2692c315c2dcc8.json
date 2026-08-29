@@ -1,0 +1,20 @@
+{
+  "decision": {
+    "reports_to": {
+      "stated": false,
+      "value": null
+    },
+    "span_of_control": {
+      "stated": true,
+      "value": "Individual contributor, no direct reports"
+    },
+    "budget_authority": {
+      "stated": false,
+      "value": null
+    },
+    "decision_scope": "Scope limited to a single sub-block owned start to finish",
+    "ownership_scope": "Owned start to finish: CDC synchronizer and register-map RTL under supervision, carrying it through 1 tapeout (NX-100 A0)"
+  },
+  "input_tokens": 508,
+  "output_tokens": 129
+}

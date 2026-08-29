@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L5",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L6",
+        "evidence": "CTS and skew-budgeting methodology is the mandatory sign-off gate for CTS closure across every NX-400 and NX-500 physical design handoff -- company-wide impact across product lines"
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L5",
+        "evidence": "Owns and evolved the methodology from personal scripts into a mandatory company-wide gate, implying self-directed identification of what needed building, but no evidence of setting broader domain direction beyond this area"
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L5",
+        "evidence": "Skew-budgeting and CTS closure across multiple product lines involves competing constraints (timing, power, variability) but is confined to a single methodology domain rather than open-ended strategic framing"
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L5",
+        "evidence": "Has never worked outside this one methodology area -- deep authority in CTS/skew-budgeting but explicitly no cross-domain breadth; per rule 3 this caps at L5 regardless of scope"
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L5",
+        "evidence": "Owns a methodology used as the sign-off gate across two product lines (NX-400, NX-500) -- a major cross-product subsystem-level process, short of full architecture ownership across generations"
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L5",
+        "evidence": "Methodology is mandated company-wide for CTS sign-off, driving cross-functional alignment across physical design teams, but no evidence of influencing business-unit strategy or executive-level decisions"
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.6,
+    "governing_rule": "rule 3: deep-but-narrow technical work caps at L5 despite broad scope of impact",
+    "alternative_level": "L6",
+    "alternative_reasoning": "If scope of impact were treated as unambiguously overriding (rule 2's exception), the company-wide mandatory sign-off gate across two full product lines could argue for L6. This was not chosen because rule 3 explicitly forecloses L6 for deep-but-narrow work lacking cross-domain breadth and organizational (BU/executive) influence, both of which are missing here.",
+    "escalate": false,
+    "escalation_factor": "technical_depth_breadth vs scope_of_impact -- specifically whether the company-wide mandatory-gate status constitutes the kind of cross-team organizational influence that could exempt this from rule 3's narrow-scope cap",
+    "reasoning": "Scope of impact alone (mandatory company-wide sign-off gate across two product lines) points to L6, which would normally act as tiebreaker per rule 1. However, the role is explicitly deep-but-narrow: 'has never worked outside this one methodology area' with 'no patents or external publications.' Rule 3 is unambiguous that deep-but-narrow technical work without cross-domain breadth and organizational influence cannot reach L6 regardless of how broad the scope of that narrow work has become. Technical depth/breadth and influence factors both land at L5 (single-discipline authority, cross-functional but not executive/BU-level influence), so the role is capped at L5. This also fails the L7 bar (rule 4) since there is no external recognition -- no patents, no publications, despite the internal reputation implied by being a mandatory sign-off gate. Title 'Principal MTS' is evidence only, not the level itself (rule 6); scope described does not support treating this as a manager-track role since no direct reports are mentioned, so IC track applies.\n\nSource org calibration: source is a small company (104 employees, under the ~150 threshold), so the expected drift prior is that titles map down 1-2 levels. My assigned L5 (against a 'Principal' title, which at Meridian would nominally sit at L6) is consistent with that prior -- title inflation at a small company mapping down. Org_depth of 4 is also consistent with an L5 IC (not a senior manager band) existing in that structure. Platform_dependency is low, so no cap is applied to technical depth beyond what rule 3 already dictates. This result is consistent with the calibration prior, which supports confidence, but I'm setting confidence at 0.6 given the genuine tension between scope-of-impact evidence (pointing to L6) and the narrow-technical-depth cap (rule 3) -- a close call."
+  },
+  "input_tokens": 9675,
+  "output_tokens": 1653
+}

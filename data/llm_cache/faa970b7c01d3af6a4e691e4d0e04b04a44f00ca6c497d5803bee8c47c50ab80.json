@@ -1,0 +1,10 @@
+{
+  "decision": {
+    "argument_basis": "scope evidence not reflected in the mapping",
+    "proposed_level": "L4",
+    "evidence_cited": "The role summary describes end-to-end, unsupervised ownership of a full analog block (bandgap reference and LDO regulator) through a complete tapeout with first-pass silicon success, explicitly framed as individual contributor scope with the block \"owned end to end.\" Nyx's own anchor for MTS I (section 4) describes work \"within an established area under a more senior engineer's direction,\" contributing \"a defined piece of a larger block rather than owning one outright,\" with \"supervised sign-off.\" That does not match the described scope at all -- there is no mention of supervision or partial ownership. The described scope instead matches Nyx's own MTS II anchor: \"Owns a component or sub-block independently, start to finish... Full, unsupervised ownership of at least one tapeout-scale piece of work, still within a single area.\" The current MTS I level appears to be a title/record artifact (section 3 warns titles are not self-executing) rather than a re-read of the actual scope, and Meridian's proposed L3 mapping seems to have carried that MTS I label forward without accounting for the unsupervised, full-block ownership described in the summary.",
+    "framework_section": "Section 4 (Level anchors: MTS I vs. MTS II) and Section 3 (Leveling principle -- title is not self-executing)"
+  },
+  "input_tokens": 4851,
+  "output_tokens": 528
+}

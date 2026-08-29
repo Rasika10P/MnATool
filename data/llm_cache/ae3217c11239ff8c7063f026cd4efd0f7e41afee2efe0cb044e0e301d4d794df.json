@@ -1,0 +1,8 @@
+{
+  "decision": {
+    "strategy": "day_one",
+    "reasoning": "The total day-one cost is only 21,449.61 USD, and it comes entirely from a single employee (NYX-001, cost_gap 21,449.61 USD); the other two employees (NYX-002, NYX-003) have cost_gap 0.00 in their local currencies (0.00 USD each). This is a small total concentrated in one modest individual adjustment rather than a large or widely-distributed cost across the population. Phasing it as 10,724.81 now and 10,724.81 at the one-year mark would only create a second funding event to administer for a total that doesn't strain the budget. Given the small size (21,449.61 USD) and lack of any large concentrated gaps needing budget smoothing, day_one is the appropriate strategy."
+  },
+  "input_tokens": 1343,
+  "output_tokens": 297
+}

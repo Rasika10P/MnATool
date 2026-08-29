@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L5",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L5",
+        "evidence": "Owns the overall optical link architecture for the co-packaged optics program; impact spans the photonics group's entire technical output, though the description does not show impact across multiple product generations or the wider business unit."
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L6",
+        "evidence": "Has final say on every design tradeoff the group makes -- accountable for outcomes without oversight (short of the founder)."
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L5",
+        "evidence": "Owning end-to-end optical link architecture for a co-packaged optics program involves competing constraints across optical, electrical and packaging domains, but no evidence the problem framing itself is open-ended/strategic beyond this program."
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L5",
+        "evidence": "Most senior technical contributor in the group after the founder, described as authority within photonics; no evidence of cross-disciplinary authority beyond photonics or company-wide sought-out status, and no external recognition (publications, patents, standards) is mentioned."
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L5",
+        "evidence": "Owns the overall optical link architecture (a major subsystem) for the co-packaged optics program -- matches 'owns a major subsystem or a full derivative product.'"
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L4",
+        "evidence": "Two junior photonics engineers route technical questions through her -- influence is limited to a small immediate team, not yet function-level or cross-functional alignment as described."
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.58,
+    "governing_rule": "rule 2: lower level governs a split (scope of impact not unambiguously at the higher level)",
+    "alternative_level": "L6",
+    "alternative_reasoning": "Autonomy ('final say on every design tradeoff the group makes') and the title 'Principal MTS' with 'most senior after the founder' could support L6 (Principal Engineer), and if scope of impact were read as spanning the full co-packaged optics program at business-unit scale, rule 2's exception (scope of impact unambiguously higher) would apply. This was not chosen because influence is explicitly limited to two junior engineers with no evidence of cross-functional or executive influence, and rule 3 caps deep-but-narrow technical work without organizational influence and cross-domain breadth at L5. The small source org size also supports a downward title-mapping prior rather than confirming L6-scale business-unit impact.",
+    "escalate": false,
+    "escalation_factor": "influence and scope_of_impact -- specifically, whether the co-packaged optics program itself constitutes business-unit-level scope (favoring L6) or is a single program within a small photonics group with narrow reporting influence (favoring L5)",
+    "reasoning": "Factors cluster mostly at L5 (scope, problem complexity, ownership, technical depth), with autonomy pointing to L6 and influence pointing to L4. Scope of impact -- the primary tiebreaker per rule 1 -- lands at L5: she owns a major subsystem/program architecture but there's no evidence of impact across the business unit or across multiple product generations, and the group itself is small (two junior reports plus a founder), suggesting this is not yet business-unit-scale impact. Rule 3 also caps deep-but-narrow technical work at L5 when cross-domain breadth and broader organizational influence are not demonstrated -- influence here is confined to two junior engineers, not adjacent teams or executives, so L6 cannot be supported even though autonomy alone would suggest it. Rule 2 says when factors split across adjacent levels, take the lower unless scope of impact is unambiguously higher -- here scope of impact itself only supports L5, not L6, so L5 governs. Title 'Principal' (typically L6) is evidence only, not the level itself (rule 6); the described scope does not clear L6's bar for business-unit-wide impact and broader influence.\n\nSource organization calibration: source is a peer-ish-to-small (104 employees, late-stage private, whole company, low platform dependency, org_depth 4). Expected drift for a company under ~150 is that titles map down 1-2 levels due to title inflation and shallow org depth (4 levels IC-to-CEO is consistent with a flat, small org). Landing at L5 (below the 'Principal Engineer' L6 anchor) is consistent with this prior -- title inflation explains the 'Principal' label while actual scope evidence supports L5. This raises confidence somewhat, but the case remains close because autonomy strongly suggests L6 while influence and org size push toward L5."
+  },
+  "input_tokens": 9644,
+  "output_tokens": 1736
+}

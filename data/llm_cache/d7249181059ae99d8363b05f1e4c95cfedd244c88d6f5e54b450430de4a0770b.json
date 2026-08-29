@@ -1,0 +1,20 @@
+{
+  "decision": {
+    "reports_to": {
+      "stated": false,
+      "value": null
+    },
+    "span_of_control": {
+      "stated": false,
+      "value": null
+    },
+    "budget_authority": {
+      "stated": false,
+      "value": null
+    },
+    "decision_scope": "Strong contributor to the microarchitecture team, has been involved in cache coherence modeling discussions for the current core project.",
+    "ownership_scope": "Strong contributor to the microarchitecture team, has been involved in cache coherence modeling discussions for the current core project."
+  },
+  "input_tokens": 313,
+  "output_tokens": 125
+}

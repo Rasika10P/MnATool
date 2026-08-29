@@ -1,0 +1,20 @@
+{
+  "decision": {
+    "reports_to": {
+      "stated": false,
+      "value": null
+    },
+    "span_of_control": {
+      "stated": true,
+      "value": "Coordinating with two other RF engineers"
+    },
+    "budget_authority": {
+      "stated": false,
+      "value": null
+    },
+    "decision_scope": "Leading RF front-end design for the NX-600 PHY, a single product's RF subsystem",
+    "ownership_scope": "Leading RF front-end design for the NX-600 PHY, a single product's RF subsystem"
+  },
+  "input_tokens": 501,
+  "output_tokens": 130
+}

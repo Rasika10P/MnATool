@@ -1,0 +1,10 @@
+{
+  "decision": {
+    "argument_basis": "scope evidence not reflected in the mapping",
+    "proposed_level": "L6",
+    "evidence_cited": "The role summary describes a methodology (clock-tree synthesis and skew-budgeting) that is the mandatory sign-off gate for CTS closure across every NX-400 and NX-500 handoff \u2014 i.e., cross-tapeout, cross-product-line technical ownership where the person's methodology sets the pattern other engineers build on. This matches the Principal MTS anchor's core indicator almost exactly: \"a methodology, an IP block reused across product lines... Cross-tapeout, cross-team technical ownership.\" Nyx's own leveling principle (Section 3) states that organizational reach is read as a consequence of technical depth, and that \"a person who has gone deep enough in one area to become the company's last word on it belongs at the top of the ladder for that reason alone, whether or not their work has ever crossed into a second discipline\" \u2014 explicitly rejecting the idea that single-area focus caps someone below the top band. Here, the employee is described as the mandatory, company-wide sign-off gate for this domain across multiple product lines, which reads closer to the Distinguished MTS anchor (\"company-wide authority on a technical domain,\" \"final technical sign-off authority within the domain,\" \"decisions shape how Nyx builds silicon for years\") than to Principal MTS, which is framed as authority within a defined technical area that others build on rather than final, mandatory, company-wide sign-off authority itself. The absence of patents or external recognition is not disqualifying under Nyx's own document: Section 6 states the Fellow honorific requires external recognition, but Distinguished MTS itself only 'often, but not always' pairs with outside recognition \u2014 it is not a requirement of the level anchor in Section 4.</evidence_cited>\n</invoke>\n",
+    "framework_section": "Section 4 (Level anchors \u2014 Principal MTS) and Section 3 (Leveling principle)"
+  },
+  "input_tokens": 4887,
+  "output_tokens": 701
+}

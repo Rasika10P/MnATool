@@ -1,0 +1,20 @@
+{
+  "decision": {
+    "reports_to": {
+      "stated": false,
+      "value": null
+    },
+    "span_of_control": {
+      "stated": false,
+      "value": null
+    },
+    "budget_authority": {
+      "stated": false,
+      "value": null
+    },
+    "decision_scope": "Pioneering work on high-speed SerDes equalization, leading design of an adaptive DFE architecture, and serving as Nyx's go-to authority on link-budget modeling for every high-speed interface program company-wide.",
+    "ownership_scope": "High-speed SerDes equalization, adaptive DFE architecture, equalizer architecture (3 patents), and link-budget modeling for all high-speed interface programs company-wide."
+  },
+  "input_tokens": 369,
+  "output_tokens": 156
+}

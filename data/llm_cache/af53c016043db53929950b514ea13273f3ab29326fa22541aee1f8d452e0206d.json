@@ -1,0 +1,8 @@
+{
+  "decision": {
+    "critical_employee_ids": [],
+    "reasoning": "NYX-013 is an L3 analog designer at the individual-contributor/early-career level. While the role summary notes they are \"strong\" and have begun picking up additional responsibility (some layout review on the PMIC team), this describes normal growth into a slightly broader IC role, not company-wide technical authority, unique irreplaceable expertise, team leadership, or critical-path ownership of a program. There's no indication of singular institutional knowledge, management scope, or that their departure would create a major organizational gap beyond the typical cost of replacing a competent L3 engineer. Given the level (L3) and scope described (contributor with incremental added responsibility, not owning a domain or leading a team), this does not meet the bar for genuine criticality despite the significant compa-ratio gap (0.77) and retention award/equity at risk. Compensation compression alone (already reflected in inclusion on the underwater list) is not sufficient grounds to flag as critical without evidence of outsized role scope or seniority impact."
+  },
+  "input_tokens": 1160,
+  "output_tokens": 384
+}

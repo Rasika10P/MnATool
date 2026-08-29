@@ -14,10 +14,13 @@ import agents.cost_logging as cost_logging
 from agents.cost_logging import get_session_stats
 from agents.instrumented_model import (
     MAX_ATTEMPTS,
+    DemoModeCacheMissError,
     InstrumentedModel,
     StructuredOutputError,
     _cache_key_parts,
     _detect_provider,
+    is_cache_only,
+    set_cache_only,
     would_hit_cache,
 )
 from agents.schemas import FactorRating, LevelingDecision, SourceOrgContext
@@ -282,3 +285,148 @@ def test_other_attributes_fall_through_to_wrapped_model():
     wrapped = InstrumentedModel(fake)
     assert wrapped.model == "itest-7"
     assert wrapped.max_tokens == 2048
+
+
+def test_cache_only_is_off_by_default():
+    # conftest.py's autouse fixture already resets this before every test, but the claim
+    # itself -- existing scripts/agents/tests are unaffected unless something opts in -- is
+    # worth asserting directly, not just relying on every other test passing to imply it.
+    assert is_cache_only() is False
+
+
+def test_demo_mode_blocks_a_cache_miss_without_calling_the_model():
+    fake = FakeModel(_decision(), model_name="itest-demo-1")
+    structured = InstrumentedModel(fake).with_structured_output(LevelingDecision)
+
+    set_cache_only(True)
+    try:
+        with pytest.raises(DemoModeCacheMissError):
+            structured.invoke(MESSAGES)
+    finally:
+        set_cache_only(False)
+
+    assert fake.raw_structured_model.call_count == 0, "demo mode must never reach the real model on a cache miss"
+
+
+def test_demo_mode_still_serves_a_warm_cache_hit():
+    fake = FakeModel(_decision(), model_name="itest-demo-2")
+    structured = InstrumentedModel(fake).with_structured_output(LevelingDecision)
+
+    structured.invoke(MESSAGES)  # warms the cache while cache-only is off
+    set_cache_only(True)
+    try:
+        result = structured.invoke(MESSAGES)
+    finally:
+        set_cache_only(False)
+
+    assert result.model_dump() == _decision().model_dump()
+    assert fake.raw_structured_model.call_count == 1, "the second call should be the cache hit, not a second real call"
+
+
+class _RawToolCallingFake:
+    """A raw (unwrapped) fake with just enough surface for InstrumentedModel.bind_tools to
+    wrap it: .model/.max_tokens (read directly) and .bind_tools(tools) -> something with
+    .invoke(messages) returning an AIMessage-shaped response. tests.fakes.FakeBoundTools/
+    FakeAIMessage already have exactly that shape (built for agents/pricing_agent.py's own
+    tests, which fake at the InstrumentedModel boundary rather than below it) -- reused here
+    one layer lower, to test _InstrumentedToolCallingRunnable itself."""
+
+    def __init__(self, responses):
+        self.model = "itest-tool-calling"
+        self.max_tokens = 2048
+        self._responses = responses
+
+    def bind_tools(self, tools):
+        from tests.fakes import FakeBoundTools
+
+        return FakeBoundTools(self._responses)
+
+
+def test_demo_mode_blocks_a_tool_calling_cache_miss_without_calling_the_model():
+    from tests.fakes import FakeAIMessage
+
+    raw = _RawToolCallingFake([FakeAIMessage(content="done")])
+    bound = InstrumentedModel(raw).bind_tools([], context="itest-tool-demo-1")
+
+    set_cache_only(True)
+    try:
+        with pytest.raises(DemoModeCacheMissError):
+            bound.invoke(MESSAGES)
+    finally:
+        set_cache_only(False)
+
+
+def test_demo_mode_still_serves_a_warm_tool_calling_cache_hit():
+    from tests.fakes import FakeAIMessage
+
+    raw = _RawToolCallingFake([FakeAIMessage(content="done")])
+    bound = InstrumentedModel(raw).bind_tools([], context="itest-tool-demo-2")
+
+    bound.invoke(MESSAGES)  # warms the cache while cache-only is off
+    set_cache_only(True)
+    try:
+        result = bound.invoke(MESSAGES)
+    finally:
+        set_cache_only(False)
+
+    assert result.content == "done"
+
+
+class _RawEmbeddingsFake:
+    """Minimal double for OpenAIEmbeddings: .model (read directly) and .embed_documents(texts)
+    -> list[list[float]]. call_count lets a test confirm a cache hit skipped the real call."""
+
+    def __init__(self, vectors_by_text: dict):
+        self.model = "itest-embed-model"
+        self._vectors_by_text = vectors_by_text
+        self.call_count = 0
+
+    def embed_documents(self, texts):
+        self.call_count += 1
+        return [self._vectors_by_text[t] for t in texts]
+
+
+def test_embed_documents_hits_cache_not_the_model():
+    raw = _RawEmbeddingsFake({"a": [0.1, 0.2], "b": [0.3, 0.4]})
+    wrapped = InstrumentedModel(raw)
+
+    first = wrapped.embed_documents(["a", "b"])
+    second = wrapped.embed_documents(["a", "b"])
+
+    assert raw.call_count == 1, "second call should have been served from cache"
+    assert first == second == [[0.1, 0.2], [0.3, 0.4]]
+
+
+def test_embed_query_is_embed_documents_of_one():
+    raw = _RawEmbeddingsFake({"solo": [1.0, 2.0, 3.0]})
+    wrapped = InstrumentedModel(raw)
+    assert wrapped.embed_query("solo") == [1.0, 2.0, 3.0]
+
+
+def test_demo_mode_blocks_an_embedding_cache_miss_without_calling_the_model():
+    raw = _RawEmbeddingsFake({"never cached": [0.0]})
+    wrapped = InstrumentedModel(raw)
+
+    set_cache_only(True)
+    try:
+        with pytest.raises(DemoModeCacheMissError):
+            wrapped.embed_documents(["never cached"])
+    finally:
+        set_cache_only(False)
+
+    assert raw.call_count == 0, "demo mode must never reach the real embeddings client on a miss"
+
+
+def test_demo_mode_still_serves_a_warm_embedding_cache_hit():
+    raw = _RawEmbeddingsFake({"warm": [9.0, 9.0]})
+    wrapped = InstrumentedModel(raw)
+
+    wrapped.embed_documents(["warm"])  # warms the cache while cache-only is off
+    set_cache_only(True)
+    try:
+        result = wrapped.embed_documents(["warm"])
+    finally:
+        set_cache_only(False)
+
+    assert result == [[9.0, 9.0]]
+    assert raw.call_count == 1

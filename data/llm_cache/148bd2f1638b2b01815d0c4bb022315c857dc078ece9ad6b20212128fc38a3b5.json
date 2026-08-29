@@ -1,0 +1,10 @@
+{
+  "decision": {
+    "is_offer_defensible": true,
+    "primary_concern": "No internal incumbents exist yet in this exact job/geo combination, so there is no internal equity data to confirm this offer won't create a future compression or fairness issue as peers are hired at this level.",
+    "reasoning": "Exact market slice was found (SYN-044-DD-UARCH-L5, US-SJC, 18 incumbents), aged P50 \u2248 $217,174 with P25 \u2248 $181,904 and P75 \u2248 $255,532. The $210,000 offer sits at ~97% of P50, well within the P25-P75 band, so it is well supported externally. Internal equity check returned zero peers in this job/geo, meaning there is no incumbent population yet to create an internal misalignment risk, but also no internal data to confirm relative fairness -- this is a data gap rather than a red flag. No currency conversion was needed (USD to USD). No formal range structure (min/mid/max) was available to compute a compa-ratio, but the market-percentile positioning alone is sufficient to call this defensible.",
+    "recommended_next_step": "proceed"
+  },
+  "input_tokens": 4953,
+  "output_tokens": 437
+}

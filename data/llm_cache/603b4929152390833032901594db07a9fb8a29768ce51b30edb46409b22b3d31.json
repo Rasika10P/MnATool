@@ -1,0 +1,53 @@
+{
+  "decision": {
+    "track": "MGR",
+    "assigned_level": "M3",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "M3",
+        "evidence": "Manages a single 7-person microarchitecture team responsible for the NX-500/NX-600 core roadmap; impact is contained to this team's deliverables within the digital design function, not across the function or business unit."
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "M4",
+        "evidence": "Holds final sign-off authority on performance model gates before RTL freeze, indicating accountability without upward review on this specific decision point."
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "M3",
+        "evidence": "Problems are scoped to delivering a defined core roadmap through known microarchitecture development stages (tapeouts); no evidence of cross-domain or strategic, open-ended problem framing."
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "M3",
+        "evidence": "Delegated hands-on modeling work to the team two tapeouts ago; role is now management-focused on one discipline (microarchitecture) without described breadth across adjacent disciplines."
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "M4",
+        "evidence": "Owns a subsystem (core microarchitecture) across a full development cycle spanning two product generations (NX-500/NX-600), per 5a anchor for L4/M3-M4 boundary."
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "M3",
+        "evidence": "No evidence of influence beyond the immediate team and its direct deliverables -- no mention of influencing adjacent teams, function-level decisions, or executives."
+      },
+      {
+        "factor": "span_and_budget",
+        "level_indicated": "M3",
+        "evidence": "7 direct reports (within the 4-10 IC-report band for M3), hire/fire authority, and a discretionary tooling budget of ~$150K/year -- consistent with M3's 'no budget authority beyond requisitions' ceiling, well below M4's program-budget scale."
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.68,
+    "governing_rule": "rule 2: lower level governs a split (scope of impact not unambiguously at the higher level)",
+    "alternative_level": "M4",
+    "alternative_reasoning": "Final sign-off authority on a critical gate (performance model gates before RTL freeze) and ownership spanning two product generations (NX-500/NX-600) could argue for M4-level autonomy and ownership scope. However, span (7 reports), budget (~$150K discretionary, not a program budget), and scope of impact (single team, single roadmap) do not corroborate M4, and rule 2 requires the lower level to govern absent unambiguous higher scope of impact.",
+    "escalate": false,
+    "escalation_factor": "ownership_scope -- whether NX-500/NX-600 constitutes a single subsystem across one cycle (M3) or a major roadmap spanning generations (M4) would settle the close call between M3 and M4",
+    "reasoning": "Scope of impact and span/budget both cleanly indicate M3: a single 7-person team owning one core roadmap, with a modest discretionary budget well under M4's program-budget threshold. Sign-off authority and multi-generation ownership push toward M4, but these are single corroborating data points rather than evidence of scope crossing into multiple teams or the function broadly -- title 'Principal MTS' is evidence only, not the level itself, per rule 6. Under rule 2, where the role splits across M3/M4, the lower level governs since scope of impact is not unambiguously at the higher level. Source org context (104 employees, late-stage private, org_depth 4, low platform dependency) sets a prior of titles mapping down 1-2 levels for small companies; an M3 result is consistent with that prior and raises confidence somewhat, though the sign-off authority and multi-tapeout ownership keep this a close call."
+  },
+  "input_tokens": 9679,
+  "output_tokens": 1444
+}

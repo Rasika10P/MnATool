@@ -1,0 +1,20 @@
+{
+  "decision": {
+    "reports_to": {
+      "stated": true,
+      "value": "No explicit reporting structure mentioned"
+    },
+    "span_of_control": {
+      "stated": true,
+      "value": "No direct reports mentioned"
+    },
+    "budget_authority": {
+      "stated": true,
+      "value": "No budget authority beyond headcount requisitions mentioned"
+    },
+    "decision_scope": "Coordinates with two other engineers on integration but hasn't yet had a tapeout where the block was entirely his own from spec through sign-off",
+    "ownership_scope": "Primary responsibility for the descriptor-fetch pipeline this generation"
+  },
+  "input_tokens": 342,
+  "output_tokens": 137
+}

@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L3",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L3",
+        "evidence": "Work is 'ordinary core-team microarchitecture spec work' on the current NX-500 generation, shared with two peers doing comparable scope -- impact contained to the core team's workstream, not the function or business unit."
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L3",
+        "evidence": "Described as ordinary day-to-day spec work on an existing generation shared with peers, consistent with working independently on defined problems within a team rather than setting approach on ambiguous, function-wide problems."
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L3",
+        "evidence": "Spec work on the current generation of an established product line implies defined problems requiring judgment among known microarchitecture approaches, not open-ended or cross-domain problems."
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L3",
+        "evidence": "Role is scoped to core-team microarchitecture spec work with no indication of cross-disciplinary breadth or being sought out beyond the immediate team."
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L3",
+        "evidence": "Shares comparable scope with two Senior MTS-level peers on a single generation's spec work -- consistent with owning a block/module end to end, not a subsystem across a full development cycle independently."
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L3",
+        "evidence": "No evidence of influence beyond the immediate core team; work is comparable in scope to peers at a lower internal title, suggesting peer-level influence through demonstrated work only."
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.68,
+    "governing_rule": "rule 6: title in the source document is evidence, not input -- level from described scope, never from the title",
+    "alternative_level": "L4",
+    "alternative_reasoning": "If 'core-team microarchitecture spec work' is read as owning a defined subsystem-level spec across the NX-500 generation's full development cycle (rather than a single block/module), the ownership_scope and scope_of_impact factors could indicate L4 (subsystem ownership, impact across the function). This was not chosen because the JD frames the work as 'ordinary' and explicitly comparable to two peers at a titled level below Principal, suggesting the scope is more contained than a full subsystem owned independently -- and rule 2 directs taking the lower of two adjacent levels absent unambiguous higher-level scope of impact.",
+    "escalate": false,
+    "escalation_factor": "scope_of_impact -- specifically whether 'core-team microarchitecture spec work' constitutes ownership of a defined block/component (L3) versus a subsystem across a full development cycle (L4); resolving the precise boundary of what the shared workstream actually covers would settle this call",
+    "reasoning": "The 'Principal MTS' title was acquired via reorg rather than reflecting a scope change, and the JD explicitly states the day-to-day work is ordinary core-team microarchitecture spec work shared with two peers at the Senior MTS level doing comparable scope. Per rule 6, we level on described scope, not title. All factors point to work contained within the core team on the current product generation -- consistent with owning a block/module end to end (5a: L3), working independently on defined problems with outcomes reviewed (L3 autonomy), and influencing only through demonstrated work among peers (L3 influence). There is no evidence of subsystem-level ownership across a full development cycle, ambiguous problem construction, or cross-team influence that would justify L4, let alone a Principal-equivalent level (L6). Because the described scope is explicitly equated to peers carrying a lower internal title (Senior MTS, which given source_headcount of 104 and org_depth of 4 likely maps in the mid-band of that company's own ladder), and because the source is a small (<150) whole-company acquisition where title inflation is the expected drift pattern per section 6, this reinforces a lower placement than the title suggests. The result maps this role to L3, consistent with the section 6 prior that small-company titles tend to map down 1-2 levels -- here title 'Principal' mapping down to L3 is within that expected range assuming the internal Meridian-equivalent of 'Senior MTS' would land around L3/L4. This is a genuinely close call between L3 and L4 given the ambiguity of 'core-team' scope description, so confidence is moderate."
+  },
+  "input_tokens": 9646,
+  "output_tokens": 1651
+}

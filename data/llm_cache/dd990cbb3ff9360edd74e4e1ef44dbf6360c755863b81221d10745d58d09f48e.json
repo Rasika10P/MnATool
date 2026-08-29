@@ -1,0 +1,20 @@
+{
+  "decision": {
+    "reports_to": {
+      "stated": false,
+      "value": null
+    },
+    "span_of_control": {
+      "stated": false,
+      "value": null
+    },
+    "budget_authority": {
+      "stated": false,
+      "value": null
+    },
+    "decision_scope": "Personally unblocked sign-off on 6 of the last 8 difficult closure escalations company-wide; regarded across the company as the person to bring in when a tapeout's analog closure is stuck.",
+    "ownership_scope": "Responsible for resolving complex analog closure issues during tapeout; owns resolution of difficult analog design closure escalations at the company-wide level."
+  },
+  "input_tokens": 367,
+  "output_tokens": 149
+}

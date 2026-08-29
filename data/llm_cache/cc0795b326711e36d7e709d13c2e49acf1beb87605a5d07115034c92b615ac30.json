@@ -1,0 +1,20 @@
+{
+  "decision": {
+    "reports_to": {
+      "stated": false,
+      "value": null
+    },
+    "span_of_control": {
+      "stated": false,
+      "value": null
+    },
+    "budget_authority": {
+      "stated": false,
+      "value": null
+    },
+    "decision_scope": "Valued contributor to the RF design team.",
+    "ownership_scope": "Valued contributor to the RF design team."
+  },
+  "input_tokens": 449,
+  "output_tokens": 98
+}

@@ -1,0 +1,20 @@
+{
+  "decision": {
+    "reports_to": {
+      "stated": false,
+      "value": null
+    },
+    "span_of_control": {
+      "stated": true,
+      "value": "Directly mentors 4 analog designers"
+    },
+    "budget_authority": {
+      "stated": false,
+      "value": null
+    },
+    "decision_scope": "Holds final sign-off authority on PLL closure for every tapeout in that set",
+    "ownership_scope": "Principal analog architect for all PLL and clock generation IP reused across the NX-400, NX-500 and NX-600 product lines (6 tapeouts total), owning the phase-noise budget methodology adopted company-wide"
+  },
+  "input_tokens": 514,
+  "output_tokens": 153
+}

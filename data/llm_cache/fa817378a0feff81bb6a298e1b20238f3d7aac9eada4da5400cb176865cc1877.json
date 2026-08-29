@@ -1,0 +1,10 @@
+{
+  "decision": {
+    "verdict": "upheld",
+    "governing_rule": "rule 2: lower level governs a split",
+    "final_level": "L3",
+    "reasoning": "The advocate's evidence -- full ownership of the branch predictor sizing model feeding a real tapeout decision, with \"light-touch\" review -- is already reflected in the original mapping's scope_of_impact and ownership_scope ratings, both correctly placed at L3 under factor variant 5a (owns a block/module end to end). This does not clear the L4 anchor for ownership (owning a subsystem across a full development cycle) or for autonomy (setting one's own approach on ambiguous problems, being consulted rather than directed). Reduced review cadence is evidence of competence within an established scope, not evidence of the role setting its own approach on ambiguous problems -- the framework's autonomy anchor for L4 requires the latter, not merely lighter oversight. The advocate's citation to Nyx's own MTS I/II anchors is admissible only as evidence about described scope, not as a second framework; translated into this framework's anchors, \"full unsupervised ownership of a component\" maps most naturally to this framework's L3 anchor (owns a block/module end to end, outcomes reviewed but approach not dictated), not to L4's subsystem-level ownership and ambiguous-problem autonomy. With scope of impact -- the primary tiebreaker under rule 1 -- and ownership scope both clustering at L3, and influence rating lower at L2, rule 2 directs that the lower level (L3) governs since no factor is unambiguously at L4. The advocate has not identified scope evidence omitted from the original mapping; it has re-argued evidence already weighed. The original mapping stands."
+  },
+  "input_tokens": 10399,
+  "output_tokens": 633
+}

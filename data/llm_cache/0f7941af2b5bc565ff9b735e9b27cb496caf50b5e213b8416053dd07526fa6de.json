@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L3",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L3",
+        "evidence": "Built and owns the branch predictor sizing model for the NX-500 core, which directly set BTB capacity used in the final tapeout -- impact felt across the team/component, not yet across the function."
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L3",
+        "evidence": "Review from senior architects was 'light-touch' this cycle -- outcomes reviewed, but the role is not described as setting its own approach on ambiguous problems without consultation."
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L3",
+        "evidence": "Sizing model work is a defined problem requiring judgment among known modeling approaches; no indication of constructing novel solution paths across ambiguous domains."
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L3",
+        "evidence": "Demonstrates proficiency in microarchitecture modeling delivered reliably without close support this cycle, but no evidence of credibility in adjacent disciplines."
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L3",
+        "evidence": "Owns a block/module (branch predictor sizing model) end to end, feeding into the NX-500 tapeout -- matches L3 anchor of owning a block or module end to end, not yet a full subsystem across a full development cycle."
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L2",
+        "evidence": "No evidence of influencing peers beyond the immediate review cycle; work is internal to the team with senior architects reviewing rather than being persuaded."
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.62,
+    "governing_rule": "rule 2: lower level governs a split",
+    "alternative_level": "L4",
+    "alternative_reasoning": "One could argue the BTB capacity decision directly shaping the final tapeout constitutes function-wide impact (L4 scope), and that reduced senior-architect oversight signals L4 autonomy (consulted rather than directed). However, the description does not establish that the individual set their own approach on an ambiguous problem, nor that impact extended across the function -- it stayed within a single core's design ownership of one model/block. Per rule 2, absent unambiguous higher-level scope, the lower level (L3) governs.",
+    "escalate": false,
+    "escalation_factor": "autonomy",
+    "reasoning": "Scope of impact, autonomy, problem complexity, technical depth, and ownership scope all cluster at L3 -- the individual owns a defined block (branch predictor sizing model) end-to-end, feeding a real tapeout decision (BTB capacity), with outcomes reviewed but not approach dictated. Influence sits closer to L2 since there's no evidence of influencing peers or adjacent teams beyond passing review. Since factors split between L2 and L3 and scope of impact (the primary tiebreaker per rule 1) sits at L3, and no factor is unambiguously at a higher level to justify rounding up further, L3 (Senior Engineer) governs. Note: the job title 'MTS I' is from the source company's own ladder and is not used as the level itself per rule 6; the lighter review tone reflects reduced oversight but does not by itself establish L4 autonomy (setting own approach on ambiguous problems, being consulted rather than directed). The mention of 'first full year on team' was disregarded as tenure/experience per the non-negotiable rule that experience is not a factor.\n\nSource organization calibration: source is a peer-ish small/late-stage private company (headcount 104, org_depth 4, low platform dependency), which falls under the 'small company, under ~150 people' archetype where titles often map down 1-2 levels due to title inflation and shallow org depth. An MTS I title mapping to L3 (Senior Engineer) rather than a more junior level is a modest but plausible drift, consistent with the low end of that prior's expected range. Low platform dependency means no cap applied to technical depth/breadth factor. This result is broadly consistent with the prior (title inflation expected), which supports moderate-to-reasonable confidence, though the closeness between L2 and L3 factors (specifically influence) keeps confidence from being high."
+  },
+  "input_tokens": 9650,
+  "output_tokens": 1558
+}

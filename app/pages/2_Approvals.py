@@ -29,10 +29,16 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from agents.approval_graph import resume_approval, start_approval
+from agents.secrets import sync_secrets_to_env
+from app.demo_mode import render_and_apply_gate
 from app.pipeline import load_level_titles
 from tools.decisions import DEFAULT_DB_PATH
 
+sync_secrets_to_env()
+
 st.set_page_config(page_title="Approvals — Meridian Crosswalk", layout="wide")
+
+render_and_apply_gate()
 
 st.title("Approvals")
 st.caption(

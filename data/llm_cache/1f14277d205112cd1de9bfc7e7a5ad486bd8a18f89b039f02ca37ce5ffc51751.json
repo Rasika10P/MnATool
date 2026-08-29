@@ -1,0 +1,8 @@
+{
+  "decision": {
+    "strategy": "phased",
+    "reasoning": "The population is only two employees, but the cost gaps are large both individually and relative to that small population. ANA-AD-L7 (US-SJC) has a cost_gap of 93,790.35 USD -- moving current pay of 230,000.00 USD up to the P65 target of 323,790.35 USD -- which alone accounts for the majority of the total day-one cost of 147,942.32 USD. The second gap, for ANA-AD-L2 (US-SJC), is 54,151.97 USD (current 95,000.00 USD to P60 target of 149,151.97 USD), which is also substantial in absolute terms. With only two people driving a combined 147,942.32 USD in cost, this is concentrated in a couple of very large individual gaps rather than spread thinly across a broad population, so the budget impact of funding it all at once is significant per-head. Splitting per comp_philosophy.md's standard [0.5, 0.5] schedule brings each phase down to 73,971.16 USD, which meaningfully reduces the immediate budget hit at close while still fully closing both gaps within a year. Given the concentration of cost in these two large, individually sizable gaps, phasing is the better fit than day_one."
+  },
+  "input_tokens": 1251,
+  "output_tokens": 448
+}

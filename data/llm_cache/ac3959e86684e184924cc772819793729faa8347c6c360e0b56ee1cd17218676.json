@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L4",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L4",
+        "evidence": "Leads optical-electrical co-design work between photonics group and SerDes team for the co-packaged optics program -- impact spans across the function (photonics) into an adjacent function (SerDes), described as the first cross-group technical integration the team has attempted"
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L4",
+        "evidence": "Makes the calls on link-budget tradeoffs without needing sign-off from the group lead -- consulted/trusted rather than directed, but decisions are bounded to link-budget tradeoffs rather than setting a domain-wide direction"
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L4",
+        "evidence": "Cross-group optical-electrical co-design is ambiguous with no established playbook internally (first attempt), solution paths must be constructed rather than selected from known approaches"
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L4",
+        "evidence": "Deep in photonics discipline and credible enough in SerDes/electrical domain to co-design the interface -- deep in one discipline, credible in an adjacent one, matching L4 anchor exactly"
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L4",
+        "evidence": "Owns the optical-electrical subsystem interface for the co-packaged optics program across its development -- subsystem-level ownership across a development cycle"
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L4",
+        "evidence": "Represents the photonics team to the adjacent SerDes team and drives the technical integration between the two groups -- influence on adjacent teams, not yet function-wide or cross-functional alignment at scale"
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.6,
+    "governing_rule": "rule 2: lower level governs a split, unless scope of impact is unambiguously at the higher level",
+    "alternative_level": "L5",
+    "alternative_reasoning": "If the cross-group integration is judged to constitute 'impact across the function and adjacent functions' at full L5 breadth, and the unsupervised link-budget authority is read as area-level autonomy ('identifies what should be worked on within an area') rather than bounded subsystem autonomy, the role would land at L5. This was not chosen because the JD describes a single bounded interface/program rather than ownership of a broader multi-team area, and influence is described only toward one adjacent team, not function-level cross-functional alignment.",
+    "escalate": false,
+    "escalation_factor": "scope_of_impact -- specifically whether the cross-group co-packaged optics integration constitutes ownership of an 'area spanning multiple teams' (L5) or a single subsystem/interface within one program (L4)",
+    "reasoning": "All six factors point consistently to L4: subsystem-level ownership of the optical-electrical interface, cross-group (adjacent function) impact, ambiguous problem-space requiring constructed solutions, autonomy without sign-off, deep photonics expertise with adjacent SerDes credibility, and influence limited to an adjacent team rather than function-wide alignment or BU strategy. There is a case for L5 given this is described as a first-of-its-kind cross-group integration and unilateral decision authority on link-budget tradeoffs, which could be read as 'identifies what should be worked on within an area' (L5 autonomy) and 'impact across function and adjacent functions' (L5 scope). However, the scope described is bounded to a single subsystem interface and a single adjacent-team relationship, not an area spanning multiple teams broadly, and there's no evidence of influence at the function-level cross-functional-alignment scale required for L5. Per rule 2, where factors split between L4 and L5 and scope of impact is not unambiguously at the higher level, the lower level (L4) governs. Title 'Senior MTS' is noted per rule 6 but not used as the level itself."
+  },
+  "input_tokens": 9655,
+  "output_tokens": 1472
+}

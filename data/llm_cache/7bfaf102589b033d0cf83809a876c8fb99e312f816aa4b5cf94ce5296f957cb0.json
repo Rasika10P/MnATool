@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L3",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L3",
+        "evidence": "Owns the waveguide loss characterization flow for the co-packaged optics program end to end; impact is felt across the group (methodology now used by the rest of the group)."
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L3",
+        "evidence": "'Works independently within the group's current experimental scope' -- independent execution within an existing, defined scope rather than setting new direction or being merely consulted on ambiguous problems."
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L3",
+        "evidence": "The work is characterizing waveguide loss using an established experimental scope -- defined problem space requiring judgment among known approaches, not construction of new solution paths from ambiguity."
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L3",
+        "evidence": "Proficient in test-structure design and measurement methodology within photonics; no evidence of credible adjacent-discipline breadth or cross-domain work."
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L3",
+        "evidence": "Owns a single characterization flow (test-structure design + measurement methodology) end to end -- a discrete workstream/block, not a subsystem spanning a full development cycle."
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L3",
+        "evidence": "Methodology now used by the rest of the group -- influence demonstrated through the work itself, reaching peers, consistent with peer-level influence rather than adjacent-team representation."
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.62,
+    "governing_rule": "rule 2: lower level governs a split (adjacent L3/L4 factors present, scope not unambiguously at higher level)",
+    "alternative_level": "L4",
+    "alternative_reasoning": "If 'the rest of the group' is read as effectively the whole functional unit (i.e., the entire photonics function rather than a sub-team), scope of impact would land at L4 ('impact across the function'), and per rule 1 (scope of impact as tiebreaker) and rule 2's exception (scope unambiguously higher), L4 could govern despite other factors sitting at L3. This was not chosen because the description specifies 'the group' (a bounded team-level unit) and 'current experimental scope' (bounded, not ambiguous), which reads as team-level rather than function-wide impact, and autonomy/problem-complexity evidence does not support L4's 'sets own approach on ambiguous problems' bar.",
+    "escalate": false,
+    "escalation_factor": "scope_of_impact -- whether 'the rest of the group' constitutes team-level impact (L3) or function-wide impact (L4) is the specific ambiguity that would resolve this call",
+    "reasoning": "Most factors (autonomy, problem complexity, technical depth, ownership) land squarely at L3: independent work within an existing/current experimental scope, ownership of a single discrete flow, proficiency without demonstrated cross-discipline breadth. Scope of impact and influence show a slight lean toward L4 in that the methodology is now used group-wide, but this is impact within a single group/team, not yet across the function as L4 anchors require ('impact across the function'). Since scope of impact is not unambiguously at the higher level, rule 2 applies and the lower level (L3) governs the overall split. Title 'MTS II' is treated as evidence only, not as the level itself, per rule 6.\n\nSource organization calibration: source is a small company (104 employees, under the ~150 threshold), which carries a prior that titles map down 1-2 levels due to title inflation and shallow org depth (org_depth 4, consistent with a small, flat org). Landing at L3 (against an MTS II title, which in a 5-tier internal ladder likely sits low-to-mid) is consistent with that prior -- title inflation flagged, and the evidence-based level maps below where the title alone might suggest. Platform dependency is low, so no cap was applied to technical depth/breadth. This consistency with the small-company drift prior supports moderate-to-reasonable confidence, though the group-wide adoption of the methodology is a genuine close call against L4 scope of impact."
+  },
+  "input_tokens": 9633,
+  "output_tokens": 1557
+}

@@ -1,0 +1,20 @@
+{
+  "decision": {
+    "reports_to": {
+      "stated": true,
+      "value": "Supervisor (implied by 'under supervision')"
+    },
+    "span_of_control": {
+      "stated": true,
+      "value": "No direct reports"
+    },
+    "budget_authority": {
+      "stated": true,
+      "value": "No budget authority beyond headcount requisitions"
+    },
+    "decision_scope": "",
+    "ownership_scope": "Single sub-block (NX-100 SerDes PHY controller block), owned start to finish"
+  },
+  "input_tokens": 360,
+  "output_tokens": 121
+}

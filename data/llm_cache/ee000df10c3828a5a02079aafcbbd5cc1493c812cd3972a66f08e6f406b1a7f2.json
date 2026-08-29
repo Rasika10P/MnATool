@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L5",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L5",
+        "evidence": "Owns the out-of-order load-store microarchitecture for the entire NX-400 core family across 2 tapeouts, including a new memory disambiguation scheme carried forward into NX-410 -- impact spans multiple product generations, not just a single subsystem instance."
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L5",
+        "evidence": "Independently identified and drove adoption of a new memory disambiguation scheme after her own simulation analysis (8% IPC gain), rather than being assigned this direction."
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L5",
+        "evidence": "Developing a novel memory disambiguation scheme requires resolving competing constraints (IPC gain vs. correctness/timing) within a complex microarchitectural domain -- spans architecture and verification concerns."
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L5",
+        "evidence": "Recognized as the authority on the load-store block's interfaces -- adjacent-block engineers route interface questions to her instead of the architecture lead, indicating authority within the discipline plus cross-block effectiveness."
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L5",
+        "evidence": "Owns a major subsystem (out-of-order load-store microarchitecture) across a full core family and multiple tapeoffs (2 tapeouts, NX-400 and NX-410) -- matches L5 'owns a major subsystem or full derivative product.'"
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L5",
+        "evidence": "Adjacent-team engineers route interface questions through her rather than the architecture lead -- indicates influence displacing a designated authority figure, function-level rather than just peer-level influence."
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.68,
+    "governing_rule": "rule 2: lower level governs a split, except scope of impact unambiguously points higher -- here scope, ownership, and influence together support L5 over L4",
+    "alternative_level": "L4",
+    "alternative_reasoning": "L4 anchor ('owns a subsystem across a full development cycle', 'deep in one discipline, credible in adjacent ones') is also plausible if the load-store ownership is read as bounded to a single subsystem within a fairly standard development cycle, and if the 'routes questions through her' evidence is read as adjacent-team representation (an L4 influence anchor) rather than function-level influence. This is not chosen as primary because the evidence explicitly spans two tapeouts/generations and displaces a named architecture lead as the point of contact, which reads as stronger than a single-cycle subsystem owner.",
+    "escalate": false,
+    "escalation_factor": "scope_of_impact -- specifically whether 'across 2 tapeouts' plus carryover to NX-410 constitutes multi-generation subsystem ownership (L5) or a single extended development cycle (L4), and whether the small-source-company drift prior should pull this down to L4 despite the absolute scope evidence",
+    "reasoning": "The role owns a major subsystem (load-store microarchitecture) across a full core family and multiple tapeouts, not just a single subsystem within one cycle (which would be L4). She independently identified and drove a novel scheme with measurable, cross-generation impact (NX-400 and NX-410), and adjacent engineers now route interface decisions through her instead of the designated architecture lead -- this is influence beyond simple peer credibility, indicating she is functioning as a de facto authority on load-store interfaces. This is deep technical work, but there is a hint of cross-block breadth (interface authority recognized by adjacent teams) that supports L5 rather than capping at L5 per rule 3 (deep-but-narrow caps at L5, which is consistent with this landing at L5 rather than L6 -- there's no company-wide, multi-disciplinary authority or organizational influence at the business-unit level required for L6). All six factors converge cleanly at L5, so no split-level tiebreak was strictly needed, but scope of impact (full core family across generations) is the clearest signal and is consistent with the other five factors.\n\nSource org calibration: source is a 104-person late-stage private company (small, under ~150), org_depth 4, low platform dependency. Per section 6, small companies show expected title deflation risk in the other direction is not the concern here -- rather, small-company titles often map DOWN 1-2 levels due to shallower org depth and title inflation. The title 'Senior Member of Technical Staff' is vague and was correctly not used as evidence (rule 6). However, the absolute scope evidence given (full core family ownership across 2 tapeouts, a novel scheme adopted for the next generation, adjacent engineers routing through her) is concrete and substantial, and low platform dependency means no capping is needed on technical depth/breadth. My evidence-based result of L5 is somewhat higher than the 'small company maps down' prior would suggest by default, which creates some tension -- this is exactly the kind of case the prior is meant to flag rather than resolve. I'm treating the concrete, absolute scope evidence as more probative than the general drift prior, but flagging the tension and moderating confidence accordingly."
+  },
+  "input_tokens": 9685,
+  "output_tokens": 1916
+}

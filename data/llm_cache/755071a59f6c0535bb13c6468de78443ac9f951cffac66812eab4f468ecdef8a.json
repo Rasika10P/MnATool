@@ -1,0 +1,20 @@
+{
+  "decision": {
+    "reports_to": {
+      "stated": true,
+      "value": "senior architects"
+    },
+    "span_of_control": {
+      "stated": false,
+      "value": null
+    },
+    "budget_authority": {
+      "stated": false,
+      "value": null
+    },
+    "decision_scope": "built and owns the branch predictor sizing model for the NX-500 core, which directly set the BTB capacity used in the final tapeout",
+    "ownership_scope": "built and owns the branch predictor sizing model for the NX-500 core, which directly set the BTB capacity used in the final tapeout"
+  },
+  "input_tokens": 348,
+  "output_tokens": 146
+}

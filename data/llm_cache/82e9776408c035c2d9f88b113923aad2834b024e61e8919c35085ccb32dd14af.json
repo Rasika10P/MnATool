@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L1",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L1",
+        "evidence": "Running characterization sweeps on grating-coupler test structures for the co-packaged optics program; impact contained to the immediate team/test task, not owning a component or workstream"
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L1",
+        "evidence": "\"under the group lead's direction\" and \"closely supervised\" -- work is assigned and reviewed in detail"
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L1",
+        "evidence": "Running defined characterization sweeps on test structures -- well-defined problems with known solution paths (standard test/characterization protocol)"
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L1",
+        "evidence": "First assignment, nine months into the group -- developing proficiency in one discipline (photonics characterization), not yet delivering independently"
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L1",
+        "evidence": "Contributes to characterization work on test structures under direction; does not own a block or module end to end"
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L1",
+        "evidence": "No influence beyond immediate team described; communicates results within the group under supervision"
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.85,
+    "governing_rule": "rule 2: lower level governs a split (though here all factors converge unambiguously at L1, no split present)",
+    "alternative_level": "L2",
+    "alternative_reasoning": "L2 was considered since the person has completed a PhD and could be seen as beyond a pure associate, but the description explicitly states 'first assignment, closely supervised' and work is entirely direction-driven with no independent delivery yet -- this matches L1's autonomy and complexity anchors more precisely than L2's 'developing proficiency' framing, which still implies more independent task ownership than described here.",
+    "escalate": false,
+    "escalation_factor": "autonomy",
+    "reasoning": "All six factors point uniformly to L1: closely supervised, direction-driven work on a first assignment, well-defined characterization tasks with no independent ownership, breadth, or influence described. The title 'MTS I' is evidence from the source framework, not the level itself (rule 6) -- described scope maps to Meridian's Associate Engineer (L1) anchor, not a Senior Engineer or above equivalent. Factor 5a (product lifecycle ownership, silicon/photonics engineering family) rated L1 since the individual contributes to characterization of test structures under direction rather than owning a block end to end."
+  },
+  "input_tokens": 9636,
+  "output_tokens": 1024
+}

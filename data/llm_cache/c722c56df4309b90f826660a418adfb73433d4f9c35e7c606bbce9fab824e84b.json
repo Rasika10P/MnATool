@@ -1,0 +1,63 @@
+{
+  "content": [
+    {
+      "signature": "Eu0KCpABCBEYAipAxK0DhtZlHumu+RYfQKBNOI2GItvrHJq/MXKCljLuPvpKxJA6HblwCu4Puji9Y1BrXjhFFHVHzbI8lk84xG59qDIPY2xhdWRlLXNvbm5ldC01OABCCHRoaW5raW5nWiRjMzk3NzM1Ni1mOGU3LTRlNTAtOWE0Ni00NjQzYjY0ZDY4YzioAYLxy9QGEgwfhJRk0aE/TPl/0nIaDHWeZgUnrT4P7DV/9SIwTpSpzkWLCezkS817MgQg2QpTkgAS+KNS5047N8JWXXSmK0sr5H9SMmDgS3TJzXEUKokJ22ZxXjpvywGFkIQR1leMakorCulsz0cGyPpUNxvyQN74+9TWr2DnyWz1nvkVDl+4kYBhoV2GbA1v6a8fKE8SbVXAndazUhmpHU67x1exTuC6U0yOKSl/COonoZCnfj9eaHuYQ/fwwTb5rrl96K/XEjR0RlzF6AJI2tMxkYVZlIDa5D2916OLUa0dKeG0ExqZr9kGDzr9jcwIP4hZ9mlMBNoV0jlgVL3wcnUKwxmgfAgKSu2NS0fz7tebFpotKAZnqHogKeGMSpyptrLEJevZPJyq8KgSKYCktXzXIA2NmyExEje2ohb6mt0TZH1FTjbvssSdTZH9scZC6uSInYd4CJnyt+7hffE8Xk4CvXMJ//aizAQD6so7XaBJCImntJvjWd5HRUMfpxm8Lmheg3XnCicLrnAhKfB8YAcAhZ5+HxhP/aEW7W+jQ5hq7sfa2q8q4ey12A6A5b84CQ/t7Afjw1pvBsACnsd+HXykUAsIO/JDlZrIq5vBNXvnuMpDqsx+J44gQI7WK/ANkm+yO7V8TXrl9xriMTk6XP9T/bQggAb0c6d8uWXqSRxu29E0oy+n2tAv+/rGs/V2w4kBBd9yTbvYH49zcOPwyJ0VwRdXbfV1tTpXMqVeF0yHg1NJSksS2cbtf0J9SrjhXz6KYrtvBfEIge3AC2UPS3Iu7NoW15F02bY6RigmNzRwgJg4NdBj7jyEJkmA93IwBVIGTMo4Afj+pYYhW4yFaAbnjH4BrbfsYsTM9eb0Sfd17WU6XKg1MdeTJsNafNl4d8eV8M+fEEouM57tg1pI9sUkRnMZQVSsIb8H+/mJ2YY2ovz02p39gTP3s5kptZQczKExH05V8UZoLNW8xi5LzBnJFiPbC/6mmyaPtQsdlR2swRTUVJHdcYVkVQ+Ck5E13oVVQBgD4i2PHY3DopspRY0GpalxHyBNncGyMxizAB0JVhMk3fRXY9ltbX508dHVZC/ooCDQYiZZRF7xcgvbv19cAXOkoHipOB7LV61NV2kakaDaBEzce4hi00kVOvpTKuPrZAg7aUgy+HIkzUW1xnLntt/6VX3qeU0B2XIsgibu/S/RVo+ACJCUSws6y+NFryK3luP9e6zpsfIcb2Uq4DPiQazCrOCzK0kOMSZ2gfjcENBjfydjyZ5sxiUNKjBvILLOPfwnD4DM2j39hV17xSz7xbaSWkSa35TqaDF+G06ikBXSJbiU32PVwwQkelMBpVN+31gWbJutusyT0Lv/MEUk7ARSs3FdeaGxhjXvMc64lZEk7eyix9hTN6QziSHKEeG6MxLs4F81+ogv/aJcV7tqmlZCmGzBXPSfvvHa5saqt+D6M3OD18uNFEs2WDvPZIACw8dOQ/rk4wWnbfOH4et3F+E3S/CaHjEo9tH17GGEf3CbKY+UmI5MpH7iB8vW/jv/6HKkVlqkkYF1DwvO+EbsHNw/Z5NQGF9OJ5QudiDtQa532FxyrTSCUwl1rN2BcEfSVAZV2fY/SiaolvrB3QD0knaLiFbDcAuB14pnaoJ6FevqGaYYww7J8V/UDKF5GAE=",
+      "thinking": "",
+      "type": "thinking"
+    },
+    {
+      "id": "toolu_01P1skZmxdxuuWfCcVRXuzjq",
+      "caller": {
+        "type": "direct"
+      },
+      "input": {
+        "salary": 171630,
+        "range_min": 181904.07,
+        "range_mid": 216552.47,
+        "range_max": 255531.91
+      },
+      "name": "compute_pay_metrics",
+      "type": "tool_use",
+      "toolset_name": null
+    },
+    {
+      "id": "toolu_01BaUNj33FvG2zRvMM6QJWvL",
+      "caller": {
+        "type": "direct"
+      },
+      "input": {
+        "job_id": "DD-UARCH-L5",
+        "geo_code": "US-SJC",
+        "candidate_salary": 171630
+      },
+      "name": "check_internal_equity",
+      "type": "tool_use",
+      "toolset_name": null
+    }
+  ],
+  "tool_calls": [
+    {
+      "name": "compute_pay_metrics",
+      "args": {
+        "salary": 171630,
+        "range_min": 181904.07,
+        "range_mid": 216552.47,
+        "range_max": 255531.91
+      },
+      "id": "toolu_01P1skZmxdxuuWfCcVRXuzjq",
+      "type": "tool_call"
+    },
+    {
+      "name": "check_internal_equity",
+      "args": {
+        "job_id": "DD-UARCH-L5",
+        "geo_code": "US-SJC",
+        "candidate_salary": 171630
+      },
+      "id": "toolu_01BaUNj33FvG2zRvMM6QJWvL",
+      "type": "tool_call"
+    }
+  ],
+  "input_tokens": 4208,
+  "output_tokens": 639
+}

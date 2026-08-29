@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L3",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L3",
+        "evidence": "\"Strong contributor to the microarchitecture team\" and \"involved in cache coherence modeling discussions for the current core project\" describes impact contained within the team/project, not ownership of a subsystem or function-wide impact"
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L3",
+        "evidence": "Described as a contributor \"involved in\" discussions rather than setting approach or being consulted as an authority; no evidence of ambiguous problem ownership or independent direction-setting"
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L3",
+        "evidence": "Cache coherence modeling discussion participation suggests engagement with defined problems requiring judgment among known approaches, not construction of novel solution paths"
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L3",
+        "evidence": "No evidence of adjacent-discipline credibility or authority; text indicates proficiency and contribution within microarchitecture discipline only"
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L3",
+        "evidence": "No block or module ownership described end-to-end; text only describes being 'involved in' discussions, which is narrower than L3's 'owns a block or module end to end' -- treated as at most L3 absent explicit ownership language"
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L3",
+        "evidence": "No evidence beyond team-level discussion participation; no mention of influencing adjacent teams or representing the team externally"
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.55,
+    "governing_rule": "rule 6: title in source document is evidence, not input -- level from described scope; also rule 2 (lower level governs a split) applied given sparse, team-bounded scope language",
+    "alternative_level": "L4",
+    "alternative_reasoning": "If 'involved in cache coherence modeling discussions for the current core project' is read as evidence of consultative influence on an ambiguous, cross-cutting problem (cache coherence is inherently a complex, subsystem-spanning concern), this could indicate L4-level problem complexity and ownership of a subsystem-level concern. However, the description lacks explicit ownership language (e.g., 'owns cache coherence model' or 'sets approach'), so per rule 2 the lower level (L3) governs since scope of impact is not unambiguously at the higher level.",
+    "escalate": false,
+    "escalation_factor": "ownership_scope and problem_complexity -- specifically, whether 'involved in cache coherence modeling discussions' reflects mere participation (L3) or actual ownership/authorship of the coherence model for the core project (L4). Resolving this would settle the L3/L4 split.",
+    "reasoning": "The description is thin and uses relative/internal language (\"strong contributor,\" \"involved in\") rather than absolute scope evidence (e.g., specific block ownership, tapeout responsibility, or cross-team influence). Absent stronger ownership or influence language, all factors point to L3: team-contained impact, independent-but-reviewed work on a defined contribution area, and discipline-proficient but not yet subsystem-owning technical scope. Applying section 6 calibration: source is a small company (104 headcount, late-stage private, whole-company), which per the framework's expected drift table typically maps titles down 1-2 levels due to title inflation and shallow org depth (org_depth of 4 is also relatively shallow). The title 'MTS 2' suggests a mid-level IC track internally at the source company, but per rule 6 the title is not used as input. The evidence-based L3 assignment is consistent with the small-company drift-down prior, which raises confidence somewhat, but the job description itself is too sparse to be highly confident -- particularly on ownership_scope and influence, where no absolute scope evidence (e.g., specific block/subsystem owned, or specific cross-team influence) is given."
+  },
+  "input_tokens": 9608,
+  "output_tokens": 1475
+}

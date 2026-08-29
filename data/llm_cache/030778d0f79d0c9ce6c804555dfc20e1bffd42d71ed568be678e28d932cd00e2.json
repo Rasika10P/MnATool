@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L3",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L3",
+        "evidence": "Works on the PMIC team with growing responsibility, but scope described is a component/workstream (analog design + some layout review), not a subsystem owned across the function."
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L3",
+        "evidence": "'Picking up more responsibility' implies increasing independence but no evidence of setting own approach on ambiguous problems or being consulted rather than directed; outcomes likely still reviewed."
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L3",
+        "evidence": "No indication of ambiguous, unstructured problems -- described as a 'strong analog designer' doing design work with known solution paths requiring judgment among approaches."
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L3",
+        "evidence": "Described as a strong analog designer proficient in the discipline, delivering reliably; taking on 'some layout review' suggests emerging but not yet deep cross-adjacent credibility."
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L3",
+        "evidence": "Owns analog design work on the PMIC team with some layout review responsibility -- consistent with owning a block or module end to end, not a full subsystem across a development cycle."
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L3",
+        "evidence": "No evidence beyond demonstrated work influencing peers; no mention of representing the team to partners or adjacent teams."
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.55,
+    "governing_rule": "rule 2: lower level governs a split (no factor unambiguously indicates a higher level)",
+    "alternative_level": "L4",
+    "alternative_reasoning": "If 'picking up more responsibility including layout review' is read as already-achieved subsystem-level ownership with credibility in an adjacent discipline (layout), this could indicate L4 (deep in one discipline, credible in adjacent ones; owns a subsystem across a full development cycle). Rejected because the description reads as work-in-progress expansion of scope rather than established subsystem ownership, and no autonomy, complexity, or influence evidence supports L4.",
+    "escalate": false,
+    "escalation_factor": "ownership_scope -- whether the 'layout review' responsibility reflects established subsystem-level ownership (favoring L4) or an emerging/partial responsibility still within block-level ownership (favoring L3)",
+    "reasoning": "All six factors point to L3: solid, independent analog design ownership of a block/module (PMIC-related) with newly expanding responsibility into layout review, but no evidence of subsystem-level ownership, cross-functional influence, or ambiguous/strategic problem framing that would indicate L4 or higher. The phrase 'picking up more responsibility' suggests growth toward L4 but is not yet described as achieved scope, so the lower level governs per rule 2. Source organization context (104 employees, late-stage private, whole company, org_depth 4, low platform dependency) creates a prior that titles may map down 1-2 levels from a small company; 'MTS II' likely inflated relative to Meridian's L-scale. The evidence-based L3 result is consistent with this prior (expected downward drift from a sub-150-person company), which raises confidence somewhat, though the job description is thin on concrete scope specifics (no tapeout count, no explicit ownership boundary), which keeps confidence moderate."
+  },
+  "input_tokens": 9604,
+  "output_tokens": 1318
+}

@@ -37,8 +37,10 @@ recorded (StructuredOutputError) rather than silently vanishing.
 
 from __future__ import annotations
 
+import threading
+
 from langchain_anthropic import ChatAnthropic
-from langchain_openai import ChatOpenAI
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from pydantic import BaseModel
 
 from agents.cost_logging import log_call
@@ -47,6 +49,34 @@ from agents.spend_guard import get_default_budget
 from agents.text_sanitization import find_leaked_tag_strings
 
 MAX_ATTEMPTS = 3
+
+# Demo-mode enforcement: when active, a cache miss raises instead of making a real call --
+# not a soft warning, since demo mode's whole guarantee (a public Streamlit Cloud visitor
+# with no unlock password can never spend the deployed owner's API budget) depends on this
+# being unconditional. Thread-local, not a plain module global: Streamlit runs each active
+# session's script execution in its own thread, and a plain global would leak one user's
+# unlocked live mode into every other concurrent user's session on the same deployment.
+#
+# Defaults to False (cache-only OFF) so every existing script, test, and non-Streamlit call
+# path keeps its original behavior unchanged -- this is an opt-in Streamlit-deployment safety
+# feature, not a system-wide default. app/demo_mode.py's render_and_apply_gate() is what
+# turns it on, and it must run at the top of every Streamlit page that could reach a model
+# call, before that page does anything else -- the same "you must call this" discipline this
+# codebase already expects of reset_session_stats()/reset_default_budget() at the top of a run.
+_thread_local = threading.local()
+
+
+def set_cache_only(enabled: bool) -> None:
+    _thread_local.cache_only = enabled
+
+
+def is_cache_only() -> bool:
+    return getattr(_thread_local, "cache_only", False)
+
+
+class DemoModeCacheMissError(RuntimeError):
+    """Raised instead of making a real model call when cache-only ("demo") mode is active
+    and this exact (model, schema-or-tools, messages) isn't already in the warmed cache."""
 
 
 class StructuredOutputError(Exception):
@@ -81,8 +111,8 @@ class TagLeakDetected(Exception):
 def _detect_provider(llm) -> str:
     if isinstance(llm, ChatAnthropic):
         return "anthropic"
-    if isinstance(llm, ChatOpenAI):
-        return "nebius"  # the only thing ChatOpenAI is ever pointed at in this codebase
+    if isinstance(llm, (ChatOpenAI, OpenAIEmbeddings)):
+        return "nebius"  # the only thing ChatOpenAI/OpenAIEmbeddings is ever pointed at here
     return "unknown"
 
 
@@ -138,6 +168,13 @@ class _InstrumentedStructuredRunnable:
                 cached=True, context=self._context, provider=self._provider,
             )
             return self._schema(**cached["decision"])
+
+        if is_cache_only():
+            raise DemoModeCacheMissError(
+                f"Demo mode is active (no live API calls allowed) and this exact "
+                f"{self._schema.__name__} call against {self._model_name} isn't in the "
+                "warmed cache. Unlock live mode to run it for real."
+            )
 
         errors: list[Exception] = []
         for attempt in range(1, MAX_ATTEMPTS + 1):
@@ -216,6 +253,13 @@ class _InstrumentedToolCallingRunnable:
             )
             return AIMessage(content=cached["content"], tool_calls=cached["tool_calls"])
 
+        if is_cache_only():
+            raise DemoModeCacheMissError(
+                f"Demo mode is active (no live API calls allowed) and this tool-calling turn "
+                f"against {self._model_name} isn't in the warmed cache. Unlock live mode to "
+                "run it for real."
+            )
+
         get_default_budget().check_before_call(self._model_name, prompt_parts, self._max_output_tokens)
 
         result = self._bound_llm.invoke(messages, *args, **kwargs)
@@ -240,6 +284,61 @@ class _InstrumentedToolCallingRunnable:
         return result
 
 
+class _InstrumentedEmbeddingsRunnable:
+    """Embeddings' counterpart to the two runnables above: same cache-by-(model, texts),
+    demo-mode cache-only guard, and cost log entry. No retry-on-malformed-output (a vector
+    has nothing to validate against a schema) and no tool_calls -- embed_documents just
+    returns list[list[float]], one vector per input text.
+
+    Token counts are the same chars/4 heuristic agents/spend_guard.py already uses for
+    pre-call budget projection, not a real usage figure -- LangChain's OpenAIEmbeddings
+    interface (unlike ChatOpenAI's AIMessage) discards the API response's own usage block,
+    so there's nothing exact to log without bypassing it. Acceptable here the same way it's
+    acceptable for spend_guard's own projections: an approximation used consistently, not a
+    regression from some more precise number this call shape ever had.
+    """
+
+    def __init__(self, embeddings_client, context: str):
+        self._client = embeddings_client
+        self._model_name = getattr(embeddings_client, "model", None) or "unknown"
+        self._provider = _detect_provider(embeddings_client)
+        self._context = context
+
+    def embed_documents(self, texts: list[str]) -> list[list[float]]:
+        prompt_parts = [self._model_name] + list(texts)
+
+        cached = get_cached(self._model_name, prompt_parts)
+        if cached is not None:
+            log_call(
+                self._model_name, cached["input_tokens"], 0,
+                cached=True, context=self._context, provider=self._provider,
+            )
+            return cached["vectors"]
+
+        if is_cache_only():
+            raise DemoModeCacheMissError(
+                f"Demo mode is active (no live API calls allowed) and this embedding call "
+                f"against {self._model_name} ({len(texts)} text(s)) isn't in the warmed cache. "
+                "Unlock live mode to run it for real."
+            )
+
+        estimated_input_tokens = sum(len(t) for t in texts) // 4
+        get_default_budget().check_before_call(self._model_name, prompt_parts, max_output_tokens=0)
+
+        vectors = self._client.embed_documents(texts)
+        logged = log_call(
+            self._model_name, estimated_input_tokens, 0,
+            cached=False, context=self._context, provider=self._provider,
+        )
+        get_default_budget().record(logged["cost_usd"])
+
+        set_cached(self._model_name, prompt_parts, {"vectors": vectors, "input_tokens": estimated_input_tokens})
+        return vectors
+
+    def embed_query(self, text: str) -> list[float]:
+        return self.embed_documents([text])[0]
+
+
 class InstrumentedModel:
     """Drop-in wrapper: with_structured_output(schema).invoke(messages) gets caching, cost
     logging, session stats and the spend budget for free. Any other attribute (`.model`,
@@ -256,6 +355,12 @@ class InstrumentedModel:
     def bind_tools(self, tools, context: str | None = None, **kwargs):
         context = context or "+".join(sorted(getattr(t, "name", str(t)) for t in tools))
         return _InstrumentedToolCallingRunnable(self._llm, tools, context)
+
+    def embed_documents(self, texts: list[str], context: str = "embeddings") -> list[list[float]]:
+        return _InstrumentedEmbeddingsRunnable(self._llm, context).embed_documents(texts)
+
+    def embed_query(self, text: str, context: str = "embeddings") -> list[float]:
+        return _InstrumentedEmbeddingsRunnable(self._llm, context).embed_query(text)
 
     def __getattr__(self, name):
         return getattr(self._llm, name)

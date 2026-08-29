@@ -6,7 +6,7 @@
 *.sqlite-wal
 *.sqlite-shm
 *.parquet
-data/llm_cache/
+!data/parquet/*.parquet
 data/llm_cost_log.jsonl
 __pycache__/
 .venv/

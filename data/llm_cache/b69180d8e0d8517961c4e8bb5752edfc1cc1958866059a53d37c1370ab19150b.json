@@ -1,0 +1,10 @@
+{
+  "decision": {
+    "verdict": "red_circled",
+    "governing_rule": "rule 4: external recognition is required for L7 and above, not optional, not inferable from internal reputation",
+    "final_level": "L6",
+    "reasoning": "The advocate's evidence is drawn entirely from the acquired company's own document (Nyx's Distinguished MTS / Fellow anchors), which under section 7 is admissible only as evidence about described scope -- not as an alternative framework this arbiter weighs. Under this framework's own rules, the cited evidence (company-wide, cross-tapeout closure authority, routed to as final technical escalation point) does support scope of impact, autonomy, problem complexity and influence at L6, exactly as the original mapping found. But L7 and L8 are gated by rule 4: external recognition -- publications, patents, standards bodies -- is required and is explicitly absent here (no patents, no publications, purely internal reputation). The advocate's argument that Nyx's document treats external recognition as 'optional' is irrelevant; this framework does not treat it as optional, and rule 4 is unambiguous that internal reputation, however strong, cannot substitute for it. Nothing in the evidence cited resolves this gap -- 11 years of internal escalation authority is still internal. At the same time, this is a genuinely strong case: scope of impact, autonomy, problem complexity, and influence all independently anchor at L6 (and arguably gesture toward L7 impact-across-company language), and it is specifically rule 4's external-recognition bar -- not a close factor call already resolved by rule 2 -- that holds the level at L6 rather than higher. That is precisely the fact pattern section 7 identifies for red-circling: the level is upheld at the lower placement (L6, matching the original mapping), but the case has merit and should be flagged, with pay protection handled downstream by the retention/comp mechanism rather than by moving the level."
+  },
+  "input_tokens": 10405,
+  "output_tokens": 695
+}
