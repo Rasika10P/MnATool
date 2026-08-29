@@ -206,6 +206,71 @@ def test_budget_is_checked_before_every_retry_attempt():
     assert fake.raw_structured_model.call_count == 1, "attempt 1 should run; attempt 2 should be blocked before calling the model"
 
 
+def test_leaked_tag_in_raw_tool_call_retries_then_succeeds_clean():
+    # error_handling_backlog.md entry 1: Pydantic validates cleanly both times (no
+    # parsing_error either attempt) -- the leak only shows up in the raw tool-call args, the
+    # same shape a real leaked-tag response has once field validators have already sanitized
+    # the parsed object. attempt 1's raw args leak; attempt 2's don't.
+    good_decision = _decision()
+    fake = FakeModel(
+        good_decision, model_name="itest-leak-1",
+        sequence=[(good_decision, None), (good_decision, None)],
+        tool_call_args_sequence=[{"reasoning": "leaked </reasoning>"}, {"reasoning": "clean"}],
+    )
+    wrapped = InstrumentedModel(fake)
+
+    result = wrapped.with_structured_output(LevelingDecision).invoke(MESSAGES)
+
+    assert result.model_dump() == good_decision.model_dump()
+    assert fake.raw_structured_model.call_count == 2, "a clean-but-leaked attempt must trigger a retry"
+    assert would_hit_cache(wrapped, LevelingDecision, MESSAGES) is True
+
+
+def test_leaked_tag_on_every_attempt_still_returns_decision_not_raise():
+    # Exhausting every retry on leaked-but-parseable output must not drop the decision --
+    # the field validators already guarantee the returned object is sanitized, so accepting
+    # it beats raising StructuredOutputError and losing the row entirely.
+    good_decision = _decision()
+    fake = FakeModel(
+        good_decision, model_name="itest-leak-2",
+        tool_call_args_sequence=[{"reasoning": "leaked </reasoning>"}],  # same leak every attempt
+    )
+    wrapped = InstrumentedModel(fake)
+
+    result = wrapped.with_structured_output(LevelingDecision).invoke(MESSAGES)
+
+    assert result.model_dump() == good_decision.model_dump()
+    assert fake.raw_structured_model.call_count == MAX_ATTEMPTS
+    assert would_hit_cache(wrapped, LevelingDecision, MESSAGES) is True
+
+
+def test_leaked_tag_retry_counts_as_a_retry_in_session_stats():
+    good_decision = _decision()
+    fake = FakeModel(
+        good_decision, model_name="itest-leak-3",
+        sequence=[(good_decision, None), (good_decision, None)],
+        tool_call_args_sequence=[{"reasoning": "leaked </reasoning>"}, {"reasoning": "clean"}],
+    )
+    wrapped = InstrumentedModel(fake)
+
+    wrapped.with_structured_output(LevelingDecision).invoke(MESSAGES)
+
+    stats = get_session_stats().summary()
+    assert stats["retries"] == 1
+
+
+def test_no_leak_when_raw_message_has_no_tool_calls():
+    # Every pre-existing FakeRawMessage (no tool_call_args passed) has no .tool_calls
+    # attribute at all -- confirms the leak check treats that as "nothing to scan," not a
+    # false positive, so every test written before this feature existed stays valid.
+    fake = FakeModel(_decision(), model_name="itest-leak-4")
+    wrapped = InstrumentedModel(fake)
+
+    result = wrapped.with_structured_output(LevelingDecision).invoke(MESSAGES)
+
+    assert fake.raw_structured_model.call_count == 1
+
+
 def test_provider_detected_from_model_class():
     assert _detect_provider(ChatAnthropic(model="claude-sonnet-5", api_key="x")) == "anthropic"
     assert _detect_provider(ChatOpenAI(model="x", api_key="x", base_url="http://example.invalid")) == "nebius"

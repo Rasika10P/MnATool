@@ -79,3 +79,23 @@ def test_alternative_level_accepts_valid_code_and_none():
 def test_alternative_level_rejects_combined_notation():
     with pytest.raises(ValidationError):
         _decision(alternative_level="L5 -- considered because of scope")
+
+
+def test_scope_finding_value_strips_leaked_tags():
+    finding = ScopeFinding(stated=True, value="no direct reports </value>")
+    assert finding.value == "no direct reports"
+
+
+def test_factor_rating_evidence_strips_leaked_tags():
+    rating = FactorRating(factor="scope_of_impact", level_indicated="L4", evidence='owns a subsystem <parameter name="x">')
+    assert rating.evidence == "owns a subsystem"
+
+
+def test_leveling_decision_reasoning_strips_leaked_tags():
+    # error_handling_backlog.md entry 1's exact observed shape.
+    dirty = "Senior Staff Engineer). </reasoning>\n<parameter name=\"alternative_level\">L6"
+    assert _decision(reasoning=dirty).reasoning == "Senior Staff Engineer). L6"
+
+
+def test_leveling_decision_governing_rule_strips_leaked_tags():
+    assert _decision(governing_rule="rule 2 </governing_rule>").governing_rule == "rule 2"

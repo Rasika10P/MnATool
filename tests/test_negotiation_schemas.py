@@ -236,3 +236,19 @@ def test_exception_register_entry_allows_no_equity_gate_result():
         verdict="upheld",
     )
     assert entry.equity_gate_result is None
+
+
+def test_crosswalk_argument_evidence_cited_strips_leaked_tags():
+    argument = _argument(evidence_cited='owns the subsystem </evidence_cited>')
+    assert argument.evidence_cited == "owns the subsystem"
+
+
+def test_advocate_output_evidence_cited_strips_leaked_tags():
+    # The exact field the leak reached the Streamlit UI through.
+    output = _contesting_advocate_output(evidence_cited='company-wide authority </invoke>')
+    assert output.evidence_cited == "company-wide authority"
+
+
+def test_arbiter_ruling_reasoning_strips_leaked_tags():
+    ruling = _ruling(reasoning='scope of impact was unambiguous <parameter name="final_level">L5')
+    assert ruling.reasoning == "scope of impact was unambiguous L5"

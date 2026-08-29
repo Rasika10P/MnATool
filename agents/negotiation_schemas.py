@@ -13,9 +13,10 @@ from __future__ import annotations
 
 from typing import Literal
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 from agents.schemas import LevelCode
+from agents.text_sanitization import sanitize_prose_field
 
 # Section 7, "Admissible arguments": the advocate may argue only from evidence and from
 # documented framework language. Title, retention risk, pay, tenure and peer pay are
@@ -43,6 +44,13 @@ class CrosswalkArgument(BaseModel):
         description="Which document and section the argument draws on, e.g. "
         "'nyx_level_framework.md section 3' or 'level_framework.md section 5 rule 3' for "
         "Meridian precedent"
+    )
+
+    # error_handling_backlog.md entry 1 (agents/text_sanitization.py) -- the schema this
+    # entry's UI-facing leak was actually observed on (AdvocateOutput.evidence_cited feeds
+    # this same field via as_crosswalk_argument()).
+    _sanitize_prose = field_validator("evidence_cited", "framework_section", mode="before")(
+        staticmethod(sanitize_prose_field)
     )
 
 
@@ -76,6 +84,14 @@ class AdvocateOutput(BaseModel):
     )
     evidence_cited: str | None = Field(default=None, description="Null when not contesting.")
     framework_section: str | None = Field(default=None, description="Null when not contesting.")
+
+    # error_handling_backlog.md entry 1 (agents/text_sanitization.py) -- the field this
+    # entry's leak reached the Streamlit UI through. Runs before _all_fields_move_together
+    # below; a stripped-to-empty-but-still-non-null value still counts as "set" there, so
+    # sanitizing here doesn't change that validator's outcome.
+    _sanitize_prose = field_validator("evidence_cited", "framework_section", mode="before")(
+        staticmethod(sanitize_prose_field)
+    )
 
     @model_validator(mode="after")
     def _all_fields_move_together(self) -> "AdvocateOutput":
@@ -125,6 +141,12 @@ class ArbiterRuling(BaseModel):
     final_level: LevelCode
     reasoning: str = Field(description="Brief rationale tying the ruling to the governing rule")
 
+    # error_handling_backlog.md entry 1 (agents/text_sanitization.py) -- runs before
+    # _governing_rule_cites_a_number below, on the already-cleaned string.
+    _sanitize_prose = field_validator("governing_rule", "reasoning", mode="before")(
+        staticmethod(sanitize_prose_field)
+    )
+
     @model_validator(mode="after")
     def _governing_rule_cites_a_number(self) -> "ArbiterRuling":
         if not any(char.isdigit() for char in self.governing_rule):
@@ -156,6 +178,10 @@ class EquityGateResult(BaseModel):
         "employee despite greater demonstrated scope. Required (non-empty) when passed is "
         "False; must be empty when passed is True.",
     )
+    # No agents/text_sanitization.py validator here, unlike this file's other prose fields --
+    # agents/equity_gate.py builds this string with plain Python f-strings (that module's own
+    # docstring: "this module makes no model call"), so it's never model-generated and
+    # structurally can't carry a leaked tool-call fragment.
     reasoning: str
 
     @model_validator(mode="after")
@@ -202,6 +228,12 @@ class ExceptionRegisterEntry(BaseModel):
     arbiter_ruling: ArbiterRuling
     governing_rule_cited: str = Field(
         description="Denormalized from arbiter_ruling.governing_rule for the register's own column"
+    )
+    # error_handling_backlog.md entry 1 (agents/text_sanitization.py). A no-op in practice --
+    # the value passed in is always an already-sanitized ArbiterRuling.governing_rule -- kept
+    # for the same defense-in-depth reason every other prose field in this file has it.
+    _sanitize_governing_rule_cited = field_validator("governing_rule_cited", mode="before")(
+        staticmethod(sanitize_prose_field)
     )
     equity_gate_result: EquityGateResult | None = Field(
         default=None,

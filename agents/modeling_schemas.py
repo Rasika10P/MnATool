@@ -16,9 +16,10 @@ from __future__ import annotations
 
 from typing import Literal
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 from agents.schemas import LevelCode
+from agents.text_sanitization import sanitize_prose_field
 
 
 class PhaseAmount(BaseModel):
@@ -60,6 +61,9 @@ class CostRecommendation(BaseModel):
 
     strategy: Literal["day_one", "phased"] = Field(description="Which funding approach the agent recommends")
     reasoning: str = Field(description="Why, given the total cost and its shape across the population")
+
+    # error_handling_backlog.md entry 1 (agents/text_sanitization.py).
+    _sanitize_reasoning = field_validator("reasoning", mode="before")(staticmethod(sanitize_prose_field))
 
 
 class CostAssessment(BaseModel):
@@ -122,6 +126,9 @@ class RetentionJudgment(BaseModel):
     )
     reasoning: str
 
+    # error_handling_backlog.md entry 1 (agents/text_sanitization.py).
+    _sanitize_reasoning = field_validator("reasoning", mode="before")(staticmethod(sanitize_prose_field))
+
 
 class RetentionAssessment(BaseModel):
     """Full retention agent output for one crosswalked population."""
@@ -148,6 +155,11 @@ class ReconciliationConflict(BaseModel):
     retention_position: str
     affected_employee_ids: list[str] = Field(min_length=1)
 
+    # error_handling_backlog.md entry 1 (agents/text_sanitization.py).
+    _sanitize_prose = field_validator("description", "cost_position", "retention_position", mode="before")(
+        staticmethod(sanitize_prose_field)
+    )
+
 
 class SynthesisResult(BaseModel):
     """The synthesis agent's output. No numeric fields of its own -- it reconciles the
@@ -159,6 +171,10 @@ class SynthesisResult(BaseModel):
         description="Empty list is a valid, meaningful result: no tension between cost and retention"
     )
     recommended_plan: str = Field(description="Prose synthesis of both agents' positions into one plan")
+    # error_handling_backlog.md entry 1 (agents/text_sanitization.py).
+    _sanitize_recommended_plan = field_validator("recommended_plan", mode="before")(
+        staticmethod(sanitize_prose_field)
+    )
     requires_human_judgment: bool = Field(
         description="True when a conflict here can't be resolved by synthesis alone -- e.g. cost's phasing "
         "preference genuinely conflicts with retention's critical-underwater flag with no way to satisfy both"

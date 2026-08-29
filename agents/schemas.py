@@ -5,7 +5,9 @@ from __future__ import annotations
 
 from typing import Literal
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
+
+from agents.text_sanitization import sanitize_prose_field
 
 FACTOR_NAMES = (
     "scope_of_impact",
@@ -66,6 +68,10 @@ class ScopeFinding(BaseModel):
         "and must be null when stated is False.",
     )
 
+    # error_handling_backlog.md entry 1 (agents/text_sanitization.py) -- runs before
+    # _value_matches_stated below, so that validator sees the already-cleaned string.
+    _sanitize_value = field_validator("value", mode="before")(staticmethod(sanitize_prose_field))
+
     @model_validator(mode="after")
     def _value_matches_stated(self) -> "ScopeFinding":
         if self.stated and self.value is None:
@@ -100,6 +106,11 @@ class ScopeProfile(BaseModel):
         description="What this role owns or is accountable for, as described in the text."
     )
 
+    # error_handling_backlog.md entry 1 (agents/text_sanitization.py).
+    _sanitize_prose = field_validator("decision_scope", "ownership_scope", mode="before")(
+        staticmethod(sanitize_prose_field)
+    )
+
 
 class FactorRating(BaseModel):
     """One rating against one of the seven leveling factors (section 3)."""
@@ -114,6 +125,9 @@ class FactorRating(BaseModel):
         "that's a separate lookup against level_definitions.ic_equivalent, not this field."
     )
     evidence: str = Field(description="The specific evidence from the job description supporting this rating -- absolute, not relative language (section 6)")
+
+    # error_handling_backlog.md entry 1 (agents/text_sanitization.py).
+    _sanitize_evidence = field_validator("evidence", mode="before")(staticmethod(sanitize_prose_field))
 
 
 class LevelingDecision(BaseModel):
@@ -148,3 +162,9 @@ class LevelingDecision(BaseModel):
         description="Per rule 9: if this decision is a close call, name the specific factor whose resolution would settle it, even if confidence turns out to be above threshold",
     )
     reasoning: str = Field(description="Brief rationale tying the factor evidence to the assigned level")
+
+    # error_handling_backlog.md entry 1 (agents/text_sanitization.py) -- the exact failure
+    # this entry documents was observed on this schema's reasoning/alternative_level pair.
+    _sanitize_prose = field_validator(
+        "governing_rule", "alternative_reasoning", "escalation_factor", "reasoning", mode="before"
+    )(staticmethod(sanitize_prose_field))

@@ -17,8 +17,16 @@ from agents.schemas import LevelingDecision
 
 
 class FakeRawMessage:
-    def __init__(self, input_tokens: int = 100, output_tokens: int = 50):
+    def __init__(self, input_tokens: int = 100, output_tokens: int = 50, tool_call_args: dict | None = None):
         self.usage_metadata = {"input_tokens": input_tokens, "output_tokens": output_tokens}
+        # tool_call_args mirrors what a real ChatAnthropic response's raw.tool_calls[0]["args"]
+        # looks like (agents/instrumented_model.py's _raw_tool_call_args) -- None (the
+        # default) leaves .tool_calls unset entirely, matching every pre-existing fake that
+        # never simulated it, so tests written before the tag-leak check keep working
+        # unchanged (agents.instrumented_model._raw_tool_call_args treats a missing
+        # attribute as "nothing to scan," not an error).
+        if tool_call_args is not None:
+            self.tool_calls = [{"name": "FakeSchema", "args": tool_call_args, "id": "fake-call-id"}]
 
 
 class FakeStructuredModel:
@@ -34,11 +42,18 @@ class FakeStructuredModel:
         parsing_error: Exception | None = None,
         include_raw: bool = False,
         sequence: list[tuple] | None = None,
+        tool_call_args_sequence: list[dict | None] | None = None,
     ):
         self._decision = decision
         self._parsing_error = parsing_error
         self._include_raw = include_raw
         self._sequence = sequence
+        # Independent of `sequence` (a separate parameter rather than a third tuple element)
+        # so every existing 2-tuple (decision, parsing_error) call site is untouched --
+        # indexed the same way: the Nth call gets tool_call_args_sequence[N-1], clamped once
+        # exhausted. None (the default) means "no raw tool_calls to scan," same as omitting
+        # the parameter to FakeRawMessage directly.
+        self._tool_call_args_sequence = tool_call_args_sequence
         self.call_count = 0
 
     def invoke(self, messages):
@@ -47,10 +62,16 @@ class FakeStructuredModel:
             decision, parsing_error = self._sequence[index]
         else:
             decision, parsing_error = self._decision, self._parsing_error
+
+        tool_call_args = None
+        if self._tool_call_args_sequence is not None:
+            index = min(self.call_count, len(self._tool_call_args_sequence) - 1)
+            tool_call_args = self._tool_call_args_sequence[index]
+
         self.call_count += 1
         if self._include_raw:
             return {
-                "raw": FakeRawMessage(),
+                "raw": FakeRawMessage(tool_call_args=tool_call_args),
                 "parsed": decision,
                 "parsing_error": parsing_error,
             }
@@ -71,6 +92,7 @@ class FakeModel:
         parsing_error: Exception | None = None,
         schema=LevelingDecision,
         sequence: list[tuple] | None = None,
+        tool_call_args_sequence: list[dict | None] | None = None,
     ):
         self.model = model_name  # matches ChatAnthropic's .model attribute
         self.max_tokens = 2048  # matches ChatAnthropic's configured attribute
@@ -81,7 +103,10 @@ class FakeModel:
         # InstrumentedModel) only ever requests include_raw=True, while a bare FakeModel
         # used directly (no InstrumentedModel wrapper) only ever sees include_raw=False.
         self.structured_model = FakeStructuredModel(decision, parsing_error, include_raw=False, sequence=sequence)
-        self.raw_structured_model = FakeStructuredModel(decision, parsing_error, include_raw=True, sequence=sequence)
+        self.raw_structured_model = FakeStructuredModel(
+            decision, parsing_error, include_raw=True, sequence=sequence,
+            tool_call_args_sequence=tool_call_args_sequence,
+        )
 
     def with_structured_output(self, schema, include_raw: bool = False):
         assert schema is self._schema

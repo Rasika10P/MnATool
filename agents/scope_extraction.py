@@ -14,6 +14,7 @@ stated, don't judge it) that doesn't call for the same adjudication Claude provi
 from __future__ import annotations
 
 from agents import instrumented_model
+from agents.instrumented_model import StructuredOutputError
 from agents.model_router import get_model
 from agents.schemas import ScopeProfile
 
@@ -29,6 +30,17 @@ its own wording, including the negative itself. Only set stated=false (and leave
 null) when the text is completely silent on that dimension -- never mentions it either way. \
 Do not treat "the text doesn't say anything positive" as a reason to leave a field \
 unstated when the text actually states a negative.
+
+Two worked examples of the exact shape required, for span_of_control (the same pattern \
+applies to reports_to and budget_authority):
+
+- Job description never mentions direct reports, team size, or management responsibility at \
+all -> {"stated": false, "value": null}. Nothing to quote, so value stays null.
+- Job description says "no direct reports" -> {"stated": true, "value": "No direct reports"}. \
+The text DID address it, explicitly, in the negative -- so stated is true, and value holds \
+the negative statement itself. It is never correct to set stated=true and leave value null: \
+if you have nothing to put in value, the correct finding is stated=false, not a true/null \
+pair.
 
 For decision_scope and ownership_scope, report only what the text states, close to its own \
 wording. Do not fill a gap with an assumption about what a role like this "usually" has. Do \
@@ -60,3 +72,33 @@ def extract_scope_profile(job_description: str, model=None) -> ScopeProfile:
     llm = model or get_model("volume")
     structured_llm = llm.with_structured_output(ScopeProfile)
     return structured_llm.invoke(_build_messages(job_description))
+
+
+def extract_scope_profile_with_claude_fallback(job_description: str) -> ScopeProfile:
+    """extract_scope_profile on Nebius (production routing), falling back to a single
+    attempt on Claude if Nebius exhausts agents.instrumented_model's own retries -- observed
+    at roughly 20% of extractions on this schema: Nebius returns stated=true paired with a
+    null value, which agents/schemas.py's ScopeFinding validator correctly rejects, and the
+    malformed-tool-call retry (agents/instrumented_model.py) doesn't always clear it in 3
+    tries. The few-shot examples added to _SYSTEM_PROMPT above target this exact shape
+    directly; this fallback is the backstop for whatever fraction still gets through.
+
+    Not a reversal of CLAUDE.md's model routing table ("Nebius -- job description parsing"),
+    which is about whose *judgment* this task calls for -- extraction has no judgment call to
+    route, unlike agents.leveling.level_role_routed's dropped attempt to route leveling
+    itself (see that function's docstring). This is narrower: Nebius sometimes can't produce
+    a valid tool call for this schema at all, not that its extraction is worse when it does.
+    Falling back loses this employee's evidence only if Claude also can't produce a valid
+    ScopeProfile in its own 3 attempts -- documented as possible but rare
+    (error_handling_backlog.md entry 4's Nebius-vs-Claude update) -- in which case
+    StructuredOutputError still propagates, same as today.
+    """
+    try:
+        return extract_scope_profile(job_description)
+    except StructuredOutputError as nebius_error:
+        print(
+            f"[scope_extraction] Nebius exhausted {len(nebius_error.attempts)} attempts on "
+            "this job description -- falling back to Claude.",
+            flush=True,
+        )
+        return extract_scope_profile(job_description, model=get_model("judgment"))

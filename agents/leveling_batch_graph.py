@@ -15,8 +15,9 @@ import operator
 import os
 import sqlite3
 import time
+import uuid
 from pathlib import Path
-from typing import Annotated, Optional, TypedDict
+from typing import Annotated, Callable, Optional, TypedDict
 
 from langgraph.checkpoint.sqlite import SqliteSaver
 from langgraph.graph import END, START, StateGraph
@@ -111,3 +112,48 @@ def run_batch(
     # is built to provide; see scripts/batch_kill_demo.py.
     result = app.invoke({"employees": employees, "decisions": []}, config, durability="sync")
     return result["decisions"]
+
+
+def run_batch_streaming(
+    employees: list[dict],
+    on_employee_done: Callable[[dict], None] | None = None,
+    thread_id: str | None = None,
+    db_path: Path = DEFAULT_BATCH_CHECKPOINT_DB,
+) -> list[dict]:
+    """Same Send fan-out as run_batch, but streams each employee's decision to
+    on_employee_done as soon as that task completes, instead of blocking until the whole
+    batch finishes -- what a caller reporting live per-employee progress (e.g. the Streamlit
+    page) needs and a single blocking .invoke() can't give it. The fan-out itself is
+    unchanged: this still dispatches every employee as an independent Send task in the same
+    superstep, not a sequential loop.
+
+    thread_id defaults to a fresh uuid4 per call, not a fixed literal like run_batch's own
+    default -- run_batch is called once per process in its demo scripts, where a fixed
+    thread_id is fine; this is meant for a long-lived process (a Streamlit server) that may
+    call it repeatedly, and reusing one thread_id across calls would let a later call's
+    `decisions` reducer start from a prior run's accumulated state instead of empty.
+
+    error_handling_backlog.md entry 2: a structured-output call that exhausts its retries
+    still aborts the whole fan-out invocation uncaught -- not fixed at this layer yet. If
+    that happens mid-stream, every employee already streamed to on_employee_done before the
+    failure is kept (the caller already has them); this function still re-raises the
+    underlying exception afterward, same as run_batch would on the same failure -- a caller
+    that wants to keep going with partial results catches it and knows, from what it already
+    received, which employees never got a turn.
+    """
+    checkpointer = get_checkpointer(db_path)
+    app = build_batch_graph().compile(checkpointer=checkpointer)
+    config = {"configurable": {"thread_id": thread_id or f"batch-stream-{uuid.uuid4()}"}}
+
+    decisions: list[dict] = []
+    for update in app.stream(
+        {"employees": employees, "decisions": []}, config, stream_mode="updates", durability="sync"
+    ):
+        node_update = update.get("level_employee")
+        if not node_update:
+            continue
+        for entry in node_update["decisions"]:
+            decisions.append(entry)
+            if on_employee_done:
+                on_employee_done(entry)
+    return decisions

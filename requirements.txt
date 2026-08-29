@@ -7,6 +7,12 @@ openpyxl
 
 langchain-core
 langchain-anthropic
+langchain-openai
+langgraph
+langgraph-checkpoint-sqlite
 pydantic
+
+streamlit
+plotly
 
 pytest

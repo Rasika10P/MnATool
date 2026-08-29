@@ -17,11 +17,22 @@ ScopeProfile, and AdvocateOutput) of the model's tool call not exactly matching 
 then returned cleanly. MAX_ATTEMPTS retries the same call on any such parsing failure before
 giving up; every attempt (successful or not) gets its own cost-log entry via log_call's
 `attempt` parameter, so the retry rate is visible in the persistent log, not just inferred
-from a raised exception. This subsumes backlog entries 1, 2 and 4's shared root cause
-(nothing retried a malformed structured-output call) -- but not entry 2's other half: a
-caller that wants one bad row to become a per-item failure record instead of a raised
-exception (e.g. the batch fan-out continuing past one employee) still has to catch
-StructuredOutputError itself. This wrapper's job ends at "retry, then raise clearly."
+from a raised exception. This subsumes backlog entries 2 and 4's shared root cause (nothing
+retried a malformed structured-output call) -- but not entry 2's other half: a caller that
+wants one bad row to become a per-item failure record instead of a raised exception (e.g.
+the batch fan-out continuing past one employee) still has to catch StructuredOutputError
+itself. This wrapper's job ends at "retry, then raise clearly."
+
+Entry 1 specifically -- a leaked tag corrupting a field *without* raising a ValidationError
+at all (its own example: the tag ate the JSON structure and alternative_level came back null
+instead of raising) -- is not caught by the parsing-error retry above, since Pydantic never
+objects. `invoke` below checks the raw tool-call arguments for leaked tag syntax
+independently of whether parsing succeeded, and retries on that too. Every schema's own
+prose fields also run a field validator that strips any leaked syntax on construction
+(agents/text_sanitization.py) -- an independent guarantee, so a value that still leaks after
+every retry is exhausted is used anyway (sanitized) rather than dropping the decision
+entirely, consistent with how a parsing-error retry that never clears still gets a decision
+recorded (StructuredOutputError) rather than silently vanishing.
 """
 
 from __future__ import annotations
@@ -33,6 +44,7 @@ from pydantic import BaseModel
 from agents.cost_logging import log_call
 from agents.llm_cache import get_cached, set_cached
 from agents.spend_guard import get_default_budget
+from agents.text_sanitization import find_leaked_tag_strings
 
 MAX_ATTEMPTS = 3
 
@@ -53,6 +65,19 @@ class StructuredOutputError(Exception):
         )
 
 
+class TagLeakDetected(Exception):
+    """Recorded in an attempt's error list (module docstring's entry-1 fix) when the raw
+    tool call's arguments contained tag-like syntax, even though Pydantic validation itself
+    succeeded. Never raised past `invoke` -- it's collected the same way a genuine
+    ValidationError is, purely so the retry loop below has a uniform reason to point to and
+    StructuredOutputError.attempts stays complete if every attempt ends up exhausted."""
+
+    def __init__(self, schema_name: str, leaked_strings: list[str]):
+        self.schema_name = schema_name
+        self.leaked_strings = leaked_strings
+        super().__init__(f"{schema_name}: tag-like syntax leaked into {len(leaked_strings)} field(s): {leaked_strings!r}")
+
+
 def _detect_provider(llm) -> str:
     if isinstance(llm, ChatAnthropic):
         return "anthropic"
@@ -65,6 +90,20 @@ def _message_content(message) -> str:
     if isinstance(message, dict):
         return str(message.get("content", ""))
     return str(getattr(message, "content", message))
+
+
+def _raw_tool_call_args(raw_message) -> dict:
+    """The raw (pre-Pydantic) arguments dict from a structured-output call's underlying tool
+    call, for scanning independent of whatever the schema's own field validators later do to
+    the parsed object -- confirmed directly against a real ChatAnthropic call:
+    with_structured_output(..., include_raw=True)'s `raw` AIMessage carries `.tool_calls`, a
+    list of {"name", "args", "id"} dicts where `args` is already a parsed dict. Defensive:
+    a raw message with no tool_calls (a shape this wrapper hasn't seen in production, or a
+    test double that doesn't set one) has nothing to scan, not an error."""
+    tool_calls = getattr(raw_message, "tool_calls", None) or []
+    if not tool_calls:
+        return {}
+    return tool_calls[0].get("args", {})
 
 
 def _cache_key_parts(schema: type[BaseModel], messages: list) -> list[str]:
@@ -116,15 +155,34 @@ class _InstrumentedStructuredRunnable:
             )
             get_default_budget().record(logged["cost_usd"])
 
-            if result["parsing_error"] is None:
-                decision = result["parsed"]
-                set_cached(
-                    self._model_name, prompt_parts,
-                    {"decision": decision.model_dump(mode="json"), "input_tokens": input_tokens, "output_tokens": output_tokens},
-                )
-                return decision
+            if result["parsing_error"] is not None:
+                errors.append(result["parsing_error"])
+                continue
 
-            errors.append(result["parsing_error"])
+            leaked = find_leaked_tag_strings(_raw_tool_call_args(result["raw"]))
+            is_last_attempt = attempt == MAX_ATTEMPTS
+            if leaked:
+                # module docstring's entry-1 fix: Pydantic validated cleanly, but the raw
+                # tool call still leaked tag syntax -- a fresh retry is strictly better than
+                # accepting a response known to have glitched mid-generation, so this is
+                # treated the same as a parsing failure for retry purposes.
+                errors.append(TagLeakDetected(self._schema.__name__, leaked))
+                if not is_last_attempt:
+                    continue
+                print(
+                    f"[instrumented_model] {self._schema.__name__}: tag-like syntax leaked "
+                    f"into the raw tool call on the final attempt ({MAX_ATTEMPTS}/{MAX_ATTEMPTS}) "
+                    "-- accepting the field-validator-sanitized result rather than dropping "
+                    "this decision.",
+                    flush=True,
+                )
+
+            decision = result["parsed"]
+            set_cached(
+                self._model_name, prompt_parts,
+                {"decision": decision.model_dump(mode="json"), "input_tokens": input_tokens, "output_tokens": output_tokens},
+            )
+            return decision
 
         raise StructuredOutputError(self._schema.__name__, self._model_name, errors)
 

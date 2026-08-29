@@ -1,0 +1,15 @@
+# Custom theme, built from the dataviz skill's validated palette (references/palette.md)
+# so the app chrome and the Plotly charts on app/Home.py share one set of colors instead of
+# two independently-chosen ones.
+
+[theme]
+base = "light"
+primaryColor = "#2a78d6"
+backgroundColor = "#f9f9f7"
+secondaryBackgroundColor = "#fcfcfb"
+textColor = "#0b0b0b"
+borderColor = "#e1e0d9"
+linkColor = "#2a78d6"
+font = "sans-serif"
+headingFont = "sans-serif"
+baseFontSize = 18

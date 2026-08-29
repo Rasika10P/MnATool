@@ -133,3 +133,30 @@ def test_synthesis_result_accepts_a_real_conflict_requiring_judgment():
 def test_synthesis_result_rejects_requires_human_judgment_with_no_conflicts():
     with pytest.raises(ValidationError):
         SynthesisResult(conflicts=[], recommended_plan="test", requires_human_judgment=True)
+
+
+def test_cost_recommendation_reasoning_strips_leaked_tags():
+    rec = CostRecommendation(strategy="phased", reasoning='Total cost is large. </reasoning>')
+    assert rec.reasoning == "Total cost is large."
+
+
+def test_retention_judgment_reasoning_strips_leaked_tags():
+    judgment = RetentionJudgment(critical_employee_ids=["NYX-011"], reasoning='Distinguished-level scope. <parameter name="x">')
+    assert judgment.reasoning == "Distinguished-level scope."
+
+
+def test_reconciliation_conflict_prose_fields_strip_leaked_tags():
+    conflict = ReconciliationConflict(
+        description='Cost favors phasing. </description>',
+        cost_position="Phase it.",
+        retention_position="Don't.",
+        affected_employee_ids=["NYX-011"],
+    )
+    assert conflict.description == "Cost favors phasing."
+
+
+def test_synthesis_result_recommended_plan_strips_leaked_tags():
+    result = SynthesisResult(
+        conflicts=[], recommended_plan='Fund day-one. </invoke>', requires_human_judgment=False
+    )
+    assert result.recommended_plan == "Fund day-one."
