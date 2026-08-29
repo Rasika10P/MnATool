@@ -608,6 +608,25 @@ def _render_needs_human_summary() -> None:
             st.markdown(f"- **{emp_id}:** {reason}")
 
 
+def _render_leveling_failures_summary() -> None:
+    """error_handling_backlog.md entry 2 / ASSIGNMENT.md's error-handling contract: "a single
+    employee failing to parse ... surface in the UI as a review item." A parsing/leveling
+    failure and a negotiation escalation are different problems -- one means the system
+    couldn't produce a decision at all, the other means it produced one but the two sides
+    disagreed -- so this gets its own heading and its own section, never folded into
+    escalations (which show inline per employee card as "Needs your review", not here)."""
+    failed = {
+        emp["employee_id"]: st.session_state["decisions"][emp["employee_id"]]["error"]
+        for emp in st.session_state["employees"]
+        if "error" in st.session_state["decisions"][emp["employee_id"]]
+    }
+    if not failed:
+        return
+    with st.expander(f"Needs human review — failed to level, not escalated ({len(failed)})"):
+        for emp_id, error in failed.items():
+            st.markdown(f"- **{emp_id}:** {error}")
+
+
 # ---------------------------------------------------------------------------
 # Page
 # ---------------------------------------------------------------------------
@@ -643,6 +662,7 @@ def main() -> None:
     st.divider()
     _render_modeling_summary()
     _render_needs_human_summary()
+    _render_leveling_failures_summary()
 
 
 main()

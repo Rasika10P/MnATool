@@ -55,9 +55,25 @@ the failure mode is that the value never made it into the right field in the fir
 
 ## 2. Structured output missing a required field entirely
 
-**Status:** Partially addressed
+**Status:** Closed -- both halves now fixed
 
-**Update:** `agents/instrumented_model.py`'s `_InstrumentedStructuredRunnable.invoke` now
+**Update 2:** `level_employee` (`agents/leveling_batch_graph.py`) now wraps its whole body
+(the empty-`job_description` check and the `_run_leveling_call` invocation) in a bare
+`except Exception`, not scoped to `StructuredOutputError`/`ValidationError` specifically --
+any per-employee failure, whatever its type, becomes a `{"employee_id": ..., "error": str(e)}`
+decisions entry instead of propagating. Returning a normal state update (never raising) means
+the Send task checkpoints as completed like any other, satisfying this entry's step 3 request
+for a regression test: `tests/test_leveling_batch_graph.py::test_one_forced_failure_among_25_does_not_take_down_the_batch`
+forces employee 12 of 25 to fail via a fault-injecting fake model, confirmed to fail against
+the pre-fix code (the other 24 employees' results were lost along with it) and pass against
+the fix (all 25 complete: 24 real decisions, 1 `error` entry, in one `run_batch` invocation).
+`app/pipeline.py` and `app/Home.py` already expected this exact `"error"` key shape (they'd
+been synthesizing it themselves at the whole-batch-abort level as a stopgap); `app/Home.py`
+gained a dedicated "Needs human review — failed to level, not escalated" summary section,
+separate from any negotiation-escalation status, per ASSIGNMENT.md's "surface in the UI as a
+review item."
+
+**Update 1:** `agents/instrumented_model.py`'s `_InstrumentedStructuredRunnable.invoke` now
 retries any `pydantic.ValidationError` from `with_structured_output` up to `MAX_ATTEMPTS`
 (3) before raising -- this entry's exact failure (a required field missing from the tool
 call) is a `ValidationError`, so it's covered. Every attempt, retries included, gets its own
@@ -65,15 +81,6 @@ call) is a `ValidationError`, so it's covered. Every attempt, retries included, 
 in the persistent JSONL log and in a run's printed session summary (`retries` count),
 covering this entry's step 1 for every agent generically -- not just leveling -- since it
 lives at the model-wrapper layer that every `get_model()` caller already goes through.
-
-What's still open: after all 3 attempts fail, the wrapper raises a new
-`agents.instrumented_model.StructuredOutputError` (clear and typed, but still a raised
-exception) rather than degrading to a per-item failure record. `level_employee`
-(`agents/leveling_batch_graph.py`) still doesn't catch it, so a case that fails all 3
-retries -- rarer now, but not impossible -- would still take down the whole batch fan-out,
-contradicting the same error-handling contract this entry originally cited. Step 2's
-per-employee failure record, scoped to whatever exception type replaces
-`pydantic.ValidationError` in this update (`StructuredOutputError`), is still the open item.
 
 **Observed:** During the batch fan-out kill/resume demo (build order item 3,
 `scripts/batch_kill_demo.py`), a resumed run crashed with an unhandled Pydantic

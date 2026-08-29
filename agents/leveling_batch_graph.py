@@ -7,6 +7,12 @@ same parse-validation + _run_leveling_call as the single-role graph (agents/leve
 -- one employee's failure or slowness doesn't block the others. Results collect into
 `decisions` via an additive reducer, so partial completion (e.g. after a kill) is exactly
 the list of employees who finished, no more and no less.
+
+level_employee catches any exception per task (error_handling_backlog.md entry 2) and
+returns a {"employee_id": ..., "error": str(e)} decisions entry instead of raising -- a
+single employee's structured-output call exhausting its retries, a bad job_description, or
+anything else specific to that one employee never takes the rest of the fan-out down with it.
+See tests/test_leveling_batch_graph.py for the forced-failure regression test.
 """
 
 from __future__ import annotations
@@ -71,17 +77,31 @@ def build_batch_graph(model=None):
         if stagger_seconds:
             time.sleep(stagger_seconds * state["stagger_index"])
 
-        if not state["job_description"].strip():
-            raise ValueError(f"{state['employee_id']}: job_description must not be empty")
+        try:
+            if not state["job_description"].strip():
+                raise ValueError(f"{state['employee_id']}: job_description must not be empty")
 
-        context = SourceOrgContext(**state["source_org_context"]) if state.get("source_org_context") else None
-        decision = _run_leveling_call(
-            state["job_description"], context,
-            LOW_CONFIDENCE_THRESHOLD, HIGH_CONFIDENCE_THRESHOLD,
-            model=model,
-        )
-        print(f"[level_employee] done for {state['employee_id']}", flush=True)
-        return {"decisions": [{"employee_id": state["employee_id"], **decision.model_dump()}]}
+            context = SourceOrgContext(**state["source_org_context"]) if state.get("source_org_context") else None
+            decision = _run_leveling_call(
+                state["job_description"], context,
+                LOW_CONFIDENCE_THRESHOLD, HIGH_CONFIDENCE_THRESHOLD,
+                model=model,
+            )
+            print(f"[level_employee] done for {state['employee_id']}", flush=True)
+            return {"decisions": [{"employee_id": state["employee_id"], **decision.model_dump()}]}
+        except Exception as e:
+            # error_handling_backlog.md entry 2: one employee's structured-output call
+            # exhausting its retries (or any other per-employee failure) must not take the
+            # rest of the fan-out down with it. Returning a normal state update here --
+            # never raising -- lets this Send task checkpoint as completed like any other,
+            # so `decisions`' additive reducer folds this employee's failure record in
+            # alongside every other employee's real decision from the same batch. The "error"
+            # key matches what app/pipeline.py and app/Home.py already check for (they were
+            # built to handle a whole-batch abort producing this same shape per employee;
+            # this is that same contract, now honored per-employee instead of only when the
+            # entire invocation dies).
+            print(f"[level_employee] FAILED for {state['employee_id']}: {e}", flush=True)
+            return {"decisions": [{"employee_id": state["employee_id"], "error": str(e)}]}
 
     graph = StateGraph(BatchState)
     graph.add_node("level_employee", level_employee)
@@ -133,13 +153,13 @@ def run_batch_streaming(
     call it repeatedly, and reusing one thread_id across calls would let a later call's
     `decisions` reducer start from a prior run's accumulated state instead of empty.
 
-    error_handling_backlog.md entry 2: a structured-output call that exhausts its retries
-    still aborts the whole fan-out invocation uncaught -- not fixed at this layer yet. If
-    that happens mid-stream, every employee already streamed to on_employee_done before the
-    failure is kept (the caller already has them); this function still re-raises the
-    underlying exception afterward, same as run_batch would on the same failure -- a caller
-    that wants to keep going with partial results catches it and knows, from what it already
-    received, which employees never got a turn.
+    error_handling_backlog.md entry 2: level_employee itself now catches any per-employee
+    failure (a structured-output call exhausting its retries, an empty job_description,
+    ...) and streams a {"employee_id": ..., "error": str(e)} entry to on_employee_done for
+    that one employee instead of raising -- the rest of the batch keeps streaming normally.
+    Something failing outside any single Send task entirely (e.g. a graph-compile error)
+    would still propagate uncaught here, same as run_batch; that's a different failure class
+    than "one employee's data was bad," which is what this function's contract covers.
     """
     checkpointer = get_checkpointer(db_path)
     app = build_batch_graph().compile(checkpointer=checkpointer)

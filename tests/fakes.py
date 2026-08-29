@@ -111,3 +111,73 @@ class FakeModel:
     def with_structured_output(self, schema, include_raw: bool = False):
         assert schema is self._schema
         return self.raw_structured_model if include_raw else self.structured_model
+
+
+class FakeFaultInjectingModel:
+    """with_structured_output(LevelingDecision).invoke(messages) raises `failure` whenever
+    `fail_when_content_contains` appears in the outgoing messages, and returns `decision`
+    otherwise. Lets a batch-fan-out test (tests/test_leveling_batch_graph.py) force exactly
+    one employee among many to fail, by giving that one employee's job_description a marker
+    string the others don't have -- no bespoke per-employee fake needed, and safe under real
+    concurrent Send tasks since each call only inspects its own messages."""
+
+    def __init__(self, decision: LevelingDecision, failure: Exception, fail_when_content_contains: str):
+        self.model = "fake-fault-injecting-model"
+        self.max_tokens = 2048
+        self._decision = decision
+        self._failure = failure
+        self._trigger = fail_when_content_contains
+
+    def with_structured_output(self, schema, include_raw: bool = False):
+        assert not include_raw, "agents.leveling._run_leveling_call always uses include_raw=False"
+        return self
+
+    def invoke(self, messages):
+        content = " ".join(m["content"] if isinstance(m, dict) else str(m) for m in messages)
+        if self._trigger in content:
+            raise self._failure
+        return self._decision
+
+
+class FakeAIMessage:
+    """Minimal double for what agents/pricing_agent.py reads off a bind_tools response:
+    .content and .tool_calls (a list of {"name", "args", "id"} dicts -- empty once the model
+    is done calling tools, matching a real AIMessage with no tool calls)."""
+
+    def __init__(self, tool_calls: list[dict] | None = None, content: str = ""):
+        self.tool_calls = tool_calls or []
+        self.content = content
+        self.usage_metadata = {"input_tokens": 100, "output_tokens": 50}
+
+
+class FakeBoundTools:
+    """Returned by FakeToolCallingModel.bind_tools. `responses` is one FakeAIMessage per
+    tool-calling turn, in order; the last entry (no tool_calls) repeats if invoked past the
+    end, so a test doesn't need to predict exactly how many turns a loop will take."""
+
+    def __init__(self, responses: list["FakeAIMessage"]):
+        self._responses = responses
+        self.call_count = 0
+
+    def invoke(self, messages):
+        response = self._responses[min(self.call_count, len(self._responses) - 1)]
+        self.call_count += 1
+        return response
+
+
+class FakeToolCallingModel:
+    """Fakes both halves of a bind_tools agent (agents/pricing_agent.py): the tool-calling
+    loop (a fixed sequence of FakeAIMessage turns, ending in one with no tool_calls) and the
+    follow-up with_structured_output call for the final judgment."""
+
+    def __init__(self, tool_call_responses: list[FakeAIMessage], judgment):
+        self.model = "fake-tool-calling-model"
+        self.max_tokens = 2048
+        self._tool_call_responses = tool_call_responses
+        self._judgment = judgment
+
+    def bind_tools(self, tools, context: str | None = None):
+        return FakeBoundTools(self._tool_call_responses)
+
+    def with_structured_output(self, schema):
+        return FakeStructuredModel(self._judgment, include_raw=False)

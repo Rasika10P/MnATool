@@ -187,6 +187,59 @@ class _InstrumentedStructuredRunnable:
         raise StructuredOutputError(self._schema.__name__, self._model_name, errors)
 
 
+class _InstrumentedToolCallingRunnable:
+    """bind_tools' counterpart to _InstrumentedStructuredRunnable above. No schema to
+    validate against and so no retry-on-malformed-output loop (a tool-calling turn is just an
+    AIMessage; there's nothing to parse) -- but the same budget check, cost log entry, and
+    disk cache apply, keyed on (model, full message list) exactly like the structured path,
+    so a repeated tool-calling loop (e.g. re-running a Streamlit demo against the same inputs)
+    is served from cache turn-for-turn rather than re-billed.
+    """
+
+    def __init__(self, llm, tools, context: str):
+        self._bound_llm = llm.bind_tools(tools)
+        self._model_name = getattr(llm, "model", None) or getattr(llm, "model_name", None) or "unknown"
+        self._provider = _detect_provider(llm)
+        self._max_output_tokens = getattr(llm, "max_tokens", None) or 2048
+        self._context = context
+
+    def invoke(self, messages, *args, **kwargs):
+        from langchain_core.messages import AIMessage
+
+        prompt_parts = [_message_content(m) for m in messages]
+
+        cached = get_cached(self._model_name, prompt_parts)
+        if cached is not None:
+            log_call(
+                self._model_name, cached["input_tokens"], cached["output_tokens"],
+                cached=True, context=self._context, provider=self._provider,
+            )
+            return AIMessage(content=cached["content"], tool_calls=cached["tool_calls"])
+
+        get_default_budget().check_before_call(self._model_name, prompt_parts, self._max_output_tokens)
+
+        result = self._bound_llm.invoke(messages, *args, **kwargs)
+        usage = result.usage_metadata or {}
+        input_tokens = usage.get("input_tokens", 0)
+        output_tokens = usage.get("output_tokens", 0)
+        logged = log_call(
+            self._model_name, input_tokens, output_tokens,
+            cached=False, context=self._context, provider=self._provider,
+        )
+        get_default_budget().record(logged["cost_usd"])
+
+        set_cached(
+            self._model_name, prompt_parts,
+            {
+                "content": result.content,
+                "tool_calls": result.tool_calls,
+                "input_tokens": input_tokens,
+                "output_tokens": output_tokens,
+            },
+        )
+        return result
+
+
 class InstrumentedModel:
     """Drop-in wrapper: with_structured_output(schema).invoke(messages) gets caching, cost
     logging, session stats and the spend budget for free. Any other attribute (`.model`,
@@ -199,6 +252,10 @@ class InstrumentedModel:
 
     def with_structured_output(self, schema: type[BaseModel], **kwargs):
         return _InstrumentedStructuredRunnable(self._llm, schema)
+
+    def bind_tools(self, tools, context: str | None = None, **kwargs):
+        context = context or "+".join(sorted(getattr(t, "name", str(t)) for t in tools))
+        return _InstrumentedToolCallingRunnable(self._llm, tools, context)
 
     def __getattr__(self, name):
         return getattr(self._llm, name)
