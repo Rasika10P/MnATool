@@ -31,7 +31,9 @@ from typing import Callable, Optional
 import pandas as pd
 
 from agents.advocate import contest_mapping
+from agents.cost_logging import PRICING
 from agents.leveling_batch_graph import run_batch_streaming
+from agents.model_router import get_model
 from agents.modeling_graph import run_modeling
 from agents.negotiation_graph import run_negotiation
 from agents.schemas import SourceOrgContext
@@ -172,6 +174,39 @@ def resolve_mapping(employee: dict) -> dict:
         "geo_code": geo_code,
         "job_prefix": job_prefix,
     }
+
+
+def estimate_live_run_cost(employees: list[dict]) -> float:
+    """Rough pre-run estimate for a full live crosswalk, shown at the Live-mode confirm step
+    (app/Home.py) before a run that bypasses the cache entirely. Uses the same chars/4 token
+    heuristic agents/spend_guard.py already applies for its own pre-call budget projection,
+    and the same PRICING table agents/cost_logging.py logs actual spend against -- not a
+    number invented for this UI, the same approximation the rest of this codebase already
+    accepts for "how much will this roughly cost before we know the real usage."
+
+    Covers the two stages every employee always goes through (leveling on Claude, scope
+    extraction on Nebius). Negotiation (only contested mappings) and modeling (3 calls total,
+    independent of headcount) are data-dependent -- rather than guess a contested-rate, a
+    flat 1.4x multiplier is applied to the leveling+extraction subtotal, which is what a real
+    live run of this exact 25-employee census actually cost relative to those two stages
+    alone in this project's own development history. This is a heads-up for the confirm
+    step, not a guarantee -- the spend limit is what actually caps a live run, not this
+    number.
+    """
+    claude_model = get_model("judgment").model
+    nebius_model = get_model("volume").model
+    claude_rates = PRICING.get(claude_model, {"input": 0.0, "output": 0.0})
+    nebius_rates = PRICING.get(nebius_model, {"input": 0.0, "output": 0.0})
+
+    subtotal = 0.0
+    for emp in employees:
+        input_tokens = len(emp["job_description"]) // 4
+        # Leveling: Claude, ~400 output tokens is typical for a LevelingDecision's reasoning.
+        subtotal += (input_tokens / 1_000_000) * claude_rates["input"] + (400 / 1_000_000) * claude_rates["output"]
+        # Scope extraction: Nebius, ~300 output tokens is typical for a ScopeProfile.
+        subtotal += (input_tokens / 1_000_000) * nebius_rates["input"] + (300 / 1_000_000) * nebius_rates["output"]
+
+    return subtotal * 1.4
 
 
 def run_leveling_stage(

@@ -1,12 +1,31 @@
 """Shared CLI helpers for population-running scripts: --dry-run reporting, --budget wiring,
-and the end-of-run session summary print. Kept in one place so the pattern (and the abort
-message) is identical everywhere instead of five slightly-different copies.
+--cache-mode wiring, and the end-of-run session summary print. Kept in one place so the
+pattern (and the abort message) is identical everywhere instead of a dozen slightly-different
+copies.
 """
 
 from agents.cost_logging import get_session_stats, reset_session_stats
+from agents.instrumented_model import CACHE_MODE_FILL, VALID_CACHE_MODES, DemoModeCacheMissError, set_cache_mode
 from agents.leveling import would_hit_cache
 from agents.schemas import SourceOrgContext
 from agents.spend_guard import BudgetExceededError, reset_default_budget
+
+
+def add_cache_mode_arg(parser) -> None:
+    """--cache-mode demo|live|fill, defaulting to fill -- the same default agents/
+    instrumented_model.py itself falls back to when nothing sets a mode at all, so a script
+    that never calls this (there shouldn't be any left) behaves identically to one that does
+    and gets the default explicitly."""
+    parser.add_argument(
+        "--cache-mode",
+        choices=VALID_CACHE_MODES,
+        default=CACHE_MODE_FILL,
+        help=(
+            "demo (cache only, never calls the API -- a miss shows as an error, not a real "
+            "call), live (bypass the cache entirely, always call, write results back), "
+            f"fill (cache + call the API only on a miss -- warms the cache; default: {CACHE_MODE_FILL})"
+        ),
+    )
 
 
 def dry_run_report(items: list[tuple[str, str, SourceOrgContext | dict | None]], model=None) -> None:
@@ -39,14 +58,19 @@ def print_session_summary() -> None:
     print(f"{'=' * 70}")
 
 
-def run_with_budget_guard(cap_usd: float, fn) -> None:
-    """Resets the session counter and budget for this run, then calls fn(). Aborts cleanly
-    (a short message, no traceback) if the cap is hit partway through; always prints the
-    session summary afterward, whether the run finished or was aborted."""
+def run_with_budget_guard(cap_usd: float, fn, cache_mode: str = CACHE_MODE_FILL) -> None:
+    """Applies cache_mode (fill by default, matching add_cache_mode_arg's own default),
+    resets the session counter and budget for this run, then calls fn(). Aborts cleanly (a
+    short message, no traceback) on a budget overrun or a demo-mode cache miss; always
+    prints the session summary afterward, whether the run finished or was aborted."""
+    set_cache_mode(cache_mode)
     reset_session_stats()
     reset_default_budget(cap_usd)
     try:
         fn()
+    except DemoModeCacheMissError as e:
+        print(f"\n{'=' * 70}\nRUN ABORTED -- DEMO MODE CACHE MISS\n{'=' * 70}")
+        print(str(e))
     except BudgetExceededError as e:
         print(f"\n{'=' * 70}\nRUN ABORTED -- BUDGET EXCEEDED (cap: ${cap_usd:.2f})\n{'=' * 70}")
         print(str(e))

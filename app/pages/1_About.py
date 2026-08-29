@@ -11,11 +11,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 import streamlit as st
 
-from app.demo_mode import render_and_apply_gate
+from app.demo_mode import render_and_apply_mode_control
 
 st.set_page_config(page_title="About — Meridian Crosswalk", layout="wide")
 
-render_and_apply_gate()
+render_and_apply_mode_control()
 
 st.title("About")
 

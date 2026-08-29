@@ -8,7 +8,7 @@ cache this module reads/writes through to a per-test tmp_path.
 import pytest
 
 import tools.retrieval_tools as retrieval_tools
-from agents.instrumented_model import DemoModeCacheMissError, set_cache_only
+from agents.instrumented_model import CACHE_MODE_DEMO, CACHE_MODE_FILL, CACHE_MODE_LIVE, DemoModeCacheMissError, set_cache_mode
 
 CANDIDATE_MATCH = {
     "id": "SYN-001-ANA-AD-L1",
@@ -32,10 +32,10 @@ class _FakeEmbeddings:
 
 
 @pytest.fixture(autouse=True)
-def reset_cache_only():
-    set_cache_only(False)
+def reset_cache_mode():
+    set_cache_mode(CACHE_MODE_FILL)
     yield
-    set_cache_only(False)
+    set_cache_mode(CACHE_MODE_FILL)
 
 
 def _patch_live_calls(monkeypatch, fake_embeddings, query_calls):
@@ -97,7 +97,7 @@ def test_demo_mode_blocks_a_cache_miss_without_calling_nebius_or_pinecone(monkey
     query_calls = []
     _patch_live_calls(monkeypatch, fake_embeddings, query_calls)
 
-    set_cache_only(True)
+    set_cache_mode(CACHE_MODE_DEMO)
     with pytest.raises(DemoModeCacheMissError):
         retrieval_tools.retrieve_similar_survey_jobs.invoke({"query_text": "never cached", "top_k": 3})
 
@@ -111,8 +111,26 @@ def test_demo_mode_still_serves_a_warm_cache_hit(monkeypatch):
     _patch_live_calls(monkeypatch, fake_embeddings, query_calls)
 
     retrieval_tools.retrieve_similar_survey_jobs.invoke({"query_text": "warm query", "top_k": 3})
-    set_cache_only(True)
+    set_cache_mode(CACHE_MODE_DEMO)
     result = retrieval_tools.retrieve_similar_survey_jobs.invoke({"query_text": "warm query", "top_k": 3})
 
     assert result[0]["survey_code"] == "SYN-001-ANA-AD-L1"
     assert fake_embeddings.call_count == 1
+
+
+def test_live_mode_bypasses_a_warm_cache_hit_and_overwrites_it(monkeypatch):
+    fake_embeddings = _FakeEmbeddings()
+    query_calls = []
+    _patch_live_calls(monkeypatch, fake_embeddings, query_calls)
+
+    retrieval_tools.retrieve_similar_survey_jobs.invoke({"query_text": "warm query", "top_k": 3})
+    set_cache_mode(CACHE_MODE_LIVE)
+    retrieval_tools.retrieve_similar_survey_jobs.invoke({"query_text": "warm query", "top_k": 3})
+
+    assert fake_embeddings.call_count == 2, "live mode must re-embed and re-query even though a cache entry exists"
+    assert len(query_calls) == 2
+
+    # fill mode afterward should see the freshly-overwritten entry, not need another real call.
+    set_cache_mode(CACHE_MODE_FILL)
+    retrieval_tools.retrieve_similar_survey_jobs.invoke({"query_text": "warm query", "top_k": 3})
+    assert fake_embeddings.call_count == 2

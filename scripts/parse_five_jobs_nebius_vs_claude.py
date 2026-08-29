@@ -12,10 +12,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+from agents.instrumented_model import set_cache_mode
 from agents.model_router import get_model
 from agents.schemas import ScopeProfile
 from agents.scope_extraction import extract_scope_profile, would_hit_cache
-from scripts._cli_common import print_session_summary
+from scripts._cli_common import add_cache_mode_arg, print_session_summary
 from scripts.level_five_jobs_via_graph import CASES
 
 
@@ -59,10 +60,11 @@ def _extract_or_report_failure(label: str, description: str, model, provider_lab
         return None
 
 
-def _run(cases, budget: float):
+def _run(cases, budget: float, cache_mode: str):
     from agents.cost_logging import reset_session_stats
     from agents.spend_guard import BudgetExceededError, reset_default_budget
 
+    set_cache_mode(cache_mode)
     reset_session_stats()
     reset_default_budget(budget)
     nebius = get_model("volume")
@@ -84,12 +86,12 @@ def _run(cases, budget: float):
         print_session_summary()
 
 
-def main(limit: int, budget: float, dry_run: bool):
+def main(limit: int, budget: float, dry_run: bool, cache_mode: str):
     cases = CASES[:limit]
     if dry_run:
         _dry_run_report(cases, get_model("volume"), get_model("judgment"))
         return
-    _run(cases, budget)
+    _run(cases, budget, cache_mode)
 
 
 if __name__ == "__main__":
@@ -97,5 +99,6 @@ if __name__ == "__main__":
     parser.add_argument("--limit", type=int, default=3, help="max number of cases to run (default: 3)")
     parser.add_argument("--budget", type=float, default=2.0, help="run cost cap in USD (default: 2.0)")
     parser.add_argument("--dry-run", action="store_true", help="report projected API calls without making them")
+    add_cache_mode_arg(parser)
     args = parser.parse_args()
-    main(args.limit, args.budget, args.dry_run)
+    main(args.limit, args.budget, args.dry_run, args.cache_mode)

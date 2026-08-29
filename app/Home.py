@@ -29,15 +29,16 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from agents.cost_logging import get_session_stats, reset_session_stats
-from agents.instrumented_model import DemoModeCacheMissError
+from agents.instrumented_model import CACHE_MODE_LIVE, DemoModeCacheMissError
 from agents.secrets import sync_secrets_to_env
 from agents.spend_guard import BudgetExceededError, reset_default_budget
-from app.demo_mode import render_and_apply_gate
+from app.demo_mode import render_and_apply_mode_control, render_mode_badge
 from app.pipeline import (
     NYX_LADDER,
     NYX_LADDER_NOTE,
     build_census_template,
     build_modeling_population,
+    estimate_live_run_cost,
     load_census,
     load_level_titles,
     resolve_mapping,
@@ -102,7 +103,7 @@ def _render_framework_reference() -> None:
 # ---------------------------------------------------------------------------
 
 
-def _render_sidebar() -> tuple[float, bool]:
+def _render_sidebar(mode: str, employees: list[dict]) -> tuple[float, bool]:
     with st.sidebar:
         st.header("Census source")
         st.caption("Currently running against the committed Nyx census (25 employees).")
@@ -127,6 +128,12 @@ def _render_sidebar() -> tuple[float, bool]:
 
         st.divider()
         st.header("Run")
+        # Always visible next to the run button, not just in the sidebar's mode control
+        # above -- someone watching a demo should see at a glance whether a run was live
+        # or cached without hunting for it.
+        render_mode_badge(mode)
+        if mode == CACHE_MODE_LIVE:
+            st.caption(f"Estimated cost if run now: ~\\${estimate_live_run_cost(employees):.2f} (approximate)")
         budget_cap = st.number_input("Spend limit (USD)", min_value=0.5, max_value=50.0, value=5.0, step=0.5)
         run_clicked = st.button("Map all 25 employees", type="primary")
         cost_metrics_slot = st.container()
@@ -643,7 +650,7 @@ def _render_leveling_failures_summary() -> None:
 
 
 def main() -> None:
-    render_and_apply_gate()
+    mode = render_and_apply_mode_control()
 
     st.title("Meridian Crosswalk")
     st.caption("Map an acquired workforce into your job architecture — and see the reasoning behind every placement.")
@@ -651,11 +658,40 @@ def main() -> None:
     _render_framework_reference()
     st.divider()
 
-    budget_cap, run_clicked, cost_metrics_slot = _render_sidebar()
+    # Cheap local file read, not an API call -- needed here (not just inside _run_pipeline)
+    # so the Live-mode cost estimate has real job-description text to size against before
+    # anyone clicks anything.
+    employees_for_estimate, _ = load_census()
+    budget_cap, run_clicked, cost_metrics_slot = _render_sidebar(mode, employees_for_estimate)
 
     if run_clicked:
+        if mode == CACHE_MODE_LIVE:
+            st.session_state["pending_live_confirmation"] = True
+        else:
+            with st.container():
+                _run_pipeline(budget_cap)
+
+    if st.session_state.get("pending_live_confirmation"):
         with st.container():
-            _run_pipeline(budget_cap)
+            estimate = estimate_live_run_cost(employees_for_estimate)
+            st.warning(
+                f"**Live mode will make real API calls against your configured keys.** "
+                # Escaped \$ -- Streamlit's markdown renderer treats a pair of bare $ as a
+                # LaTeX math span and mangles everything between them (confirmed directly:
+                # an earlier unescaped version of this string rendered as garbled italics).
+                f"Estimated cost: **~\\${estimate:.2f}** (approximate — negotiation and modeling "
+                f"calls depend on how many mappings end up contested). Your spend limit "
+                f"(\\${budget_cap:.2f}) is still enforced as a hard cap regardless of this estimate."
+            )
+            col_confirm, col_cancel = st.columns([1, 1])
+            with col_confirm:
+                if st.button("Confirm and run live", type="primary"):
+                    st.session_state["pending_live_confirmation"] = False
+                    _run_pipeline(budget_cap)
+            with col_cancel:
+                if st.button("Cancel"):
+                    st.session_state["pending_live_confirmation"] = False
+                    st.rerun()
 
     if not st.session_state.get("has_run"):
         st.info(

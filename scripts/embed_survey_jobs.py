@@ -11,8 +11,11 @@ only projects it into the vector index).
 
 Standalone -- does not import agents/pricing_agent.py or anything that would make this
 runnable from the deployed Streamlit app. This is a maintenance job the deployment owner
-runs locally with their own real Pinecone/Nebius keys, the same category as data/generate.py,
-not a live agent call subject to demo mode's cache-only guard.
+runs locally with their own real Pinecone/Nebius keys, the same category as data/generate.py.
+Not reachable from the deployed app, but --cache-mode still applies (default: fill) since
+get_embedding_model() routes through the same instrumented cache every other call does --
+useful for e.g. --cache-mode live to force a genuine re-embed after fixing something in the
+embedding pipeline itself, even for survey_jobs rows whose text hasn't changed.
 """
 
 import argparse
@@ -23,7 +26,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+from agents.instrumented_model import set_cache_mode
 from agents.model_router import EMBEDDING_DIMENSION, get_embedding_model
+from scripts._cli_common import add_cache_mode_arg
 from tools.vector_store import ensure_index, get_client, upsert_vectors
 
 SURVEY_JOBS_PATH = "data/parquet/survey_jobs.parquet"
@@ -31,7 +36,8 @@ CORPUS_INDEX_NAME = "meridian-survey-jobs"
 BATCH_SIZE = 20  # keeps each upsert request small and each progress print meaningful
 
 
-def main(limit: int | None, batch_size: int) -> None:
+def main(limit: int | None, batch_size: int, cache_mode: str) -> None:
+    set_cache_mode(cache_mode)
     df = pd.read_parquet(SURVEY_JOBS_PATH)
     if limit:
         df = df.head(limit)
@@ -72,5 +78,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--limit", type=int, default=None, help="max survey_jobs rows to embed (default: all 120)")
     parser.add_argument("--batch-size", type=int, default=BATCH_SIZE)
+    add_cache_mode_arg(parser)
     args = parser.parse_args()
-    main(args.limit, args.batch_size)
+    main(args.limit, args.batch_size, args.cache_mode)

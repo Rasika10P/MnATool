@@ -13,14 +13,17 @@ from langchain_openai import ChatOpenAI
 import agents.cost_logging as cost_logging
 from agents.cost_logging import get_session_stats
 from agents.instrumented_model import (
+    CACHE_MODE_DEMO,
+    CACHE_MODE_FILL,
+    CACHE_MODE_LIVE,
     MAX_ATTEMPTS,
     DemoModeCacheMissError,
     InstrumentedModel,
     StructuredOutputError,
     _cache_key_parts,
     _detect_provider,
-    is_cache_only,
-    set_cache_only,
+    get_cache_mode,
+    set_cache_mode,
     would_hit_cache,
 )
 from agents.schemas import FactorRating, LevelingDecision, SourceOrgContext
@@ -287,23 +290,41 @@ def test_other_attributes_fall_through_to_wrapped_model():
     assert wrapped.max_tokens == 2048
 
 
-def test_cache_only_is_off_by_default():
+def test_cache_mode_defaults_to_fill():
     # conftest.py's autouse fixture already resets this before every test, but the claim
     # itself -- existing scripts/agents/tests are unaffected unless something opts in -- is
     # worth asserting directly, not just relying on every other test passing to imply it.
-    assert is_cache_only() is False
+    assert get_cache_mode() == CACHE_MODE_FILL
+
+
+def test_live_mode_bypasses_a_warm_cache_hit_and_overwrites_it():
+    fake = FakeModel(_decision(), model_name="itest-live-1")
+    structured = InstrumentedModel(fake).with_structured_output(LevelingDecision)
+
+    structured.invoke(MESSAGES)  # warms the cache under fill mode
+    set_cache_mode(CACHE_MODE_LIVE)
+    try:
+        structured.invoke(MESSAGES)
+    finally:
+        set_cache_mode(CACHE_MODE_FILL)
+
+    assert fake.raw_structured_model.call_count == 2, "live mode must make a real call even though a cache entry exists"
+
+    # fill mode afterward should see the freshly-written entry, not need another real call.
+    structured.invoke(MESSAGES)
+    assert fake.raw_structured_model.call_count == 2, "the live call's result should have been written back to cache"
 
 
 def test_demo_mode_blocks_a_cache_miss_without_calling_the_model():
     fake = FakeModel(_decision(), model_name="itest-demo-1")
     structured = InstrumentedModel(fake).with_structured_output(LevelingDecision)
 
-    set_cache_only(True)
+    set_cache_mode(CACHE_MODE_DEMO)
     try:
         with pytest.raises(DemoModeCacheMissError):
             structured.invoke(MESSAGES)
     finally:
-        set_cache_only(False)
+        set_cache_mode(CACHE_MODE_FILL)
 
     assert fake.raw_structured_model.call_count == 0, "demo mode must never reach the real model on a cache miss"
 
@@ -313,11 +334,11 @@ def test_demo_mode_still_serves_a_warm_cache_hit():
     structured = InstrumentedModel(fake).with_structured_output(LevelingDecision)
 
     structured.invoke(MESSAGES)  # warms the cache while cache-only is off
-    set_cache_only(True)
+    set_cache_mode(CACHE_MODE_DEMO)
     try:
         result = structured.invoke(MESSAGES)
     finally:
-        set_cache_only(False)
+        set_cache_mode(CACHE_MODE_FILL)
 
     assert result.model_dump() == _decision().model_dump()
     assert fake.raw_structured_model.call_count == 1, "the second call should be the cache hit, not a second real call"
@@ -348,12 +369,12 @@ def test_demo_mode_blocks_a_tool_calling_cache_miss_without_calling_the_model():
     raw = _RawToolCallingFake([FakeAIMessage(content="done")])
     bound = InstrumentedModel(raw).bind_tools([], context="itest-tool-demo-1")
 
-    set_cache_only(True)
+    set_cache_mode(CACHE_MODE_DEMO)
     try:
         with pytest.raises(DemoModeCacheMissError):
             bound.invoke(MESSAGES)
     finally:
-        set_cache_only(False)
+        set_cache_mode(CACHE_MODE_FILL)
 
 
 def test_demo_mode_still_serves_a_warm_tool_calling_cache_hit():
@@ -363,13 +384,31 @@ def test_demo_mode_still_serves_a_warm_tool_calling_cache_hit():
     bound = InstrumentedModel(raw).bind_tools([], context="itest-tool-demo-2")
 
     bound.invoke(MESSAGES)  # warms the cache while cache-only is off
-    set_cache_only(True)
+    set_cache_mode(CACHE_MODE_DEMO)
     try:
         result = bound.invoke(MESSAGES)
     finally:
-        set_cache_only(False)
+        set_cache_mode(CACHE_MODE_FILL)
 
     assert result.content == "done"
+
+
+def test_live_mode_bypasses_a_warm_tool_calling_cache_hit():
+    from tests.fakes import FakeAIMessage, FakeBoundTools
+
+    raw = _RawToolCallingFake([FakeAIMessage(content="first"), FakeAIMessage(content="second")])
+    bound = InstrumentedModel(raw).bind_tools([], context="itest-tool-live-1")
+
+    first = bound.invoke(MESSAGES)  # warms the cache under fill mode
+    assert first.content == "first"
+
+    set_cache_mode(CACHE_MODE_LIVE)
+    try:
+        second = bound.invoke(MESSAGES)
+    finally:
+        set_cache_mode(CACHE_MODE_FILL)
+
+    assert second.content == "second", "live mode must make a real (fresh) call, not return the cached first response"
 
 
 class _RawEmbeddingsFake:
@@ -407,12 +446,12 @@ def test_demo_mode_blocks_an_embedding_cache_miss_without_calling_the_model():
     raw = _RawEmbeddingsFake({"never cached": [0.0]})
     wrapped = InstrumentedModel(raw)
 
-    set_cache_only(True)
+    set_cache_mode(CACHE_MODE_DEMO)
     try:
         with pytest.raises(DemoModeCacheMissError):
             wrapped.embed_documents(["never cached"])
     finally:
-        set_cache_only(False)
+        set_cache_mode(CACHE_MODE_FILL)
 
     assert raw.call_count == 0, "demo mode must never reach the real embeddings client on a miss"
 
@@ -422,11 +461,33 @@ def test_demo_mode_still_serves_a_warm_embedding_cache_hit():
     wrapped = InstrumentedModel(raw)
 
     wrapped.embed_documents(["warm"])  # warms the cache while cache-only is off
-    set_cache_only(True)
+    set_cache_mode(CACHE_MODE_DEMO)
     try:
         result = wrapped.embed_documents(["warm"])
     finally:
-        set_cache_only(False)
+        set_cache_mode(CACHE_MODE_FILL)
 
     assert result == [[9.0, 9.0]]
     assert raw.call_count == 1
+
+
+def test_live_mode_bypasses_a_warm_embedding_cache_hit_and_overwrites_it():
+    raw = _RawEmbeddingsFake({"text": [1.0, 1.0]})
+    wrapped = InstrumentedModel(raw)
+
+    wrapped.embed_documents(["text"])  # warms the cache under fill mode
+    raw._vectors_by_text["text"] = [2.0, 2.0]  # a "changed" embedding for the same input
+
+    set_cache_mode(CACHE_MODE_LIVE)
+    try:
+        live_result = wrapped.embed_documents(["text"])
+    finally:
+        set_cache_mode(CACHE_MODE_FILL)
+
+    assert live_result == [[2.0, 2.0]], "live mode must call the real client, not return the stale cached vector"
+    assert raw.call_count == 2
+
+    # fill mode afterward should see the freshly-overwritten entry, not the original.
+    filled_result = wrapped.embed_documents(["text"])
+    assert filled_result == [[2.0, 2.0]]
+    assert raw.call_count == 2

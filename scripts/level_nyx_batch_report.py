@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from agents.leveling_batch_graph import run_batch
-from scripts._cli_common import dry_run_report, run_with_budget_guard
+from scripts._cli_common import add_cache_mode_arg, dry_run_report, run_with_budget_guard
 from scripts.level_nyx_batch import load_nyx_employees
 
 
@@ -41,7 +41,7 @@ def _run(employees):
     print(f"{'=' * 78}")
 
 
-def main(limit: int, budget: float, dry_run: bool):
+def main(limit: int, budget: float, dry_run: bool, cache_mode: str):
     employees = load_nyx_employees()[:limit]
     print(f"loaded {len(employees)} Nyx employees (limit={limit})")
 
@@ -50,7 +50,7 @@ def main(limit: int, budget: float, dry_run: bool):
         dry_run_report(items)
         return
 
-    run_with_budget_guard(budget, lambda: _run(employees))
+    run_with_budget_guard(budget, lambda: _run(employees), cache_mode=cache_mode)
 
 
 if __name__ == "__main__":
@@ -58,5 +58,6 @@ if __name__ == "__main__":
     parser.add_argument("--limit", type=int, default=3, help="max number of Nyx employees to run (default: 3)")
     parser.add_argument("--budget", type=float, default=2.0, help="run cost cap in USD (default: 2.0)")
     parser.add_argument("--dry-run", action="store_true", help="report projected API calls without making them")
+    add_cache_mode_arg(parser)
     args = parser.parse_args()
-    main(args.limit, args.budget, args.dry_run)
+    main(args.limit, args.budget, args.dry_run, args.cache_mode)

@@ -7,9 +7,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+from agents.instrumented_model import DemoModeCacheMissError, set_cache_mode
 from agents.leveling_batch_graph import DEFAULT_BATCH_CHECKPOINT_DB, build_batch_graph, get_checkpointer
 from agents.spend_guard import BudgetExceededError, reset_default_budget
-from scripts._cli_common import dry_run_report, print_session_summary
+from scripts._cli_common import add_cache_mode_arg, dry_run_report, print_session_summary
 from scripts.level_nyx_batch import load_nyx_employees
 
 parser = argparse.ArgumentParser()
@@ -17,6 +18,7 @@ parser.add_argument("thread_id")
 parser.add_argument("--limit", type=int, default=3, help="max number of Nyx employees to run (default: 3)")
 parser.add_argument("--budget", type=float, default=2.0, help="run cost cap in USD (default: 2.0)")
 parser.add_argument("--dry-run", action="store_true", help="report projected API calls without making them")
+add_cache_mode_arg(parser)
 args = parser.parse_args()
 thread_id = args.thread_id
 
@@ -27,6 +29,7 @@ if args.dry_run:
     dry_run_report(items)
     raise SystemExit(0)
 
+set_cache_mode(args.cache_mode)
 reset_default_budget(args.budget)
 checkpointer = get_checkpointer(DEFAULT_BATCH_CHECKPOINT_DB)
 app = build_batch_graph().compile(checkpointer=checkpointer)
@@ -36,6 +39,9 @@ try:
     result = app.invoke({"employees": employees, "decisions": []}, config, durability="sync")
     print("BATCH COMPLETED (should not print if the controller killed this process in time)")
     print(f"decisions: {len(result['decisions'])}")
+except DemoModeCacheMissError as e:
+    print(f"\n{'=' * 70}\nRUN ABORTED -- DEMO MODE CACHE MISS\n{'=' * 70}")
+    print(str(e))
 except BudgetExceededError as e:
     print(f"\n{'=' * 70}\nRUN ABORTED -- BUDGET EXCEEDED (cap: ${args.budget:.2f})\n{'=' * 70}")
     print(str(e))

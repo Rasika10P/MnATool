@@ -21,7 +21,7 @@ def isolate_llm_cache_and_cost_log(tmp_path, monkeypatch):
     cost_logging.reset_session_stats()
     spend_guard.reset_default_budget()
     # pytest runs a test module's tests in one thread, so instrumented_model's thread-local
-    # demo-mode flag (agents/instrumented_model.py) would otherwise persist from whatever a
-    # prior test last set it to -- reset to the real default (cache-only OFF) before every
-    # test, same "no test's state leaks into another's" discipline as everything else here.
-    instrumented_model.set_cache_only(False)
+    # cache mode (agents/instrumented_model.py) would otherwise persist from whatever a
+    # prior test last set it to -- reset to the real default ("fill") before every test,
+    # same "no test's state leaks into another's" discipline as everything else here.
+    instrumented_model.set_cache_mode(instrumented_model.CACHE_MODE_FILL)

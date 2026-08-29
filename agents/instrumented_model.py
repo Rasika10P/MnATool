@@ -50,33 +50,55 @@ from agents.text_sanitization import find_leaked_tag_strings
 
 MAX_ATTEMPTS = 3
 
-# Demo-mode enforcement: when active, a cache miss raises instead of making a real call --
-# not a soft warning, since demo mode's whole guarantee (a public Streamlit Cloud visitor
-# with no unlock password can never spend the deployed owner's API budget) depends on this
-# being unconditional. Thread-local, not a plain module global: Streamlit runs each active
-# session's script execution in its own thread, and a plain global would leak one user's
-# unlocked live mode into every other concurrent user's session on the same deployment.
+# Three cache modes, one active at a time per thread:
+#   demo -- read cache only. A miss raises DemoModeCacheMissError instead of ever making a
+#           real call. The safety mechanism behind Streamlit Cloud's public demo: a visitor
+#           with no unlock password can never spend the deployed owner's API budget.
+#   live -- bypass the cache entirely, even on what would be a hit: always makes a real call,
+#           then overwrites the cache entry with the fresh result. For "I changed something
+#           and need a genuinely fresh answer," not just "warm what's missing."
+#   fill -- read cache where available, call the API only on a miss, write the result back.
+#           This is every call shape's original (pre-demo-mode) behavior, and stays the
+#           default so no existing script, test, or non-Streamlit call path changes unless
+#           something explicitly opts into demo or live.
 #
-# Defaults to False (cache-only OFF) so every existing script, test, and non-Streamlit call
-# path keeps its original behavior unchanged -- this is an opt-in Streamlit-deployment safety
-# feature, not a system-wide default. app/demo_mode.py's render_and_apply_gate() is what
-# turns it on, and it must run at the top of every Streamlit page that could reach a model
-# call, before that page does anything else -- the same "you must call this" discipline this
-# codebase already expects of reset_session_stats()/reset_default_budget() at the top of a run.
+# Thread-local, not a plain module global: Streamlit runs each active session's script
+# execution in its own thread, and a plain global would leak one user's mode into every other
+# concurrent user's session on the same deployment. app/demo_mode.py's render_and_apply_mode_control()
+# applies the UI's chosen mode, and it must run at the top of every Streamlit page that could
+# reach a model call, before that page does anything else -- the same "you must call this"
+# discipline this codebase already expects of reset_session_stats()/reset_default_budget() at
+# the top of a run, since a mode set on one script run does not persist to the next.
+CACHE_MODE_DEMO = "demo"
+CACHE_MODE_LIVE = "live"
+CACHE_MODE_FILL = "fill"
+VALID_CACHE_MODES = (CACHE_MODE_DEMO, CACHE_MODE_LIVE, CACHE_MODE_FILL)
+
 _thread_local = threading.local()
 
 
-def set_cache_only(enabled: bool) -> None:
-    _thread_local.cache_only = enabled
+def set_cache_mode(mode: str) -> None:
+    if mode not in VALID_CACHE_MODES:
+        raise ValueError(f"Unknown cache mode: {mode!r} -- must be one of {VALID_CACHE_MODES}")
+    _thread_local.cache_mode = mode
 
 
-def is_cache_only() -> bool:
-    return getattr(_thread_local, "cache_only", False)
+def get_cache_mode() -> str:
+    return getattr(_thread_local, "cache_mode", CACHE_MODE_FILL)
+
+
+def read_cache_for_mode(model_name: str, prompt_parts: list[str], mode: str):
+    """None in live mode unconditionally -- live's whole point is bypassing a cache entry
+    even when one already exists, not just filling what's missing. demo and fill both read
+    normally; they differ only in what happens next on a miss (see call sites below)."""
+    if mode == CACHE_MODE_LIVE:
+        return None
+    return get_cached(model_name, prompt_parts)
 
 
 class DemoModeCacheMissError(RuntimeError):
-    """Raised instead of making a real model call when cache-only ("demo") mode is active
-    and this exact (model, schema-or-tools, messages) isn't already in the warmed cache."""
+    """Raised instead of making a real model call when cache mode is "demo" and this exact
+    (model, schema-or-tools, messages) isn't already in the warmed cache."""
 
 
 class StructuredOutputError(Exception):
@@ -160,8 +182,9 @@ class _InstrumentedStructuredRunnable:
 
     def invoke(self, messages, *args, **kwargs):
         prompt_parts = _cache_key_parts(self._schema, messages)
+        mode = get_cache_mode()
 
-        cached = get_cached(self._model_name, prompt_parts)
+        cached = read_cache_for_mode(self._model_name, prompt_parts, mode)
         if cached is not None:
             log_call(
                 self._model_name, cached["input_tokens"], cached["output_tokens"],
@@ -169,11 +192,11 @@ class _InstrumentedStructuredRunnable:
             )
             return self._schema(**cached["decision"])
 
-        if is_cache_only():
+        if mode == CACHE_MODE_DEMO:
             raise DemoModeCacheMissError(
                 f"Demo mode is active (no live API calls allowed) and this exact "
                 f"{self._schema.__name__} call against {self._model_name} isn't in the "
-                "warmed cache. Unlock live mode to run it for real."
+                "warmed cache. Switch to Live to run it for real."
             )
 
         errors: list[Exception] = []
@@ -244,8 +267,9 @@ class _InstrumentedToolCallingRunnable:
         from langchain_core.messages import AIMessage
 
         prompt_parts = [_message_content(m) for m in messages]
+        mode = get_cache_mode()
 
-        cached = get_cached(self._model_name, prompt_parts)
+        cached = read_cache_for_mode(self._model_name, prompt_parts, mode)
         if cached is not None:
             log_call(
                 self._model_name, cached["input_tokens"], cached["output_tokens"],
@@ -253,10 +277,10 @@ class _InstrumentedToolCallingRunnable:
             )
             return AIMessage(content=cached["content"], tool_calls=cached["tool_calls"])
 
-        if is_cache_only():
+        if mode == CACHE_MODE_DEMO:
             raise DemoModeCacheMissError(
                 f"Demo mode is active (no live API calls allowed) and this tool-calling turn "
-                f"against {self._model_name} isn't in the warmed cache. Unlock live mode to "
+                f"against {self._model_name} isn't in the warmed cache. Switch to Live to "
                 "run it for real."
             )
 
@@ -306,8 +330,9 @@ class _InstrumentedEmbeddingsRunnable:
 
     def embed_documents(self, texts: list[str]) -> list[list[float]]:
         prompt_parts = [self._model_name] + list(texts)
+        mode = get_cache_mode()
 
-        cached = get_cached(self._model_name, prompt_parts)
+        cached = read_cache_for_mode(self._model_name, prompt_parts, mode)
         if cached is not None:
             log_call(
                 self._model_name, cached["input_tokens"], 0,
@@ -315,11 +340,11 @@ class _InstrumentedEmbeddingsRunnable:
             )
             return cached["vectors"]
 
-        if is_cache_only():
+        if mode == CACHE_MODE_DEMO:
             raise DemoModeCacheMissError(
                 f"Demo mode is active (no live API calls allowed) and this embedding call "
                 f"against {self._model_name} ({len(texts)} text(s)) isn't in the warmed cache. "
-                "Unlock live mode to run it for real."
+                "Switch to Live to run it for real."
             )
 
         estimated_input_tokens = sum(len(t) for t in texts) // 4

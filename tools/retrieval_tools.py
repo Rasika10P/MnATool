@@ -14,21 +14,26 @@ senior/principal analog role's top match came back an Associate Engineer posting
 matches scoring within 0.01 of each other) -- exactly why final judgment stays with the
 agent, not this function.
 
-Demo-mode note: agents.model_router.get_embedding_model() already enforces the cache-only
-guard for the embedding half of this call, but Pinecone's own query is a second live network
+Cache mode note: agents.model_router.get_embedding_model() already applies the active cache
+mode to the embedding half of this call, but Pinecone's own query is a second live network
 call with no such guard of its own -- InstrumentedModel wraps model calls, not arbitrary tool
-functions. This module caches and gates the whole (query_text, top_k) result as one unit,
-directly against agents.llm_cache/agents.instrumented_model's primitives, so a demo-mode
+functions. This module caches and mode-gates the whole (query_text, top_k) result as one
+unit, directly against agents.llm_cache/agents.instrumented_model's primitives, so a demo-mode
 visitor can't reach a live Pinecone call just because the embedding half happened to be a
-cache hit.
+cache hit, and so live mode genuinely bypasses both halves rather than just one.
 """
 
 from __future__ import annotations
 
 from langchain_core.tools import tool
 
-from agents.instrumented_model import DemoModeCacheMissError, is_cache_only
-from agents.llm_cache import get_cached, set_cached
+from agents.instrumented_model import (
+    CACHE_MODE_DEMO,
+    DemoModeCacheMissError,
+    get_cache_mode,
+    read_cache_for_mode,
+)
+from agents.llm_cache import set_cached
 from agents.model_router import get_embedding_model
 from agents.secrets import get_secret
 from tools.vector_store import get_client, query_similar
@@ -39,15 +44,16 @@ _CACHE_MODEL_KEY = f"pinecone:{CORPUS_INDEX_NAME}"
 
 def _retrieve(query_text: str, top_k: int) -> list[dict]:
     prompt_parts = [query_text, str(top_k)]
+    mode = get_cache_mode()
 
-    cached = get_cached(_CACHE_MODEL_KEY, prompt_parts)
+    cached = read_cache_for_mode(_CACHE_MODEL_KEY, prompt_parts, mode)
     if cached is not None:
         return cached["candidates"]
 
-    if is_cache_only():
+    if mode == CACHE_MODE_DEMO:
         raise DemoModeCacheMissError(
             f"Demo mode is active (no live API calls allowed) and this retrieval query "
-            f"({query_text!r}, top_k={top_k}) isn't in the warmed cache. Unlock live mode "
+            f"({query_text!r}, top_k={top_k}) isn't in the warmed cache. Switch to Live "
             "to run it for real."
         )
 

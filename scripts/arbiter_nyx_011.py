@@ -29,7 +29,7 @@ from agents.advocate import contest_mapping
 from agents.arbiter import rule as arbiter_rule
 from agents.leveling import level_role
 from agents.schemas import SourceOrgContext
-from scripts._cli_common import run_with_budget_guard
+from scripts._cli_common import add_cache_mode_arg, run_with_budget_guard
 
 CENSUS_PATH = "data/parquet/nyx_census.xlsx"
 ACQUISITION_CONTEXT_PATH = "data/parquet/acquisition_context.parquet"
@@ -86,5 +86,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--employee-id", default="NYX-011", help="Nyx census Emp ID (default: NYX-011)")
     parser.add_argument("--budget", type=float, default=1.0, help="run cost cap in USD (default: 1.0)")
+    add_cache_mode_arg(parser)
     args = parser.parse_args()
-    run_with_budget_guard(args.budget, lambda: run(args.employee_id))
+    run_with_budget_guard(args.budget, lambda: run(args.employee_id), cache_mode=args.cache_mode)

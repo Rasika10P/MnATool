@@ -28,7 +28,7 @@ load_dotenv()
 from agents.leveling import level_role
 from agents.modeling_graph import run_modeling
 from agents.schemas import SourceOrgContext
-from scripts._cli_common import run_with_budget_guard
+from scripts._cli_common import add_cache_mode_arg, run_with_budget_guard
 
 CENSUS_PATH = "data/parquet/nyx_census.xlsx"
 ACQUISITION_CONTEXT_PATH = "data/parquet/acquisition_context.parquet"
@@ -126,5 +126,6 @@ def run() -> None:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--budget", type=float, default=2.0, help="run cost cap in USD (default: 2.0)")
+    add_cache_mode_arg(parser)
     args = parser.parse_args()
-    run_with_budget_guard(args.budget, run)
+    run_with_budget_guard(args.budget, run, cache_mode=args.cache_mode)

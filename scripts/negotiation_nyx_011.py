@@ -30,7 +30,7 @@ load_dotenv()
 
 from agents.negotiation_graph import run_negotiation
 from agents.schemas import SourceOrgContext
-from scripts._cli_common import run_with_budget_guard
+from scripts._cli_common import add_cache_mode_arg, run_with_budget_guard
 from tools.data_access import lookup_salary_structure
 
 CENSUS_PATH = "data/parquet/nyx_census.xlsx"
@@ -129,5 +129,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--employee-id", default="NYX-011", help="Nyx census Emp ID (default: NYX-011)")
     parser.add_argument("--budget", type=float, default=2.0, help="run cost cap in USD (default: 2.0)")
+    add_cache_mode_arg(parser)
     args = parser.parse_args()
-    run_with_budget_guard(args.budget, lambda: run(args.employee_id))
+    run_with_budget_guard(args.budget, lambda: run(args.employee_id), cache_mode=args.cache_mode)
