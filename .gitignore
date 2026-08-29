@@ -1,0 +1,15 @@
+.env
+.env.local
+*.duckdb
+*.sqlite
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+*.parquet
+data/llm_cache/
+data/llm_cost_log.jsonl
+__pycache__/
+.venv/
+.streamlit/secrets.toml
+.DS_Store
+.pytest_cache/

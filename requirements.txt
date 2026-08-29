@@ -1,0 +1,12 @@
+python-dotenv
+pandas
+numpy
+pyarrow
+duckdb
+openpyxl
+
+langchain-core
+langchain-anthropic
+pydantic
+
+pytest
