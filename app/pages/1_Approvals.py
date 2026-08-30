@@ -107,25 +107,40 @@ def _proposal_for(emp: dict) -> dict:
 
 def _render_pause_payload(emp: dict, payload: dict) -> None:
     st.markdown(f"**{emp['employee_id']} · {emp['job_title']}**")
+    st.caption(
+        "The system worked this out on its own — nothing has been saved yet. Read what it "
+        "found below, then approve it, change the level yourself, or reject it."
+    )
     col1, col2 = st.columns(2)
     with col1:
         st.markdown(f"- **Proposed level:** {payload['assigned_level']}")
-        st.markdown(f"- **Confidence:** {payload['confidence']:.2f}")
-        st.markdown(f"- **Governing rule:** {payload['governing_rule']}")
+        st.markdown(
+            f"- **Confidence:** {payload['confidence']:.2f} "
+            "(how sure the system is, from 0 to 1 — the closer to 1, the more sure)"
+        )
+        st.markdown(f"- **Why this level:** {payload['governing_rule']}")
         if payload["alternative_considered"]:
-            st.markdown(f"- **Alternative considered:** {payload['alternative_considered']}")
+            st.markdown(
+                f"- **Also considered:** {payload['alternative_considered']} "
+                "(a level it weighed but decided against)"
+            )
     with col2:
         if payload["negotiation_context"]:
             ctx = payload["negotiation_context"]
-            st.markdown("**Both positions (contested)**")
-            st.markdown(f"- Nyx's own level: {ctx['nyx_level']}")
-            st.markdown(f"- Our crosswalk proposal: {ctx['crosswalk_level']}")
-            st.markdown(f"- Nyx's advocate argued for: {ctx['advocate_proposed_level']}")
-            st.markdown(f"- Negotiated verdict: {ctx['final_verdict']} ({ctx['round_count']} round(s))")
+            st.markdown("**Both sides' positions** — Nyx pushed back on this mapping, so here's how each side saw it:")
+            st.markdown(f"- Nyx's own title says: {ctx['nyx_level']}")
+            st.markdown(f"- We originally proposed: {ctx['crosswalk_level']}")
+            st.markdown(f"- Nyx argued it should be: {ctx['advocate_proposed_level']}")
+            st.markdown(f"- Where it landed: {ctx['final_verdict']} (after {ctx['round_count']} round(s) of back-and-forth)")
         else:
-            st.markdown("**Uncontested** — Nyx did not contest this mapping.")
+            st.markdown("**No dispute** — Nyx didn't push back on this mapping.")
 
-    with st.expander("Evidence (factor ratings)"):
+    with st.expander("See the detailed evidence"):
+        st.caption(
+            "Each row is one factor from the leveling framework (scope, autonomy, complexity, "
+            "and so on) and the level that factor's evidence points to on its own — this is "
+            "what the proposed level above is built from."
+        )
         st.dataframe(pd.DataFrame(payload["factor_ratings"]), hide_index=True, width="stretch")
 
 
@@ -194,8 +209,8 @@ def _render_employee_approval(emp: dict) -> None:
 
 
 def _render_persisted_table() -> None:
-    st.subheader("What's actually in leveling_decisions")
-    st.caption(f"Live query against {DEFAULT_DB_PATH} — proves the write only happens after approval, not before.")
+    st.subheader("What's actually been recorded")
+    st.caption("A live look at every approved mapping — proves nothing gets written until you approve it.")
     if not DEFAULT_DB_PATH.exists():
         st.info("No decisions written yet.")
         return
