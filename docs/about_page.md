@@ -1,32 +1,5 @@
-"""Static reference page: the problem, the architecture, the agents, the gates, the
-frameworks, what's synthetic. No pipeline calls here -- content only.
+# About this project
 
-Content is the project's own docs/about_page.md, split around the architecture diagram
-(docs/architecture.svg) rather than duplicated by hand -- if the doc changes, this page
-should be updated to match rather than drifting into its own copy.
-"""
-
-from __future__ import annotations
-
-import sys
-from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
-
-import streamlit as st
-
-from app.demo_mode import render_and_apply_mode_control
-
-DOCS_DIR = Path(__file__).resolve().parent.parent.parent / "docs"
-
-st.set_page_config(page_title="About — Meridian Crosswalk", layout="wide")
-
-render_and_apply_mode_control()
-
-st.title("About")
-
-st.markdown(
-    """
 ## The problem
 
 When an acquisition closes, the compensation team has about ninety days to answer a question that sounds simple: where does each acquired employee belong in our job architecture?
@@ -42,22 +15,6 @@ This tool does that work, and shows its reasoning.
 ## The agent, in one line
 
 > This agent helps a compensation manager map an acquired company's workforce into our job architecture, replacing the three to four weeks of manual spreadsheet leveling that follows every acquisition. It parses each employee's role from a messy census, levels it against our framework, and negotiates contested mappings between two incompatible frameworks on its own using six tools. It hands off to a human when a role has no equivalent, when the two sides can't agree after two rounds, and before any decision is written.
-
----
-
-## Architecture
-"""
-)
-
-svg_path = DOCS_DIR / "architecture.svg"
-if svg_path.exists():
-    st.image(str(svg_path), width="stretch")
-else:
-    st.info("Architecture diagram not found at docs/architecture.svg.")
-
-st.markdown(
-    """
-Three stages in a checkpointed LangGraph pipeline. Judgment runs on Claude, extraction on an open model via Nebius, and every calculation runs in deterministic Python.
 
 ---
 
@@ -126,5 +83,3 @@ That's deliberate. Real survey data is licensed and can't be used in a system li
 Orchestration is LangGraph, checkpointed so a run can be interrupted and resumed rather than restarted. No model computes a pay figure anywhere: compa-ratio, range placement, currency conversion and cost roll-ups are deterministic functions with tests, and every number traces to a source row.
 
 Runs can be replayed from cache at no cost, which is how the demo works. A live run makes real model calls and shows what it spent.
-"""
-)

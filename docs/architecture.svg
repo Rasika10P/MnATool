@@ -1,0 +1,110 @@
+<svg width="100%" viewBox="0 0 900 790" xmlns="http://www.w3.org/2000/svg" role="img">
+<title>Meridian Crosswalk architecture</title>
+<desc>A Streamlit app feeds a checkpointed LangGraph pipeline with three stages — leveling fan-out, negotiation, and modeling — reading from DuckDB, deterministic comp functions and a Pinecone survey index. Four human gates pause the graph; two are wired into the UI.</desc>
+<defs>
+<marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1 1L9 5L1 9" fill="none" stroke="#6366f1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker>
+<marker id="a2g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M1 1L9 5L1 9" fill="none" stroke="#a1a1aa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker>
+</defs>
+<style>
+.h2{font:600 15px ui-sans-serif,system-ui,sans-serif;fill:#4338ca}
+.t2{font:500 13px ui-sans-serif,system-ui,sans-serif;fill:#27272a}
+.s2{font:11px ui-sans-serif,system-ui,sans-serif;fill:#71717a}
+.c2{font:600 13px ui-sans-serif,system-ui,sans-serif;fill:#4338ca}
+.n2{font:italic 11px ui-sans-serif,system-ui,sans-serif;fill:#8b8b93}
+.bx2{fill:#ffffff;stroke:#d4d4d8;stroke-width:1}
+.ln2{stroke:#6366f1;stroke-width:1.6;fill:none}
+.lg2{stroke:#a1a1aa;stroke-width:1.4;fill:none;stroke-dasharray:5 4}
+</style>
+
+<rect x="45" y="26" width="330" height="66" rx="9" fill="#ffffff" stroke="#4f46e5" stroke-width="1.6"/>
+<text class="c2" x="210" y="48" text-anchor="middle">Meridian Crosswalk</text>
+<text class="s2" x="210" y="66" text-anchor="middle">Streamlit · upload, results, transcripts</text>
+<text class="s2" x="210" y="82" text-anchor="middle">demo · fill gaps · live</text>
+
+<rect x="470" y="26" width="385" height="66" rx="9" fill="#eef2ff" stroke="#4f46e5" stroke-width="1.4"/>
+<text class="c2" x="662" y="46" text-anchor="middle">Human gates — interrupt()</text>
+<text class="s2" x="662" y="64" text-anchor="middle">no equivalent role · final approval — in the UI</text>
+<text class="s2" x="662" y="80" text-anchor="middle">round limit · column mapping — in the graph</text>
+
+<line x1="210" y1="92" x2="210" y2="132" class="ln2" marker-end="url(#a2)"/>
+<path d="M775 138 L775 114 Q775 104 765 104 L700 104 L700 94" class="lg2" marker-end="url(#a2g)"/>
+
+<rect x="40" y="138" width="820" height="400" rx="16" fill="#ede9fe" stroke="#c4b5fd" stroke-width="1.2"/>
+<text class="h2" x="450" y="166" text-anchor="middle">LangGraph pipeline</text>
+<text class="s2" x="450" y="184" text-anchor="middle">SqliteSaver checkpointer · resumable mid-run · one failure never kills the batch</text>
+
+<rect x="65" y="204" width="170" height="54" rx="8" fill="#ffffff" stroke="#a5b4fc" stroke-width="1.4"/>
+<text class="t2" x="150" y="224" text-anchor="middle">Stage 1 · Leveling</text>
+<text class="s2" x="150" y="242" text-anchor="middle">Send fan-out × 25</text>
+<rect x="265" y="204" width="170" height="54" rx="8" class="bx2"/>
+<text class="t2" x="350" y="224" text-anchor="middle">parse</text>
+<text class="s2" x="350" y="242" text-anchor="middle">Nebius · extraction</text>
+<rect x="455" y="204" width="170" height="54" rx="8" class="bx2"/>
+<text class="t2" x="540" y="224" text-anchor="middle">level</text>
+<text class="s2" x="540" y="242" text-anchor="middle">Claude · judgment</text>
+<rect x="645" y="204" width="170" height="54" rx="8" class="bx2"/>
+<text class="t2" x="730" y="224" text-anchor="middle">confidence band</text>
+<text class="s2" x="730" y="242" text-anchor="middle">escalate or proceed</text>
+<line x1="235" y1="231" x2="261" y2="231" class="ln2" marker-end="url(#a2)"/>
+<line x1="435" y1="231" x2="451" y2="231" class="ln2" marker-end="url(#a2)"/>
+<line x1="625" y1="231" x2="641" y2="231" class="ln2" marker-end="url(#a2)"/>
+
+<rect x="65" y="309" width="170" height="54" rx="8" fill="#ffffff" stroke="#a5b4fc" stroke-width="1.4"/>
+<text class="t2" x="150" y="329" text-anchor="middle">Stage 2 · Negotiation</text>
+<text class="s2" x="150" y="347" text-anchor="middle">2 rounds, then escalate</text>
+<rect x="265" y="309" width="170" height="54" rx="8" class="bx2"/>
+<text class="t2" x="350" y="329" text-anchor="middle">advocate</text>
+<text class="s2" x="350" y="347" text-anchor="middle">argues Nyx framework</text>
+<rect x="455" y="309" width="170" height="54" rx="8" class="bx2"/>
+<text class="t2" x="540" y="329" text-anchor="middle">arbiter</text>
+<text class="s2" x="540" y="347" text-anchor="middle">rules from Meridian</text>
+<rect x="645" y="309" width="170" height="54" rx="8" class="bx2"/>
+<text class="t2" x="730" y="329" text-anchor="middle">equity gate</text>
+<text class="s2" x="730" y="347" text-anchor="middle">can veto a revision</text>
+<line x1="235" y1="336" x2="261" y2="336" class="ln2" marker-end="url(#a2)"/>
+<line x1="435" y1="336" x2="451" y2="336" class="ln2" marker-end="url(#a2)"/>
+<line x1="625" y1="336" x2="641" y2="336" class="ln2" marker-end="url(#a2)"/>
+
+<rect x="65" y="414" width="170" height="54" rx="8" fill="#ffffff" stroke="#a5b4fc" stroke-width="1.4"/>
+<text class="t2" x="150" y="434" text-anchor="middle">Stage 3 · Modeling</text>
+<text class="s2" x="150" y="452" text-anchor="middle">parallel, then reconciled</text>
+<rect x="265" y="414" width="170" height="54" rx="8" class="bx2"/>
+<text class="t2" x="350" y="434" text-anchor="middle">cost</text>
+<text class="s2" x="350" y="452" text-anchor="middle">harmonization spend</text>
+<rect x="455" y="414" width="170" height="54" rx="8" class="bx2"/>
+<text class="t2" x="540" y="434" text-anchor="middle">retention</text>
+<text class="s2" x="540" y="452" text-anchor="middle">who is at risk</text>
+<rect x="645" y="414" width="170" height="54" rx="8" class="bx2"/>
+<text class="t2" x="730" y="434" text-anchor="middle">synthesis</text>
+<text class="s2" x="730" y="452" text-anchor="middle">surfaces the conflict</text>
+<line x1="235" y1="441" x2="261" y2="441" class="ln2" marker-end="url(#a2)"/>
+<line x1="540" y1="414" x2="540" y2="400" class="ln2"/>
+<line x1="350" y1="400" x2="730" y2="400" class="ln2"/>
+<line x1="350" y1="400" x2="350" y2="410" class="ln2" marker-end="url(#a2)"/>
+<line x1="730" y1="400" x2="730" y2="410" class="ln2" marker-end="url(#a2)"/>
+
+<text class="n2" x="450" y="512" text-anchor="middle">every agent call routed through one wrapper — cached, cost-logged, budget-capped, retried, provider-tagged</text>
+
+<line x1="210" y1="538" x2="210" y2="592" class="ln2" marker-end="url(#a2)"/>
+<line x1="470" y1="538" x2="470" y2="592" class="ln2" marker-end="url(#a2)"/>
+<line x1="720" y1="538" x2="720" y2="592" class="ln2" marker-end="url(#a2)"/>
+
+<rect x="60" y="596" width="300" height="74" rx="10" fill="#dcf0e0" stroke="#a8d5b5" stroke-width="1.2"/>
+<text class="t2" x="210" y="622" text-anchor="middle">DuckDB · Parquet</text>
+<text class="s2" x="210" y="640" text-anchor="middle">jobs · levels · structures · surveys</text>
+<text class="s2" x="210" y="656" text-anchor="middle">incumbents · FX · exception register</text>
+
+<rect x="380" y="596" width="200" height="74" rx="10" fill="#ffffff" stroke="#d4d4d8" stroke-width="1.2"/>
+<text class="t2" x="480" y="622" text-anchor="middle">Comp functions</text>
+<text class="s2" x="480" y="640" text-anchor="middle">compa-ratio · aging · geo</text>
+<text class="s2" x="480" y="656" text-anchor="middle">FX · roll-ups · equity</text>
+
+<rect x="600" y="596" width="240" height="74" rx="10" fill="#f5ead6" stroke="#d9c9a3" stroke-width="1.2"/>
+<text class="t2" x="720" y="622" text-anchor="middle">Pinecone</text>
+<text class="s2" x="720" y="640" text-anchor="middle">120 survey jobs, embedded</text>
+<text class="s2" x="720" y="656" text-anchor="middle">retrieval narrows, agent decides</text>
+
+<text class="n2" x="210" y="706" text-anchor="middle">records and verifies — every figure traces to a source row</text>
+<text class="n2" x="700" y="706" text-anchor="middle">no model computes a pay number</text>
+<text class="n2" x="450" y="740" text-anchor="middle">Nebius extracts · Claude judges · Python calculates · Pinecone finds candidates</text>
+</svg>
