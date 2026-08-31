@@ -6,9 +6,6 @@ When an acquisition closes, the compensation team has ninety days to decide wher
 
 This does it in minutes, and every decision cites the rule that governed it.
 
-<!-- TODO: replace with a real screenshot of the results page -->
-![Crosswalk results](docs/screenshot.png)
-
 ---
 
 ## The agent, in one line
