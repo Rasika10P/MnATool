@@ -213,6 +213,7 @@ def _run_pipeline(budget_cap: float) -> None:
     progress_bar.empty()
 
     st.session_state["employees"] = employees
+    st.session_state["source_org_context"] = source_org_context
     st.session_state["mappings"] = mappings
     st.session_state["decisions"] = decisions
     st.session_state["scope_profiles"] = scope_profiles
@@ -621,6 +622,7 @@ def _render_needs_human_summary() -> None:
     if not unmapped:
         return
     with st.expander(f"Needs human review — no Meridian mapping ({len(unmapped)})"):
+        st.caption("Review and resolve these on the **No Equivalent Reviews** page (sidebar).")
         for emp_id, reason in unmapped.items():
             st.markdown(f"- **{emp_id}:** {reason}")
 

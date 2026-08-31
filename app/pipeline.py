@@ -36,6 +36,7 @@ from agents.leveling_batch_graph import run_batch_streaming
 from agents.model_router import get_model
 from agents.modeling_graph import run_modeling
 from agents.negotiation_graph import run_negotiation
+from agents.no_equivalent_gate import start_no_equivalent_review
 from agents.schemas import SourceOrgContext
 from agents.scope_extraction import extract_scope_profile_with_claude_fallback
 from tools.data_access import lookup_salary_structure
@@ -174,6 +175,75 @@ def resolve_mapping(employee: dict) -> dict:
         "geo_code": geo_code,
         "job_prefix": job_prefix,
     }
+
+
+def load_manual_mapping_options() -> dict[str, list[str]]:
+    """Valid (family_group, job_prefix, geo_code) choices for the no-equivalent gate's
+    manual-mapping override (app/pages/2_No_Equivalent.py) -- read from the real committed
+    job architecture and geo table, never invented, so a human's override can never point at
+    a combination that doesn't actually exist (which would otherwise surface much later, and
+    much less clearly, as build_modeling_population's own job_id/salary-structure exclusion)."""
+    job_catalog = pd.read_parquet(DATA_DIR / "job_catalog.parquet")
+    geo = pd.read_parquet(DATA_DIR / "geo_locations.parquet")
+    return {
+        "family_groups": sorted(job_catalog["family_group"].unique()),
+        "job_prefixes": sorted(job_catalog["job_id"].str.rsplit("-", n=1).str[0].unique()),
+        "geo_codes": sorted(geo["geo_code"].unique()),
+    }
+
+
+def start_no_equivalent_review_for_employee(employee: dict, mapping: dict, thread_id: str) -> dict:
+    """Starts the no-equivalent gate (build order item 5, gate 2) for one employee whose
+    resolve_mapping came back mapped=False. Thin adapter from this module's own employee/
+    mapping shapes to agents.no_equivalent_gate's state -- returns start_no_equivalent_review's
+    raw result; check result["__interrupt__"] for the review payload."""
+    initial_state = {
+        "employee_id": employee["employee_id"],
+        "job_title": employee["job_title"],
+        "dept": employee["dept"],
+        "sub_family": employee["sub_family"],
+        "reason": mapping["reason"],
+        "reviewer_verdict": None,
+        "manual_mapping": None,
+        "review_entry": None,
+    }
+    return start_no_equivalent_review(initial_state, thread_id)
+
+
+def apply_manual_mapping(
+    employee_id: str,
+    manual_mapping: dict,
+    employees: list[dict],
+    decisions: dict[str, dict],
+    mappings: dict[str, dict],
+    negotiation_results: dict[str, dict],
+    source_org_context: SourceOrgContext,
+) -> tuple[dict, dict, dict | None, dict]:
+    """Applies a human's manual mapping override from the no-equivalent gate to one employee,
+    then re-runs exactly what that employee's mapping feeds into: negotiation (per-employee)
+    and modeling (population-wide, but a fixed 3 calls total regardless of headcount --
+    run_modeling_stage's docstring -- so re-running it for the whole population on one
+    employee's mapping change is cheap, not a batch re-run). Returns new (mappings,
+    negotiation_results, modeling_result, modeling_excluded) for the caller to write back into
+    st.session_state -- this function mutates nothing in place, same discipline the rest of
+    this module already applies to its dict-in/dict-out stage functions.
+    """
+    emp = next(e for e in employees if e["employee_id"] == employee_id)
+    mappings = {**mappings, employee_id: {"mapped": True, "family": emp["dept"], **manual_mapping}}
+
+    decision = decisions.get(employee_id, {})
+    negotiation_results = {**negotiation_results}
+    if "error" not in decision:
+        try:
+            negotiation_results[employee_id] = _run_negotiation_for_employee(
+                emp, decision, mappings[employee_id], source_org_context
+            )
+        except Exception as e:
+            negotiation_results[employee_id] = {"error": str(e)}
+
+    population, modeling_excluded = build_modeling_population(employees, decisions, mappings, negotiation_results)
+    modeling_result = run_modeling_stage(population)
+    return mappings, negotiation_results, modeling_result, modeling_excluded
 
 
 def estimate_live_run_cost(employees: list[dict]) -> float:
