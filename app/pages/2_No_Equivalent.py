@@ -182,6 +182,15 @@ def _render_employee_review(emp: dict) -> None:
             _render_resolved(emp_id, state["resolved"])
             return
 
+        # A review paused under an older app version can leave a pause_payload missing
+        # fields the current code expects (e.g. the "missing_fields" key added after this
+        # session started) -- happened live when a Streamlit Cloud redeploy landed mid-review.
+        # Restart it instead of crashing on a stale shape.
+        if state is not None and "missing_fields" not in state.get("pause_payload", {}):
+            del st.session_state["no_equivalent_reviews"][emp_id]
+            st.info(f"{emp_id}'s review was paused under an older version of this app — restart it below.")
+            state = None
+
         if state is None:
             mapping = st.session_state["mappings"][emp_id]
             st.markdown(f"**{emp_id} · {emp['job_title']}** — {mapping['reason']}")
