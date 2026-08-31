@@ -28,7 +28,19 @@ CrosswalkArgumentBasis = Literal[
     "Meridian precedent",
 ]
 
+# The four verdicts the arbiter itself is prompted to choose from (agents/arbiter.py: "you
+# must choose exactly one of four verdicts") -- ArbiterRuling.verdict is constrained to
+# exactly this set so a model call can never emit anything else, including the
+# human-only outcome below.
 Verdict = Literal["upheld", "revised", "red_circled", "escalated"]
+
+# The exception register's own verdict is a superset of Verdict: every ArbiterRuling verdict,
+# plus "human_overridden" -- a verdict no arbiter call ever produces, only
+# agents/negotiation_graph.py's round_limit_gate_node, when a human reviewing a forced
+# escalation (build order item 5, gate 3) sets the level directly instead of accepting the
+# escalation. Kept as a distinct type from Verdict, not an extra literal folded into it, so
+# ArbiterRuling's schema can never accept a verdict only a human is allowed to produce.
+FinalVerdict = Literal["upheld", "revised", "red_circled", "escalated", "human_overridden"]
 
 
 class CrosswalkArgument(BaseModel):
@@ -243,7 +255,19 @@ class ExceptionRegisterEntry(BaseModel):
         "not an engineering one (see CLAUDE.md); flagged for the comp manager rather than "
         "assumed.",
     )
-    verdict: Verdict = Field(description="Denormalized from arbiter_ruling.verdict")
+    verdict: FinalVerdict = Field(
+        description="Denormalized from arbiter_ruling.verdict, except for the one case "
+        "arbiter_ruling can never itself produce: 'human_overridden', when a human reviewing "
+        "a forced escalation (round_limit_gate_node) set the level directly rather than "
+        "accepting it -- arbiter_ruling.verdict stays 'escalated' in that case, since that is "
+        "genuinely what the arbiter/equity-gate process itself concluded before the human "
+        "stepped in; human_override_level below carries what the human actually decided."
+    )
+    human_override_level: LevelCode | None = Field(
+        default=None,
+        description="Set only when verdict='human_overridden' -- the level a human chose "
+        "directly at the round-limit gate, instead of accepting escalation. None otherwise.",
+    )
     round_count: int = Field(ge=1, le=2, description="Two rounds maximum (section 7, round limit)")
 
     @model_validator(mode="after")
@@ -253,8 +277,16 @@ class ExceptionRegisterEntry(BaseModel):
                 "advocate_position must match advocate_argument.proposed_level -- they "
                 "describe the same thing."
             )
-        if self.verdict != self.arbiter_ruling.verdict:
-            raise ValueError("verdict must match arbiter_ruling.verdict.")
+        if self.verdict == "human_overridden":
+            if self.arbiter_ruling.verdict != "escalated":
+                raise ValueError("a human_overridden entry must wrap an 'escalated' arbiter_ruling.")
+            if self.human_override_level is None:
+                raise ValueError("human_override_level is required when verdict='human_overridden'.")
+        else:
+            if self.verdict != self.arbiter_ruling.verdict:
+                raise ValueError("verdict must match arbiter_ruling.verdict.")
+            if self.human_override_level is not None:
+                raise ValueError("human_override_level must be None unless verdict='human_overridden'.")
         if self.governing_rule_cited != self.arbiter_ruling.governing_rule:
             raise ValueError("governing_rule_cited must match arbiter_ruling.governing_rule.")
         return self

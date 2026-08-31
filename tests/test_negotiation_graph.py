@@ -75,19 +75,27 @@ def _initial_state(
         "equity_gate_result": None,
         "rounds": [],
         "gate_checks": [],
+        "round_limit_verdict": None,
+        "round_limit_override_level": None,
         "final_verdict": None,
         "final_level": None,
         "exception_register_entry": None,
     }
 
 
-def _run(advocate_output, arbiter_ruling_sequence, family_group=VETO_FAMILY, candidate_geo_code=VETO_GEO, candidate_salary=VETO_SALARY, crosswalk_level="L6"):
+def _build_app(advocate_output, arbiter_ruling_sequence, checkpointer=None):
     advocate_fake = FakeModel(advocate_output, model_name="fake-advocate", schema=AdvocateOutput)
     arbiter_fake = FakeModel(
         None, model_name="fake-arbiter", schema=ArbiterRuling,
         sequence=[(r, None) for r in arbiter_ruling_sequence] if arbiter_ruling_sequence else None,
     )
-    app = build_negotiation_graph(advocate_model=advocate_fake, arbiter_model=arbiter_fake).compile()
+    return build_negotiation_graph(advocate_model=advocate_fake, arbiter_model=arbiter_fake).compile(
+        checkpointer=checkpointer
+    )
+
+
+def _run(advocate_output, arbiter_ruling_sequence, family_group=VETO_FAMILY, candidate_geo_code=VETO_GEO, candidate_salary=VETO_SALARY, crosswalk_level="L6"):
+    app = _build_app(advocate_output, arbiter_ruling_sequence)
     initial_state = _initial_state(
         _crosswalk_decision(crosswalk_level), family_group, candidate_geo_code, candidate_salary
     )
@@ -151,12 +159,39 @@ def test_revised_verdict_gate_fails_then_round_two_red_circles():
     assert entry["arbiter_ruling"]["verdict"] == "red_circled"  # the round-2 ruling, not round 1's
 
 
-def test_forced_escalation_after_two_vetoed_rounds():
+def _run_to_round_limit_gate(checkpointer, thread_id="test-round-limit"):
+    """Runs a case through two vetoed rounds and confirms it pauses at round_limit_gate_node
+    rather than auto-finalizing -- build order item 5, gate 3. Returns the compiled app so
+    the caller can resume the same thread_id."""
     revised_ruling = _ruling(verdict="revised", final_level=VETO_LEVEL)
-    result = _run(
-        _contest_output(proposed_level=VETO_LEVEL),
-        arbiter_ruling_sequence=[revised_ruling, revised_ruling],
+    app = _build_app(_contest_output(proposed_level=VETO_LEVEL), [revised_ruling, revised_ruling], checkpointer=checkpointer)
+    initial_state = _initial_state(_crosswalk_decision("L6"))
+    result = app.invoke(initial_state, {"configurable": {"thread_id": thread_id}})
+    assert "__interrupt__" in result
+    payload = result["__interrupt__"][0].value
+    assert payload["round_count"] == 2
+    assert payload["crosswalk_level"] == "L6"
+    assert payload["advocate_position"] == VETO_LEVEL
+    return app
+
+
+def test_round_limit_gate_pauses_after_two_vetoed_rounds():
+    from langgraph.checkpoint.memory import MemorySaver
+
+    _run_to_round_limit_gate(MemorySaver())
+
+
+def test_round_limit_gate_accepted_escalation_matches_old_forced_behavior():
+    from langgraph.checkpoint.memory import MemorySaver
+    from langgraph.types import Command
+
+    checkpointer = MemorySaver()
+    app = _run_to_round_limit_gate(checkpointer)
+    result = app.invoke(
+        Command(resume={"verdict": "accepted_escalation", "override_level": None}),
+        {"configurable": {"thread_id": "test-round-limit"}},
     )
+
     assert result["round_count"] == 2
     assert len(result["gate_checks"]) == 2
     assert all(gc["result"]["passed"] is False for gc in result["gate_checks"])
@@ -164,8 +199,29 @@ def test_forced_escalation_after_two_vetoed_rounds():
     assert result["final_level"] == "L6"  # the original crosswalk level, since nothing was actually revised
     entry = result["exception_register_entry"]
     assert entry["verdict"] == "escalated"
+    assert entry["human_override_level"] is None
     assert entry["arbiter_ruling"]["verdict"] == "escalated"  # synthetic escalation ruling, matches piece 1's
     assert entry["arbiter_ruling"]["final_level"] == "L6"
+    assert entry["round_count"] == 2
+
+
+def test_round_limit_gate_overridden_sets_human_chosen_level():
+    from langgraph.checkpoint.memory import MemorySaver
+    from langgraph.types import Command
+
+    checkpointer = MemorySaver()
+    app = _run_to_round_limit_gate(checkpointer)
+    result = app.invoke(
+        Command(resume={"verdict": "overridden", "override_level": VETO_LEVEL}),
+        {"configurable": {"thread_id": "test-round-limit"}},
+    )
+
+    assert result["final_verdict"] == "human_overridden"
+    assert result["final_level"] == VETO_LEVEL
+    entry = result["exception_register_entry"]
+    assert entry["verdict"] == "human_overridden"
+    assert entry["human_override_level"] == VETO_LEVEL
+    assert entry["arbiter_ruling"]["verdict"] == "escalated"  # what the process itself concluded
     assert entry["round_count"] == 2
 
 
