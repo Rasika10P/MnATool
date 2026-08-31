@@ -84,31 +84,63 @@ def _render_pause_payload(emp: dict, payload: dict) -> None:
     st.markdown(f"- **Why it stopped here:** {payload['reason']}")
 
 
-def _render_decision_controls(emp_id: str, thread_id: str) -> None:
+def _render_decision_controls(emp_id: str, thread_id: str, payload: dict) -> None:
     options = load_manual_mapping_options()
+    missing = set(payload["missing_fields"])
 
-    st.markdown("**Confirm there's no equivalent**")
+    st.markdown("**If this can't be resolved, hand it off**")
     if st.button("Confirm — hand off entirely", key=f"escalate-{emp_id}"):
         result = resume_no_equivalent_review(thread_id, verdict="escalated")
         st.session_state["no_equivalent_reviews"][emp_id]["resolved"] = result
         st.rerun()
 
     st.divider()
-    st.markdown("**Or map it yourself** — every option below is a real, existing part of the job architecture.")
+    st.markdown(
+        "**Or fix what's actually missing** — only the fields below were the problem; "
+        "anything already resolved correctly is shown as-is, not re-asked."
+    )
+
+    manual_mapping: dict = {}
     col_fg, col_jp, col_geo = st.columns(3)
     with col_fg:
-        family_group = st.selectbox("Family group", options["family_groups"], key=f"fg-{emp_id}")
+        if "family_group" in missing:
+            manual_mapping["family_group"] = st.selectbox("Family group", options["family_groups"], key=f"fg-{emp_id}")
+        else:
+            st.caption("Family group (already resolved)")
+            st.markdown(f"**{payload['known_family_group']}**")
+            manual_mapping["family_group"] = payload["known_family_group"]
     with col_jp:
-        job_prefix = st.selectbox("Closest job code", options["job_prefixes"], key=f"jp-{emp_id}")
+        if "job_prefix" in missing:
+            manual_mapping["job_prefix"] = st.selectbox("Closest job code", options["job_prefixes"], key=f"jp-{emp_id}")
+        else:
+            st.caption("Job code (already resolved)")
+            st.markdown(f"**{payload['known_job_prefix']}**")
+            manual_mapping["job_prefix"] = payload["known_job_prefix"]
     with col_geo:
-        geo_code = st.selectbox("Geo", options["geo_codes"], key=f"geo-{emp_id}")
+        if "geo_code" in missing:
+            manual_mapping["geo_code"] = st.selectbox("Geo", options["geo_codes"], key=f"geo-{emp_id}")
+        else:
+            st.caption("Geo (already resolved)")
+            st.markdown(f"**{payload['known_geo_code']}**")
+            manual_mapping["geo_code"] = payload["known_geo_code"]
 
-    if st.button("Manually map to this", key=f"map-{emp_id}", type="primary"):
-        manual_mapping = {"family_group": family_group, "job_prefix": job_prefix, "geo_code": geo_code}
+    if "currency" in missing or "current_pay" in missing:
+        st.caption("The census row itself was missing pay data — geo/family/job code don't fix this; enter it directly.")
+        col_curr, col_pay = st.columns(2)
+        if "currency" in missing:
+            with col_curr:
+                manual_mapping["currency"] = st.selectbox("Currency", options["currencies"], key=f"curr-{emp_id}")
+        if "current_pay" in missing:
+            with col_pay:
+                manual_mapping["current_pay"] = st.number_input(
+                    "Current base pay", min_value=0.0, step=1000.0, key=f"pay-{emp_id}"
+                )
+
+    if st.button("Apply", key=f"map-{emp_id}", type="primary"):
         result = resume_no_equivalent_review(thread_id, verdict="manually_mapped", manual_mapping=manual_mapping)
         st.session_state["no_equivalent_reviews"][emp_id]["resolved"] = result
 
-        mappings, negotiation_results, modeling_result, modeling_excluded = apply_manual_mapping(
+        employees, mappings, negotiation_results, modeling_result, modeling_excluded = apply_manual_mapping(
             employee_id=emp_id,
             manual_mapping=manual_mapping,
             employees=st.session_state["employees"],
@@ -117,6 +149,7 @@ def _render_decision_controls(emp_id: str, thread_id: str) -> None:
             negotiation_results=st.session_state["negotiation_results"],
             source_org_context=st.session_state["source_org_context"],
         )
+        st.session_state["employees"] = employees
         st.session_state["mappings"] = mappings
         st.session_state["negotiation_results"] = negotiation_results
         st.session_state["modeling_result"] = modeling_result
@@ -130,8 +163,11 @@ def _render_resolved(emp_id: str, resolved: dict) -> None:
         st.warning(f"**Escalated** — {emp_id} was confirmed to have no Meridian equivalent. Handed off, not mapped.")
     else:
         m = entry["manual_mapping"]
+        detail = f"{m['family_group']} / {m['job_prefix']} / {m['geo_code']}"
+        if "current_pay" in m:
+            detail += f", pay set to {m['current_pay']:,.2f} {m['currency']}"
         st.success(
-            f"**Manually mapped** — {emp_id} → {m['family_group']} / {m['job_prefix']} / {m['geo_code']}. "
+            f"**Fixed** — {emp_id} → {detail}. "
             "Negotiation and modeling were re-run; see the Home page for the updated result."
         )
 
@@ -161,7 +197,7 @@ def _render_employee_review(emp: dict) -> None:
 
         # Paused, waiting on a verdict.
         _render_pause_payload(emp, state["pause_payload"])
-        _render_decision_controls(emp_id, state["thread_id"])
+        _render_decision_controls(emp_id, state["thread_id"], state["pause_payload"])
 
 
 def _render_review_log() -> None:

@@ -55,10 +55,14 @@ class NoEquivalentState(TypedDict):
     dept: str
     sub_family: str
     reason: str  # resolve_mapping's semicolon-joined list of unmet mapping pieces
+    missing_fields: list  # structured field codes -- which of family_group/geo_code/job_prefix/currency/current_pay are actually missing
+    known_family_group: Optional[str]  # resolve_mapping's resolved value even though mapped=False, or None if it's one of the missing_fields
+    known_geo_code: Optional[str]
+    known_job_prefix: Optional[str]
 
     # Set by gate_node from the reviewer's Command(resume=...).
     reviewer_verdict: Optional[str]  # "escalated" | "manually_mapped"
-    manual_mapping: Optional[dict]  # {"family_group", "geo_code", "job_prefix"} when manually_mapped; None otherwise
+    manual_mapping: Optional[dict]  # always carries family_group/geo_code/job_prefix when manually_mapped; currency/current_pay only when those were missing_fields. None otherwise.
 
     # Set by log_node.
     review_entry: Optional[dict]
@@ -73,6 +77,10 @@ def build_no_equivalent_graph():
                 "dept": state["dept"],
                 "sub_family": state["sub_family"],
                 "reason": state["reason"],
+                "missing_fields": state["missing_fields"],
+                "known_family_group": state["known_family_group"],
+                "known_geo_code": state["known_geo_code"],
+                "known_job_prefix": state["known_job_prefix"],
             }
         )
         return {

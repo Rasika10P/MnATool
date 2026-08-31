@@ -33,6 +33,10 @@ def _state(**overrides) -> dict:
         "dept": "Photonics",
         "sub_family": "Photonics",
         "reason": "no Meridian family_group for Dept='Photonics'",
+        "missing_fields": ["family_group"],
+        "known_family_group": None,
+        "known_geo_code": "US-SJC",
+        "known_job_prefix": None,
         "reviewer_verdict": None,
         "manual_mapping": None,
         "review_entry": None,
@@ -50,6 +54,9 @@ def test_start_pauses_with_full_context(checkpoint_db):
     assert payload["employee_id"] == "NYX-020"
     assert payload["dept"] == "Photonics"
     assert payload["reason"] == "no Meridian family_group for Dept='Photonics'"
+    assert payload["missing_fields"] == ["family_group"]
+    assert payload["known_family_group"] is None
+    assert payload["known_geo_code"] == "US-SJC"
 
 
 def test_escalated_logs_with_no_manual_mapping(checkpoint_db, isolated_review_log):

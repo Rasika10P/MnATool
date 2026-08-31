@@ -150,24 +150,44 @@ def resolve_mapping(employee: dict) -> dict:
     """Whether this employee can proceed past leveling into negotiation/modeling. Never
     guesses a mapping that isn't already established in this codebase (see module
     docstring) -- returns mapped=False with every unmet reason listed, rather than a partial
-    mapping, whenever any piece is missing."""
+    mapping, whenever any piece is missing.
+
+    Unlike the reason string (prose, for display), missing_fields is structured -- the exact
+    field codes app.pages.2_No_Equivalent's manual-mapping form uses to decide which inputs
+    to actually ask a human for. Whatever DID resolve (family_group/geo_code/job_prefix) is
+    still returned even when mapped=False, instead of being discarded just because a
+    different field (e.g. currency) is the one that's missing -- a human fixing a
+    missing-currency row shouldn't have to re-solve fields that were never actually wrong."""
     reasons = []
+    missing_fields = []
     family_group = FAMILY_GROUP_BY_DEPT.get(employee["dept"])
     if family_group is None:
         reasons.append(f"no Meridian family_group for Dept={employee['dept']!r}")
+        missing_fields.append("family_group")
     geo_code = GEO_CODE_BY_LOCATION.get(employee["location"])
     if geo_code is None:
         reasons.append(f"no geo_code for Location={employee['location']!r}")
+        missing_fields.append("geo_code")
     job_prefix = JOB_PREFIX_BY_SUBFAMILY.get(employee["sub_family"])
     if job_prefix is None:
         reasons.append(f"no Meridian job mapping for sub-family={employee['sub_family']!r}")
+        missing_fields.append("job_prefix")
     if employee["currency"] is None:
         reasons.append("missing currency in census")
+        missing_fields.append("currency")
     if employee["current_pay"] is None:
         reasons.append("missing base pay in census")
+        missing_fields.append("current_pay")
 
     if reasons:
-        return {"mapped": False, "reason": "; ".join(reasons)}
+        return {
+            "mapped": False,
+            "reason": "; ".join(reasons),
+            "missing_fields": missing_fields,
+            "family_group": family_group,
+            "geo_code": geo_code,
+            "job_prefix": job_prefix,
+        }
     return {
         "mapped": True,
         "family_group": family_group,
@@ -178,17 +198,21 @@ def resolve_mapping(employee: dict) -> dict:
 
 
 def load_manual_mapping_options() -> dict[str, list[str]]:
-    """Valid (family_group, job_prefix, geo_code) choices for the no-equivalent gate's
-    manual-mapping override (app/pages/2_No_Equivalent.py) -- read from the real committed
-    job architecture and geo table, never invented, so a human's override can never point at
-    a combination that doesn't actually exist (which would otherwise surface much later, and
-    much less clearly, as build_modeling_population's own job_id/salary-structure exclusion)."""
+    """Valid (family_group, job_prefix, geo_code, currency) choices for the no-equivalent
+    gate's manual-mapping override (app/pages/2_No_Equivalent.py) -- read from the real
+    committed job architecture, geo table, and fx_rates table, never invented, so a human's
+    override can never point at a combination or currency that doesn't actually exist
+    (which would otherwise surface much later, and much less clearly, as
+    build_modeling_population's own job_id/salary-structure exclusion, or a currency-convert
+    lookup failure deep inside cost_model)."""
     job_catalog = pd.read_parquet(DATA_DIR / "job_catalog.parquet")
     geo = pd.read_parquet(DATA_DIR / "geo_locations.parquet")
+    fx = pd.read_parquet(DATA_DIR / "fx_rates.parquet")
     return {
         "family_groups": sorted(job_catalog["family_group"].unique()),
         "job_prefixes": sorted(job_catalog["job_id"].str.rsplit("-", n=1).str[0].unique()),
         "geo_codes": sorted(geo["geo_code"].unique()),
+        "currencies": sorted(set(fx["from_currency"]) | set(fx["to_currency"])),
     }
 
 
@@ -196,13 +220,19 @@ def start_no_equivalent_review_for_employee(employee: dict, mapping: dict, threa
     """Starts the no-equivalent gate (build order item 5, gate 2) for one employee whose
     resolve_mapping came back mapped=False. Thin adapter from this module's own employee/
     mapping shapes to agents.no_equivalent_gate's state -- returns start_no_equivalent_review's
-    raw result; check result["__interrupt__"] for the review payload."""
+    raw result; check result["__interrupt__"] for the review payload. missing_fields and the
+    known_* values (whatever resolve_mapping DID resolve, even though mapped=False) pass
+    through so the review page only asks a human for what's actually missing."""
     initial_state = {
         "employee_id": employee["employee_id"],
         "job_title": employee["job_title"],
         "dept": employee["dept"],
         "sub_family": employee["sub_family"],
         "reason": mapping["reason"],
+        "missing_fields": mapping.get("missing_fields", []),
+        "known_family_group": mapping.get("family_group"),
+        "known_geo_code": mapping.get("geo_code"),
+        "known_job_prefix": mapping.get("job_prefix"),
         "reviewer_verdict": None,
         "manual_mapping": None,
         "review_entry": None,
@@ -218,18 +248,34 @@ def apply_manual_mapping(
     mappings: dict[str, dict],
     negotiation_results: dict[str, dict],
     source_org_context: SourceOrgContext,
-) -> tuple[dict, dict, dict | None, dict]:
-    """Applies a human's manual mapping override from the no-equivalent gate to one employee,
-    then re-runs exactly what that employee's mapping feeds into: negotiation (per-employee)
-    and modeling (population-wide, but a fixed 3 calls total regardless of headcount --
+) -> tuple[list[dict], dict, dict, dict | None, dict]:
+    """Applies a human's manual-mapping/data-fix override from the no-equivalent gate to one
+    employee, then re-runs exactly what that changes: negotiation (per-employee) and modeling
+    (population-wide, but a fixed 3 calls total regardless of headcount --
     run_modeling_stage's docstring -- so re-running it for the whole population on one
-    employee's mapping change is cheap, not a batch re-run). Returns new (mappings,
-    negotiation_results, modeling_result, modeling_excluded) for the caller to write back into
-    st.session_state -- this function mutates nothing in place, same discipline the rest of
-    this module already applies to its dict-in/dict-out stage functions.
+    employee's change is cheap, not a batch re-run). manual_mapping always carries
+    family_group/job_prefix/geo_code (the review page pre-fills whichever of these were
+    already known rather than re-asking); currency/current_pay are present only when that
+    employee's census row was actually missing them, in which case they edit the employee
+    record itself, not just its mapping -- current_pay isn't a mapping concern, and leaving
+    it None here is exactly what used to reach compute_pay_gap as `float - None`.
+
+    Returns new (employees, mappings, negotiation_results, modeling_result,
+    modeling_excluded) for the caller to write back into st.session_state -- this function
+    mutates nothing in place, same discipline the rest of this module already applies to its
+    dict-in/dict-out stage functions.
     """
     emp = next(e for e in employees if e["employee_id"] == employee_id)
-    mappings = {**mappings, employee_id: {"mapped": True, "family": emp["dept"], **manual_mapping}}
+    if "currency" in manual_mapping or "current_pay" in manual_mapping:
+        emp = {**emp}
+        if "currency" in manual_mapping:
+            emp["currency"] = manual_mapping["currency"]
+        if "current_pay" in manual_mapping:
+            emp["current_pay"] = manual_mapping["current_pay"]
+        employees = [emp if e["employee_id"] == employee_id else e for e in employees]
+
+    mapping_fields = {k: manual_mapping[k] for k in ("family_group", "job_prefix", "geo_code")}
+    mappings = {**mappings, employee_id: {"mapped": True, "family": emp["dept"], **mapping_fields}}
 
     decision = decisions.get(employee_id, {})
     negotiation_results = {**negotiation_results}
@@ -243,7 +289,7 @@ def apply_manual_mapping(
 
     population, modeling_excluded = build_modeling_population(employees, decisions, mappings, negotiation_results)
     modeling_result = run_modeling_stage(population)
-    return mappings, negotiation_results, modeling_result, modeling_excluded
+    return employees, mappings, negotiation_results, modeling_result, modeling_excluded
 
 
 def estimate_live_run_cost(employees: list[dict]) -> float:
