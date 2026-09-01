@@ -188,8 +188,6 @@ def _render_employee_review(emp: dict) -> None:
         # Restart it instead of crashing on a stale shape.
         if state is not None and "missing_fields" not in state.get("pause_payload", {}):
             st.info(f"{emp_id}'s review was paused under an older version of this app — restart it below.")
-            with st.expander("Debug: raw stale review state (temporary, remove once diagnosed)"):
-                st.json(state)
             del st.session_state["no_equivalent_reviews"][emp_id]
             state = None
 
