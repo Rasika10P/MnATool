@@ -33,6 +33,20 @@ _JUDGMENT_MODEL = "claude-sonnet-5"
 _NEBIUS_BASE_URL = "https://api.tokenfactory.nebius.com/v1"
 _VOLUME_MODEL = "Qwen/Qwen3-30B-A3B-Instruct-2507"
 
+# Every client this router constructs gets this explicit request timeout -- both SDKs
+# (anthropic, openai) otherwise fall back to their own internal defaults (10 minutes for
+# each, confirmed against both packages' client source), which is indistinguishable from a
+# genuine hang for anything in this codebase's own call path: a Streamlit page or a batch
+# script waiting 10 minutes on one stuck request looks identical to one that will never
+# return. 30s is long enough for a real structured-output call with reasoning (observed
+# live calls finish in low single-digit seconds) and short enough that a stuck connection
+# fails fast into agents.instrumented_model's retry-with-backoff instead of stalling the
+# whole run on it. Passed as `timeout=` on every client (ChatAnthropic, ChatOpenAI,
+# OpenAIEmbeddings all accept it, confirmed directly -- LangChain aliases it to each
+# provider's own field name, default_request_timeout for Anthropic and request_timeout for
+# OpenAI, so one constant covers both without needing a per-provider kwarg name).
+REQUEST_TIMEOUT_SECONDS = 30
+
 # CLAUDE.md's stack table names BAAI/bge-en-icl -- confirmed via a live GET /v1/models call
 # (this session) that it does not exist on the current Token Factory catalog (404). The only
 # embedding model actually live there right now is Qwen/Qwen3-Embedding-8B, confirmed to
@@ -44,7 +58,9 @@ EMBEDDING_DIMENSION = 4096
 
 def get_model(tier: str):
     if tier == "judgment":
-        return InstrumentedModel(ChatAnthropic(model=_JUDGMENT_MODEL, max_tokens=2048))
+        return InstrumentedModel(
+            ChatAnthropic(model=_JUDGMENT_MODEL, max_tokens=2048, timeout=REQUEST_TIMEOUT_SECONDS)
+        )
     if tier == "volume":
         # ChatOpenAI (unlike ChatAnthropic) raises OpenAIError at construction time -- not
         # at the first real call -- when it has no api_key and no OPENAI_API_KEY env var at
@@ -61,6 +77,7 @@ def get_model(tier: str):
                 api_key=get_secret("NEBIUS_API_KEY", default="demo-mode-no-key-configured"),
                 model=_VOLUME_MODEL,
                 max_tokens=2048,
+                timeout=REQUEST_TIMEOUT_SECONDS,
             )
         )
     raise ValueError(f"Unknown model tier: {tier!r}")
@@ -83,5 +100,6 @@ def get_embedding_model() -> InstrumentedModel:
             api_key=get_secret("NEBIUS_API_KEY", default="demo-mode-no-key-configured"),
             model=_EMBEDDING_MODEL,
             check_embedding_ctx_length=False,
+            timeout=REQUEST_TIMEOUT_SECONDS,
         )
     )

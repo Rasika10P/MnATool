@@ -108,6 +108,31 @@ class ToolCallRecord:
 class PricingAssessment:
     tool_calls: list[ToolCallRecord]
     judgment: PricingJudgment
+    # True only when the tool-calling loop hit MAX_TOOL_TURNS without the model ever
+    # declaring itself done -- a structural flag, not something inferable from judgment's
+    # own prose, so a caller can gate on it (app/Home.py, a batch script) without parsing
+    # reasoning text. See _degraded_judgment below for what judgment looks like in this case.
+    degraded: bool = False
+
+
+def _degraded_judgment(job_id: str, geo_code: str) -> PricingJudgment:
+    """Built in plain Python, no model call -- MAX_TOOL_TURNS turns of tool-calling without
+    a final answer means something is already wrong (a loop, a confused tool sequence, an
+    unresolvable ambiguity in the data); asking the same model for one more judgment call on
+    top of that is more likely to compound the problem than resolve it. is_offer_defensible
+    is deliberately False, never a guess -- the whole point of the cap is "stop trusting this
+    run," and a defensible-by-default fallback would silently defeat that."""
+    return PricingJudgment(
+        is_offer_defensible=False,
+        primary_concern=f"Tool-calling loop hit the {MAX_TOOL_TURNS}-turn cap without reaching a final answer",
+        reasoning=(
+            f"The pricing agent used all {MAX_TOOL_TURNS} tool-calling turns assessing "
+            f"job_id={job_id!r} geo_code={geo_code!r} without the model ever declaring "
+            "itself done. Treating this as inconclusive rather than accepting a possibly "
+            "incomplete or looping tool-call sequence as a real judgment."
+        ),
+        recommended_next_step="escalate to comp lead",
+    )
 
 
 def _execute_tool_call(call: dict) -> ToolCallRecord:
@@ -156,7 +181,14 @@ def price_role(
             content = {"result": record.result} if record.error is None else {"error": record.error}
             messages.append(ToolMessage(content=json.dumps(content, default=str), tool_call_id=call["id"]))
     else:
-        raise RuntimeError(f"Pricing agent exceeded {MAX_TOOL_TURNS} tool-calling turns without finishing")
+        # Never raise here -- a tool-turn cap is a normal, expected outcome (a confused
+        # sequence, a genuinely hard case), not a bug worth crashing the caller over. Return
+        # a result marked degraded and pointed at a human instead, the same "flag and wait"
+        # discipline CLAUDE.md applies to every other judgment call this codebase won't make
+        # silently. No further model call: see _degraded_judgment's own docstring for why.
+        return PricingAssessment(
+            tool_calls=tool_calls, judgment=_degraded_judgment(job_id, geo_code), degraded=True
+        )
 
     judgment = llm.with_structured_output(PricingJudgment).invoke(
         messages + [HumanMessage("Give your final judgment now, as the structured schema.")]

@@ -5,12 +5,17 @@ these tests are what makes that claim true, not agents/leveling.py's own test su
 """
 
 import json
+import time
 
+import anthropic
+import httpx
+import openai
 import pytest
 from langchain_anthropic import ChatAnthropic
 from langchain_openai import ChatOpenAI
 
 import agents.cost_logging as cost_logging
+import agents.instrumented_model as instrumented_model
 from agents.cost_logging import get_session_stats
 from agents.instrumented_model import (
     CACHE_MODE_DEMO,
@@ -19,7 +24,10 @@ from agents.instrumented_model import (
     MAX_ATTEMPTS,
     DemoModeCacheMissError,
     InstrumentedModel,
+    ModelCallError,
+    ModelTimeoutError,
     StructuredOutputError,
+    _backoff_seconds,
     _cache_key_parts,
     _detect_provider,
     get_cache_mode,
@@ -28,7 +36,29 @@ from agents.instrumented_model import (
 )
 from agents.schemas import FactorRating, LevelingDecision, SourceOrgContext
 from agents.spend_guard import BudgetExceededError, reset_default_budget
-from tests.fakes import FakeModel
+from tests.fakes import FakeModel, FakeNetworkFlakyModel
+
+_FAKE_REQUEST = httpx.Request("POST", "https://example.invalid/v1/messages")
+
+
+def _timeout_error() -> anthropic.APITimeoutError:
+    return anthropic.APITimeoutError(request=_FAKE_REQUEST)
+
+
+def _connection_error() -> anthropic.APIConnectionError:
+    return anthropic.APIConnectionError(message="connection reset", request=_FAKE_REQUEST)
+
+
+@pytest.fixture(autouse=True)
+def no_real_sleeping(monkeypatch):
+    """Every retry-with-backoff test below fakes the failure instantly -- there is no real
+    network delay to wait out, so the exponential backoff's actual sleep would only slow the
+    suite down for no reason. Recording calls (instead of just no-op-ing them) lets the
+    backoff-schedule test below assert on what *would* have been slept without the test
+    suite actually pausing for it."""
+    calls = []
+    monkeypatch.setattr(instrumented_model.time, "sleep", lambda seconds: calls.append(seconds))
+    return calls
 
 MESSAGES = [{"role": "system", "content": "sys"}, {"role": "user", "content": "human"}]
 
@@ -491,3 +521,113 @@ def test_live_mode_bypasses_a_warm_embedding_cache_hit_and_overwrites_it():
     filled_result = wrapped.embed_documents(["text"])
     assert filled_result == [[2.0, 2.0]]
     assert raw.call_count == 2
+
+
+# ---------------------------------------------------------------------------
+# Network timeouts + retry bounds
+# ---------------------------------------------------------------------------
+#
+# A real timeout surfaces as anthropic.APITimeoutError / openai.APITimeoutError -- both
+# are-a APIConnectionError (confirmed directly against both SDKs), which is what
+# agents/instrumented_model.py actually catches. FakeNetworkFlakyModel raises whatever
+# exception it's given from .invoke() itself, standing in for "the real client's
+# request never came back" -- a mocked slow response, without a test that's actually slow.
+
+
+def test_timeout_raises_a_typed_exception_not_a_hang():
+    # "Don't hang" is the point being tested here, not just asserted -- a real bug (no
+    # exception handling at all around a slow client) would make this test itself hang
+    # instead of failing cleanly, so the wall-clock assertion below is the actual proof,
+    # not decoration. time.sleep is faked (see no_real_sleeping), so a passing run should
+    # take milliseconds regardless of MAX_ATTEMPTS.
+    fake = FakeNetworkFlakyModel(decision=None, errors=[_timeout_error()] * MAX_ATTEMPTS)
+    wrapped = InstrumentedModel(fake)
+
+    started = time.perf_counter()
+    with pytest.raises(ModelTimeoutError) as exc_info:
+        wrapped.with_structured_output(LevelingDecision).invoke(MESSAGES)
+    elapsed = time.perf_counter() - started
+
+    assert elapsed < 2.0, "a timeout must raise promptly, never hang waiting on a stuck call"
+    assert fake.call_count == MAX_ATTEMPTS
+    assert len(exc_info.value.attempts) == MAX_ATTEMPTS
+    assert all(isinstance(e, anthropic.APITimeoutError) for e in exc_info.value.attempts)
+
+
+def test_network_error_retries_up_to_max_attempts_then_raises_model_call_error():
+    fake = FakeNetworkFlakyModel(decision=None, errors=[_connection_error()] * MAX_ATTEMPTS)
+    wrapped = InstrumentedModel(fake)
+
+    with pytest.raises(ModelCallError) as exc_info:
+        wrapped.with_structured_output(LevelingDecision).invoke(MESSAGES)
+
+    assert fake.call_count == MAX_ATTEMPTS
+    assert not isinstance(exc_info.value, ModelTimeoutError), "a plain connection error is not a timeout"
+    assert len(exc_info.value.attempts) == MAX_ATTEMPTS
+
+
+def test_the_fourth_attempt_never_happens():
+    """The exact "never retry indefinitely" guarantee: MAX_ATTEMPTS=3, so a model that
+    fails on every single call must be called exactly 3 times -- never a 4th, no matter how
+    tempting one more try might seem."""
+    fake = FakeNetworkFlakyModel(decision=None, errors=[_connection_error()] * 10)  # far more failures available than attempts allowed
+    wrapped = InstrumentedModel(fake)
+
+    with pytest.raises(ModelCallError):
+        wrapped.with_structured_output(LevelingDecision).invoke(MESSAGES)
+
+    assert fake.call_count == 3
+    assert fake.call_count == MAX_ATTEMPTS
+    assert fake.call_count != 4
+
+
+def test_network_retry_never_fails_silently_it_always_raises_or_returns():
+    """Exhaustion is never swallowed -- either a decision comes back, or ModelCallError is
+    raised. There is no third outcome (returning None, logging and moving on, ...)."""
+    fake = FakeNetworkFlakyModel(decision=None, errors=[_connection_error()] * MAX_ATTEMPTS)
+    wrapped = InstrumentedModel(fake)
+    try:
+        result = wrapped.with_structured_output(LevelingDecision).invoke(MESSAGES)
+    except ModelCallError:
+        return  # the one acceptable outcome besides a real decision
+    assert result is not None, "must not silently return a falsy/empty result instead of raising"
+
+
+def test_network_error_that_clears_within_max_attempts_succeeds():
+    # Proves the policy is a real retry, not just a fast-fail dressed up as one: two
+    # failures, then a decision on the third (and final) allowed attempt.
+    fake = FakeNetworkFlakyModel(decision=_decision(), errors=[_connection_error(), _timeout_error()])
+    wrapped = InstrumentedModel(fake)
+
+    result = wrapped.with_structured_output(LevelingDecision).invoke(MESSAGES)
+
+    assert result.assigned_level == "L4"
+    assert fake.call_count == 3
+
+
+def test_network_retry_uses_exponential_backoff_between_attempts_only(no_real_sleeping):
+    fake = FakeNetworkFlakyModel(decision=None, errors=[_connection_error()] * MAX_ATTEMPTS)
+    wrapped = InstrumentedModel(fake)
+
+    with pytest.raises(ModelCallError):
+        wrapped.with_structured_output(LevelingDecision).invoke(MESSAGES)
+
+    # MAX_ATTEMPTS=3 failures -> 2 backoff sleeps (before retries 2 and 3), never a 3rd
+    # sleep after the final attempt, since nothing follows it but raising.
+    assert no_real_sleeping == [_backoff_seconds(1), _backoff_seconds(2)]
+    assert no_real_sleeping[1] > no_real_sleeping[0], "backoff must actually grow, not stay flat"
+
+
+def test_validation_error_retry_is_unaffected_by_the_network_retry_policy():
+    # Regression guard: a plain parsing failure (the call succeeded; the response just
+    # didn't validate) must keep raising StructuredOutputError, completely untouched by the
+    # network-error path added alongside it -- "distinguishing network errors from
+    # validation errors" means both keep their own, correct exception type.
+    error = ValueError("malformed output")
+    fake = FakeModel(None, model_name="itest-network-distinct", parsing_error=error)
+    wrapped = InstrumentedModel(fake)
+
+    with pytest.raises(StructuredOutputError):
+        wrapped.with_structured_output(LevelingDecision).invoke(MESSAGES)
+
+    assert fake.raw_structured_model.call_count == MAX_ATTEMPTS

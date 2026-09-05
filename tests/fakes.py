@@ -113,6 +113,35 @@ class FakeModel:
         return self.raw_structured_model if include_raw else self.structured_model
 
 
+class FakeNetworkFlakyModel:
+    """with_structured_output(schema, include_raw=True).invoke(...) -- the shape
+    agents/instrumented_model.py's _InstrumentedStructuredRunnable actually calls -- raises
+    `errors[i]` on the i-th call (0-indexed) instead of returning, simulating a network
+    error (a timeout, a dropped connection) rather than a parsing failure. Returns `decision`
+    (via the normal include_raw=True dict shape) once `errors` is exhausted.
+
+    Pass `errors=[e] * N` to simulate "never recovers" (exhausts every retry); a test that
+    wants "recovers on the last allowed attempt" passes exactly MAX_ATTEMPTS - 1 errors.
+    """
+
+    def __init__(self, decision, errors: list[Exception], model_name: str = "fake-network-flaky-model"):
+        self.model = model_name
+        self.max_tokens = 2048
+        self._decision = decision
+        self._errors = errors
+        self.call_count = 0
+
+    def with_structured_output(self, schema, include_raw: bool = False):
+        return self
+
+    def invoke(self, messages):
+        index = self.call_count
+        self.call_count += 1
+        if index < len(self._errors):
+            raise self._errors[index]
+        return {"raw": FakeRawMessage(), "parsed": self._decision, "parsing_error": None}
+
+
 class FakeFaultInjectingModel:
     """with_structured_output(LevelingDecision).invoke(messages) raises `failure` whenever
     `fail_when_content_contains` appears in the outgoing messages, and returns `decision`

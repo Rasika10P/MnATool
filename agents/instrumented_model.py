@@ -38,7 +38,10 @@ recorded (StructuredOutputError) rather than silently vanishing.
 from __future__ import annotations
 
 import threading
+import time
 
+import anthropic
+import openai
 from langchain_anthropic import ChatAnthropic
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from pydantic import BaseModel
@@ -49,6 +52,69 @@ from agents.spend_guard import get_default_budget
 from agents.text_sanitization import find_leaked_tag_strings
 
 MAX_ATTEMPTS = 3
+
+# The retry policy's backoff schedule for a network-error retry specifically (a
+# validation-error retry -- the model responded, the response just didn't parse -- asks the
+# same already-responsive model again immediately, no backoff; see
+# _InstrumentedStructuredRunnable.invoke). Before retry 2: 0.5s. Before retry 3: 1.0s. Never
+# slept after the final attempt, since nothing follows it but raising.
+BASE_BACKOFF_SECONDS = 0.5
+
+# What "a network error" means for retry purposes, across both providers this codebase ever
+# points a client at: the call itself never completed (a timeout, a dropped connection, DNS
+# failure, ...) as opposed to a validation error (the call completed; the response just
+# didn't parse against the schema). APITimeoutError is-a APIConnectionError in both the
+# anthropic and openai SDKs (confirmed directly against both packages' exception hierarchy),
+# so catching APIConnectionError alone already covers timeouts -- listed explicitly anyway
+# so this tuple states the intent rather than relying on a subclassing detail staying true.
+_NETWORK_EXCEPTIONS = (
+    anthropic.APIConnectionError, anthropic.APITimeoutError,
+    openai.APIConnectionError, openai.APITimeoutError,
+)
+_TIMEOUT_EXCEPTIONS = (anthropic.APITimeoutError, openai.APITimeoutError)
+
+
+def _backoff_seconds(attempt: int) -> float:
+    """Exponential backoff before the retry that follows a failed `attempt` (1-indexed):
+    0.5s, 1.0s, 2.0s, ..."""
+    return BASE_BACKOFF_SECONDS * (2 ** (attempt - 1))
+
+
+class ModelCallError(Exception):
+    """Raised when a model call exhausts MAX_ATTEMPTS due to network errors -- the call
+    itself never completed on any attempt, so there was nothing to validate. Distinct from
+    StructuredOutputError below, which means every attempt got a response but none of them
+    validated -- two different failure classes get two different named exceptions rather
+    than one generic "it didn't work," per the retry policy's own "distinguish network
+    errors from validation errors" contract.
+
+    `attempts` holds every network exception encountered, oldest first, same convention as
+    StructuredOutputError.attempts.
+    """
+
+    def __init__(self, model_name: str, attempts: list[Exception]):
+        self.model_name = model_name
+        self.attempts = attempts
+        super().__init__(
+            f"{model_name}: exhausted {len(attempts)} attempt(s), all network errors. "
+            f"Last error: {attempts[-1]!r}"
+        )
+
+
+class ModelTimeoutError(ModelCallError):
+    """The specific ModelCallError case where every network failure that exhausted the
+    retry budget was a timeout (the call never received a response within
+    agents.model_router.REQUEST_TIMEOUT_SECONDS -- never a hang, since that timeout is what
+    turns "still waiting" into this exception in the first place). A caller that only cares
+    "did the network fail" can catch ModelCallError; one that specifically wants to
+    distinguish "it was slow" from "it was unreachable" catches this instead."""
+
+
+def _raise_network_exhausted(model_name: str, attempts: list[Exception]):
+    if attempts and all(isinstance(e, _TIMEOUT_EXCEPTIONS) for e in attempts):
+        raise ModelTimeoutError(model_name, attempts)
+    raise ModelCallError(model_name, attempts)
+
 
 # Three cache modes, one active at a time per thread:
 #   demo -- read cache only. A miss raises DemoModeCacheMissError instead of ever making a
@@ -205,7 +271,17 @@ class _InstrumentedStructuredRunnable:
             # billed call, so a retry can push a run over budget just like any other call.
             get_default_budget().check_before_call(self._model_name, prompt_parts, self._max_output_tokens)
 
-            result = self._structured_llm.invoke(messages, *args, **kwargs)
+            try:
+                result = self._structured_llm.invoke(messages, *args, **kwargs)
+            except _NETWORK_EXCEPTIONS as e:
+                # The call itself never completed -- no response, so nothing to log or bill
+                # (log_call/record below are for a call that actually returned and consumed
+                # tokens). Backoff only before another attempt, never after the last one.
+                errors.append(e)
+                if attempt < MAX_ATTEMPTS:
+                    time.sleep(_backoff_seconds(attempt))
+                continue
+
             usage = result["raw"].usage_metadata or {}
             input_tokens = usage.get("input_tokens", 0)
             output_tokens = usage.get("output_tokens", 0)
@@ -244,16 +320,23 @@ class _InstrumentedStructuredRunnable:
             )
             return decision
 
+        # Every attempt is accounted for in `errors` regardless of which failure mode
+        # produced it (network vs. validation) -- the type of the last one decides which
+        # named exception this exhaustion raises, matching how StructuredOutputError's own
+        # message already reports "last error" as the representative one.
+        if errors and isinstance(errors[-1], _NETWORK_EXCEPTIONS):
+            _raise_network_exhausted(self._model_name, errors)
         raise StructuredOutputError(self._schema.__name__, self._model_name, errors)
 
 
 class _InstrumentedToolCallingRunnable:
     """bind_tools' counterpart to _InstrumentedStructuredRunnable above. No schema to
     validate against and so no retry-on-malformed-output loop (a tool-calling turn is just an
-    AIMessage; there's nothing to parse) -- but the same budget check, cost log entry, and
-    disk cache apply, keyed on (model, full message list) exactly like the structured path,
-    so a repeated tool-calling loop (e.g. re-running a Streamlit demo against the same inputs)
-    is served from cache turn-for-turn rather than re-billed.
+    AIMessage; there's nothing to parse) -- but the same budget check, cost log entry, disk
+    cache, and network-error retry-with-backoff apply, keyed on (model, full message list)
+    exactly like the structured path, so a repeated tool-calling loop (e.g. re-running a
+    Streamlit demo against the same inputs) is served from cache turn-for-turn rather than
+    re-billed.
     """
 
     def __init__(self, llm, tools, context: str):
@@ -284,9 +367,19 @@ class _InstrumentedToolCallingRunnable:
                 "run it for real."
             )
 
-        get_default_budget().check_before_call(self._model_name, prompt_parts, self._max_output_tokens)
+        errors: list[Exception] = []
+        for attempt in range(1, MAX_ATTEMPTS + 1):
+            get_default_budget().check_before_call(self._model_name, prompt_parts, self._max_output_tokens)
+            try:
+                result = self._bound_llm.invoke(messages, *args, **kwargs)
+                break
+            except _NETWORK_EXCEPTIONS as e:
+                errors.append(e)
+                if attempt < MAX_ATTEMPTS:
+                    time.sleep(_backoff_seconds(attempt))
+        else:
+            _raise_network_exhausted(self._model_name, errors)
 
-        result = self._bound_llm.invoke(messages, *args, **kwargs)
         usage = result.usage_metadata or {}
         input_tokens = usage.get("input_tokens", 0)
         output_tokens = usage.get("output_tokens", 0)
@@ -310,9 +403,9 @@ class _InstrumentedToolCallingRunnable:
 
 class _InstrumentedEmbeddingsRunnable:
     """Embeddings' counterpart to the two runnables above: same cache-by-(model, texts),
-    demo-mode cache-only guard, and cost log entry. No retry-on-malformed-output (a vector
-    has nothing to validate against a schema) and no tool_calls -- embed_documents just
-    returns list[list[float]], one vector per input text.
+    demo-mode cache-only guard, cost log entry, and network-error retry-with-backoff. No
+    retry-on-malformed-output (a vector has nothing to validate against a schema) and no
+    tool_calls -- embed_documents just returns list[list[float]], one vector per input text.
 
     Token counts are the same chars/4 heuristic agents/spend_guard.py already uses for
     pre-call budget projection, not a real usage figure -- LangChain's OpenAIEmbeddings
@@ -348,9 +441,20 @@ class _InstrumentedEmbeddingsRunnable:
             )
 
         estimated_input_tokens = sum(len(t) for t in texts) // 4
-        get_default_budget().check_before_call(self._model_name, prompt_parts, max_output_tokens=0)
 
-        vectors = self._client.embed_documents(texts)
+        errors: list[Exception] = []
+        for attempt in range(1, MAX_ATTEMPTS + 1):
+            get_default_budget().check_before_call(self._model_name, prompt_parts, max_output_tokens=0)
+            try:
+                vectors = self._client.embed_documents(texts)
+                break
+            except _NETWORK_EXCEPTIONS as e:
+                errors.append(e)
+                if attempt < MAX_ATTEMPTS:
+                    time.sleep(_backoff_seconds(attempt))
+        else:
+            _raise_network_exhausted(self._model_name, errors)
+
         logged = log_call(
             self._model_name, estimated_input_tokens, 0,
             cached=False, context=self._context, provider=self._provider,

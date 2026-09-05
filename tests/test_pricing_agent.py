@@ -99,6 +99,62 @@ def test_retrieve_similar_survey_jobs_is_among_the_bound_tools():
     assert "retrieve_similar_survey_jobs" in {t.name for t in TOOLS}
 
 
+class _NeverAsksForFinalJudgment:
+    """Wraps FakeToolCallingModel but raises if with_structured_output is ever called --
+    proves the degraded/tool-turn-cap path never spends an extra model call chasing a
+    "final judgment" out of a loop that already failed to produce one on its own
+    (agents/pricing_agent.py's _degraded_judgment is built in plain Python instead)."""
+
+    def __init__(self, inner):
+        self._inner = inner
+        self.bound = None
+
+    def bind_tools(self, tools, context=None):
+        self.bound = self._inner.bind_tools(tools, context)
+        return self.bound
+
+    def with_structured_output(self, schema):
+        raise AssertionError("must not ask the model for a final judgment once the tool-turn cap is hit")
+
+
+def test_tool_turn_cap_terminates_with_a_degraded_escalated_result():
+    """A stub model that requests a tool call on every single turn, forever -- with no cap
+    this loop would never stop. Confirms it terminates at exactly MAX_TOOL_TURNS turns and
+    returns a result marked degraded, pointed at a human, rather than hanging or raising."""
+    from agents.pricing_agent import MAX_TOOL_TURNS
+
+    # One entry, repeated forever by FakeBoundTools once call_count runs past it (tests/fakes.py) --
+    # the model "requests a tool every turn" for as long as this loop is willing to ask.
+    always_requests_a_tool = FakeAIMessage(
+        tool_calls=[{"name": "read_job_architecture", "args": {"job_id": JOB_ID}, "id": "call-loop"}]
+    )
+    inner = FakeToolCallingModel([always_requests_a_tool], _judgment())
+    model = _NeverAsksForFinalJudgment(inner)
+
+    result = price_role(
+        job_id=JOB_ID, geo_code=GEO_CODE, candidate_salary=180_000, candidate_currency="USD",
+        as_of_date="2026-08-01", model=model,
+    )
+
+    assert model.bound.call_count == MAX_TOOL_TURNS, "must stop at the cap, not loop indefinitely"
+    assert len(result.tool_calls) == MAX_TOOL_TURNS
+    assert result.degraded is True
+    assert result.judgment.is_offer_defensible is False
+    assert result.judgment.recommended_next_step == "escalate to comp lead"
+    assert str(MAX_TOOL_TURNS) in result.judgment.primary_concern
+
+
+def test_tool_turn_cap_result_is_not_marked_degraded_when_the_model_finishes_normally():
+    # Regression guard on the flag itself: a normal, well-behaved run must not be
+    # mislabeled degraded just because it happened to use tools.
+    result = price_role(
+        job_id=JOB_ID, geo_code=GEO_CODE, candidate_salary=180_000, candidate_currency="USD",
+        as_of_date="2026-08-01",
+        model=FakeToolCallingModel([FakeAIMessage(content="Nothing to check.")], _judgment()),
+    )
+    assert result.degraded is False
+
+
 def test_model_can_choose_to_call_retrieval_as_a_sixth_tool(monkeypatch):
     import tools.retrieval_tools as retrieval_tools
 
