@@ -1,0 +1,53 @@
+{
+  "decision": {
+    "track": "MGR",
+    "assigned_level": "M3",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "M3",
+        "evidence": "Leads a single team of six embedded software engineers building device driver and RTOS integration work for one sensor platform; impact contained to the team and its immediate cross-functional touchpoints."
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "M3",
+        "evidence": "Sets sprint priorities and reviews team output; works with product management on scope tradeoffs rather than setting independent strategic direction."
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "M3",
+        "evidence": "Near-term roadmap and sprint-level tradeoffs for a single platform team -- defined problems requiring judgment among known approaches, not open-ended or cross-domain strategic framing."
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "M3",
+        "evidence": "Team scope is a single discipline area (embedded firmware/RTOS/device drivers for one sensor platform), not span across multiple disciplines or functions."
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "M3",
+        "evidence": "Owns the team's near-term roadmap for a single platform -- consistent with 5a L3/L4 equivalent scope (owns a subsystem/workstream, not a full product or platform across generations)."
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "M3",
+        "evidence": "Represents the team in cross-functional program reviews -- influence limited to adjacent teams and partners, not function-wide or executive-level."
+      },
+      {
+        "factor": "span_and_budget",
+        "level_indicated": "M3",
+        "evidence": "Six direct reports, all individual contributors; no budget authority beyond headcount requisitions -- squarely within the 4-10 IC reports, no-budget M3 band."
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.9,
+    "governing_rule": "Manager level determined by scope of impact and problem complexity, corroborated by span & budget (section 5, rule 5); factor 5a applied as this is an engineering family (Embedded Software).",
+    "alternative_level": "M4",
+    "alternative_reasoning": "M4 was considered given the 'Engineering Manager' title could imply broader scope, but M4 requires owning a program budget and typically 10-25 people possibly including a team lead. Six direct reports with no budget authority beyond requisitions and single-platform, near-term roadmap ownership does not meet the M4 bar on span, ownership scope, or scope of impact. Title is evidence, not input, per rule 6.",
+    "escalate": false,
+    "escalation_factor": null,
+    "reasoning": "All seven factors point consistently to M3: single-team scope, sprint-level autonomy and problem complexity, single-discipline technical breadth, near-term/subsystem-level roadmap ownership, cross-functional-but-not-executive influence, and span (6 ICs, no budget authority) that matches the M3 anchor exactly (4-10 direct reports, no budget authority beyond requisitions). No factor points to M4 -- there is no program budget ownership, no team-of-teams structure, and no evidence of managing a team lead. This is a clean, non-split case."
+  },
+  "input_tokens": 9640,
+  "output_tokens": 1215
+}

@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L3",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L3",
+        "evidence": "Described as a 'strong contributor' to the microarchitecture team; impact framed at the team level, not owning a subsystem or affecting the function broadly."
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L3",
+        "evidence": "'Involved in' cache coherence modeling discussions suggests participation rather than independently setting approach or being consulted as the owner."
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L3",
+        "evidence": "Cache coherence modeling is a defined, known problem space in microarchitecture; text gives no evidence of constructing novel solution paths or resolving cross-domain ambiguity."
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L3",
+        "evidence": "No evidence of depth beyond proficiency in one discipline (microarchitecture); no adjacent-discipline credibility or cross-domain authority described."
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L3",
+        "evidence": "No subsystem or product ownership described -- 'involved in discussions' does not indicate end-to-end ownership of a block, only participation in modeling work for the current core project."
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L3",
+        "evidence": "No evidence of influencing adjacent teams or partners; description is limited to being a contributor within the team's discussions."
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.55,
+    "governing_rule": "rule 2: lower level governs a split (all factors converge around L3, with no unambiguous higher-level scope evidence)",
+    "alternative_level": "L4",
+    "alternative_reasoning": "If 'involved in cache coherence modeling discussions' is read as this person driving/owning the modeling effort for the current core project (an ambiguous, cross-cutting problem touching subsystem-level architecture), scope and problem complexity could indicate L4 (Staff Engineer, owning a subsystem-level workstream with ambiguous solution paths). However, the language as written ('involved in discussions') is participatory, not ownership language, so L3 is favored per rule 2 (assign the lower level absent unambiguous higher scope).",
+    "escalate": false,
+    "escalation_factor": "ownership_scope -- whether this person owns the cache coherence modeling effort outright versus merely contributing to team discussions would settle L3 vs L4",
+    "reasoning": "The job description is thin and uses relative, non-absolute language ('strong contributor,' 'involved in') rather than describing owned deliverables, subsystem scope, or cross-team influence. Every factor -- scope, autonomy, complexity, depth, ownership, influence -- points to L3 (Senior Engineer): independent work on defined problems within a team, participation in but not ownership of a component-level effort (cache coherence modeling for the current core), without evidence of subsystem ownership, cross-functional influence, or ambiguous problem framing that would indicate L4. Per section 6, the source is a small company (104 employees, late-stage private, whole company) which sits in the 'small company, titles map down 1-2 levels' archetype -- though no title was given here, the vague/relative phrasing is consistent with that drift pattern, reinforcing rather than contradicting an L3 read (as opposed to inflating to L4 based on a title). This result is consistent with the prior expected drift for a sub-150-person source org."
+  },
+  "input_tokens": 9561,
+  "output_tokens": 1311
+}

@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L4",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L4",
+        "evidence": "Owned the SerDes transmitter driver and equalizer circuits for the NX-210/NX-220 PHYs across 3 tapeouts -- ownership of a subsystem across a full development cycle, impact felt across the function (PHY program) rather than just one team."
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L4",
+        "evidence": "Closed timing and jitter to a 25Gbps target with margin verified in silicon -- implies setting own approach to circuit design and verification on an ambiguous, hard analog/mixed-signal problem, consulted rather than closely directed."
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L4",
+        "evidence": "Closing timing and jitter margins to a specific high-speed target (25Gbps) requires constructing a solution path across circuit design, layout, and silicon validation -- ambiguous problem without a known fixed recipe."
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L4",
+        "evidence": "Deep in analog/mixed-signal high-speed IO design (driver and equalizer circuits); being asked informally to review others' high-speed IO work shows credibility in an adjacent scope but not yet authority across multiple disciplines or company-wide influence -- consistent with L4, not L5/L6."
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L4",
+        "evidence": "Owned transmitter driver and equalizer circuits (a subsystem) across 3 tapeouts of the NX-210/NX-220 PHYs -- subsystem ownership across a full development cycle maps to factor 5a L4 anchor."
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L4",
+        "evidence": "Increasingly asked to review other engineers' high-speed IO work before tapeout sign-off, informally -- influence on adjacent work/peers, not yet a formalized function-level or cross-functional influence role expected at L5."
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.62,
+    "governing_rule": "rule 2: lower level governs a split (with rule 3 as supporting constraint on depth-only work)",
+    "alternative_level": "L5",
+    "alternative_reasoning": "If the informal cross-engineer review responsibility were formalized into an explicit function-wide sign-off authority (i.e., this person is the de facto gatekeeper for high-speed IO tapeout readiness across teams), scope of impact and influence would both point to L5 (area spanning multiple teams, function-level influence). The JD only describes this as emerging and informal, so it does not yet meet the L5 bar.",
+    "escalate": false,
+    "escalation_factor": "influence -- whether the informal pre-tapeout review role has become a recognized, formal responsibility spanning multiple teams (pushing toward L5) or remains ad hoc peer consultation (keeping at L4)",
+    "reasoning": "All six factors converge on L4: subsystem-level ownership (driver/equalizer circuits) across a full product cycle (3 tapeouts), autonomous execution against an ambiguous high-speed target, and informal peer review influence that has not yet crystallized into a formal cross-team or function-wide role. The informal review responsibility is an early signal toward L5 influence/scope, but it is described as informal and not yet a defined area spanning multiple teams, so per rule 2 the lower adjacent level governs. Per rule 3, this is deep-but-narrow technical work (single circuit domain, SerDes TX/EQ) without demonstrated cross-domain breadth or organizational influence, which caps it well below L6 regardless of tenure implied by 3 tapeoxes (experience is not a factor per the framework). Source org context: 104-person late-stage private company, whole-company acquisition -- small-company prior suggests titles/scope may map down 1-2 levels from stated title, but no title was given here, only scope language, and the scope described (subsystem ownership across 3 tapeouts, silicon-verified) is absolute and consistent with an internally-calibrated L4 regardless of company size. This result is consistent with the small-company prior (no inflation observed), which raises confidence somewhat, though the informal review signal keeps this a moderately close call between L4 and L5."
+  },
+  "input_tokens": 9636,
+  "output_tokens": 1600
+}

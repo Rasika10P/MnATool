@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L4",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L4",
+        "evidence": "Owns place-and-route and timing closure for a subsystem within the next-generation SoC -- impact across a subsystem/function, not yet spanning multiple teams or adjacent functions."
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L4",
+        "evidence": "Works independently across the full development cycle from RTL handoff through tapeout; sets own methodology for the hardest blocks; consulted rather than directed by the architecture team."
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L4",
+        "evidence": "Sets own methodology for the hardest blocks, implying ambiguous problems requiring constructed solution paths for timing closure."
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L4",
+        "evidence": "Deep in physical design/timing closure; credible enough to be consulted by the architecture team on physical-implementability tradeoffs (adjacent discipline), but no evidence of authority across multiple disciplines."
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L4",
+        "evidence": "Owns a subsystem (place-and-route and timing closure) across a full development cycle from RTL handoff through tapeout -- matches 5a L4 anchor exactly."
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L4",
+        "evidence": "Influences physical design and timing decisions within the function and is consulted by the adjacent architecture team; explicitly not yet driving strategy beyond the function, which caps below L5."
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.82,
+    "governing_rule": "rule 1: scope of impact is primary and confirms L4 across all factors",
+    "alternative_level": "L5",
+    "alternative_reasoning": "Considered L5 given strong autonomy language ('sets own methodology,' 'consulted rather than directed') which echoes L5-ish independence, and being consulted by an adjacent architecture team could suggest cross-functional influence. However, ownership scope is explicitly a single subsystem (not an area spanning multiple teams per L5 anchor), and influence is explicitly capped within the Physical Design function rather than function-level cross-team alignment. Per rule 2, the lower level governs since scope of impact is not unambiguously at L5.",
+    "escalate": false,
+    "escalation_factor": "scope_of_impact -- whether 'consulted by the architecture team on physical-implementability tradeoffs' constitutes cross-functional scope sufficient to meet the L5 anchor of 'impact across the function and adjacent functions'",
+    "reasoning": "All six factors converge cleanly on L4: subsystem-level ownership across a full development cycle (5a anchor for L4), independent operation with self-set methodology on hard problems, consultation by an adjacent team rather than direction, and influence confined within the Physical Design function. The explicit statement that the role is 'not yet driving strategy beyond it' rules out L5, which requires influence on function-level decisions and cross-functional alignment driving, and an area spanning multiple teams (scope). Informal mentoring of two juniors is not span & budget (no formal reports, IC track) and doesn't change the level. Years of experience (six) was noted in the JD but is explicitly excluded as a factor per the framework and was not used in this determination."
+  },
+  "input_tokens": 9668,
+  "output_tokens": 1283
+}

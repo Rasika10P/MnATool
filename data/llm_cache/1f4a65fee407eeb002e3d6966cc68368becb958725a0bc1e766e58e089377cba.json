@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L5",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L6",
+        "evidence": "Sets timing closure methodology and sign-off criteria for all tapeouts company-wide, influencing timing budget across every business unit -- impact spans the business unit and shapes multiple product generations of sign-off standards."
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L7",
+        "evidence": "Works with full autonomy, setting direction for the timing closure domain without oversight."
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L5",
+        "evidence": "Resolves escalated timing closure issues that other teams cannot solve, but problems remain within a single well-defined domain (static timing analysis) rather than spanning multiple domains or requiring novel problem framing."
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L5",
+        "evidence": "Fifteen years focused exclusively on static timing analysis; has never worked in place & route, verification, or any adjacent discipline -- deep authority in one discipline but explicitly no cross-domain breadth, which per rule 3 caps this factor below L6 regardless of depth."
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L6",
+        "evidence": "Owns the timing closure methodology and sign-off criteria portfolio across all tapeouts company-wide -- a portfolio of process/product standards spanning the whole company, consistent with 5a's L6 anchor of owning architecture/standards across generations for a product line equivalent."
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L6",
+        "evidence": "Recognized internally as the final authority on timing closure across the company; every product team escalates to this person -- influence on business-unit-wide decisions and credibility across the org, but no stated external influence."
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.68,
+    "governing_rule": "rule 3: deep-but-narrow technical work caps at L5 despite scope/influence/ownership evidence pointing higher",
+    "alternative_level": "L6",
+    "alternative_reasoning": "Scope of impact, ownership scope, and influence evidence read like L6 or higher (company-wide methodology ownership, final escalation authority, business-unit-wide influence). This would be the natural level if scope of impact were treated as the automatic tiebreaker under rule 1. But rule 3 is a specific, narrower override for exactly this deep-but-narrow pattern (no cross-domain breadth), and the JD's explicit statement of zero adjacent-discipline experience is unambiguous evidence triggering that cap rather than leaving it ambiguous.",
+    "escalate": false,
+    "escalation_factor": "technical_depth_breadth vs scope_of_impact -- specifically whether the company-wide methodology-setting scope constitutes the 'organizational influence' and 'cross-domain' exception that rule 3 requires to escape the L5 cap, or whether the explicit lack of adjacent-discipline experience is dispositive",
+    "reasoning": "Scope of impact, ownership scope, autonomy and influence all point to L6 or above -- this person sets company-wide sign-off methodology and is the final internal escalation point for timing closure, with full autonomy and business-unit-wide influence. However, the role has never worked outside static timing analysis (explicitly no place & route, verification, or adjacent discipline experience), which is textbook deep-but-narrow technical work. Rule 3 is explicit and non-negotiable: 'Deep-but-narrow technical work, without cross-domain breadth and organizational influence, caps at L5 -- it cannot reach L6.' Technical depth/breadth is rated L5 (authority in one discipline, no cross-domain breadth), which under rule 3 caps the overall level at L5 regardless of how high scope of impact rates. This is a deliberate override of the normal rule-1 primacy of scope of impact -- rule 3 is a specific carve-out for exactly this profile (deep narrow specialist with high internal scope but no breadth). L7 was also considered given the 'final authority' language and company-wide scope, but rule 4 requires external recognition (publications, patents, standards bodies) for L7+, and the JD explicitly states none exists -- internal reputation alone cannot satisfy this, so L7 is foreclosed independent of the rule 3 cap."
+  },
+  "input_tokens": 9711,
+  "output_tokens": 1611
+}

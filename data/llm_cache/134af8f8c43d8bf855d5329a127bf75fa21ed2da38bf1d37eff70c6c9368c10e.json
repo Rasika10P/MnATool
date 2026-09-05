@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L4",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L4",
+        "evidence": "Owned the RF transceiver block design end-to-end across two tapeouts for our flagship product, from architecture through characterization - a subsystem/complex workstream with impact across the function"
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L4",
+        "evidence": "Worked independently with minimal oversight from the VP of Engineering, who reviewed outcomes rather than approach - consulted rather than directed"
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L4",
+        "evidence": "Owned architecture through characterization of an RF transceiver block, requiring construction of solution paths for an ambiguous technical problem, but confined to a single block rather than spanning domains"
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L4",
+        "evidence": "Deep in RF/analog design discipline; credible with adjacent layout and test teams on DFT tradeoffs. Capped here due to high platform dependency on shared central CAD/methodology team, which limits demonstrated independent breadth beyond this level"
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L4",
+        "evidence": "Owns a single subsystem (RF transceiver block) across a full development cycle (two tapeouts) rather than a full derivative product or platform"
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L4",
+        "evidence": "Consulted by layout and test teams on DFT tradeoffs; represents analog design in customer technical reviews - influence with adjacent teams and external partners, not yet function-wide strategic influence"
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.62,
+    "governing_rule": "rule 6: title in source document is evidence, not input; level from described scope. Also section 6 rule 3: platform dependency caps technical depth/breadth.",
+    "alternative_level": "L5",
+    "alternative_reasoning": "Autonomy (VP reviews outcomes not approach) and external-facing influence (customer technical reviews) suggest possible L5 characteristics. However, ownership scope and scope of impact are confined to a single block/subsystem rather than a major subsystem or full derivative product, and technical depth is narrow and platform-dependent, so L5 was not chosen per rules 2 and 3.",
+    "escalate": false,
+    "escalation_factor": "ownership_scope -- whether the RF transceiver block, given it is described as central to the 'flagship product' across two tapeouts, constitutes a 'major subsystem' (L5) rather than a standard subsystem (L4) is the specific ambiguity that would resolve this call.",
+    "reasoning": "Despite the 'Director' title, there are no direct reports described, so this is leveled on the IC track per rule 6. Scope of impact centers on ownership of a single RF transceiver block (a subsystem) across two tapeouts for the flagship product -- this matches the L4 anchor ('owns a subsystem across a full development cycle') rather than L5 ('owns a major subsystem or a full derivative product' spanning multiple teams). Autonomy is high (outcome-only review from VP), which could point toward L5, but per rule 2 an adjacent-level split is resolved at the lower level unless scope of impact is unambiguously at the higher level -- here scope of impact points clearly to L4, not L6. Technical depth/breadth is deep but narrow (single RF block), and per rule 3 this caps at L5 absent cross-domain breadth and organizational influence; combined with high platform dependency on the central CAD/methodology team (section 6 rule 3), the sustainable depth/breadth rating is capped at L4. Influence extends to customer-facing technical reviews and adjacent teams (layout, test) but does not yet reach function-level or business-unit strategic influence required for L5/L6. Ownership scope (5a) is subsystem-level across a full cycle, matching L4, not the 'major subsystem or full derivative product' bar for L5. Taking scope of impact as the primary tiebreaker (rule 1) and applying rule 2 (lower level governs a split) since scope is not unambiguously at L5, the role lands at L4."
+  },
+  "input_tokens": 9680,
+  "output_tokens": 1559
+}

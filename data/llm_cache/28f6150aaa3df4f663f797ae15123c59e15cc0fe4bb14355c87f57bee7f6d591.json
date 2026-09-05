@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L3",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L3",
+        "evidence": "Has taken primary responsibility for the descriptor-fetch pipeline this generation; impact contained to a defined component within the team, coordinating with two other engineers on integration."
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L3",
+        "evidence": "Takes primary responsibility for the block but hasn't owned it entirely from spec through sign-off -- suggests work is reviewed and approach not fully self-directed yet at the highest level of independence."
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L3",
+        "evidence": "Descriptor-fetch pipeline is a defined block; no indication of ambiguous, cross-domain problem framing -- solutions require judgment among known RTL design approaches."
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L3",
+        "evidence": "Described as a 'solid RTL engineer' proficient in one discipline (RTL design), delivering reliably; no evidence of cross-domain credibility or authority."
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L3",
+        "evidence": "Owns the descriptor-fetch pipeline block for this generation but not end-to-end through a full tapeout (spec through sign-off) -- indicates ownership is still building toward full block ownership."
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L3",
+        "evidence": "Coordinates with two peer engineers on integration -- influence limited to peer-level collaboration, no evidence of influencing adjacent teams or partners."
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.62,
+    "governing_rule": "rule 2: lower level governs a split (L3/L4 split resolved to L3 since scope of impact is not unambiguously at L4)",
+    "alternative_level": "L4",
+    "alternative_reasoning": "If 'primary responsibility for the descriptor-fetch pipeline this generation' is read as full ownership of a subsystem-level block across a development cycle, this would point to L4 ownership_scope and scope_of_impact. However, the explicit caveat that he hasn't completed a tapeout with the block entirely his own from spec through sign-off undercuts this reading, so L4 was not chosen.",
+    "escalate": false,
+    "escalation_factor": "ownership_scope -- whether 'primary responsibility this generation' constitutes full end-to-end block ownership (supporting L4) or partial/developing ownership short of a complete spec-to-sign-off cycle (supporting L3) is the specific ambiguity that would resolve this call.",
+    "reasoning": "The engineer shows some L4 signals (primary responsibility for a subsystem-like block, some ownership language) but the description explicitly notes he 'hasn't yet had a tapeout where the block was entirely his own from spec through sign-off,' which is the defining anchor for L3 ownership (owns a block or module end to end) versus L4 (owns a subsystem across a full development cycle). Scope of impact is described as team-level coordination with two peers, not function-wide impact, so scope does not unambiguously support L4. Per rule 2, the split is resolved to the lower level, L3 (Senior Engineer). Autonomy and problem complexity also align with L3 anchors -- defined problems, judgment among known approaches, outcomes reviewed. No cross-domain breadth or organizational influence evidence to support L4 or higher, consistent with rule 3 (deep-but-narrow caps at L5, but here the evidence doesn't even reach L4 given incomplete end-to-end ownership). Source organization calibration: source is a small company (104 employees, late-stage private, whole-company), which per section 6 carries an expected drift where titles map down 1-2 levels due to shallow org depth and title inflation. No specific title was given here (description avoids title framing per rule 6), and the result (L3) is consistent with this prior for a small-company IC engineer -- this raises confidence rather than contradicting it. No platform_dependency field was provided, so no cap was applied to factor 4 beyond what the evidence itself supports."
+  },
+  "input_tokens": 9613,
+  "output_tokens": 1538
+}

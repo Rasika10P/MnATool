@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L4",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L4",
+        "evidence": "Owns the out-of-order load-store microarchitecture for the NX-400 core family across 2 tapeouts -- a subsystem owned across a product family, impact felt across the function (core design team)."
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L4",
+        "evidence": "Developed and adopted a new memory disambiguation scheme after independently measuring an 8% IPC gain in simulation -- sets own approach on an ambiguous problem, consulted rather than directed."
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L4",
+        "evidence": "Designing a new memory disambiguation scheme for out-of-order load-store is an ambiguous problem requiring a constructed solution path, not a known recipe."
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L4",
+        "evidence": "Deep expertise in load-store microarchitecture (one discipline), credible enough on adjacent blocks that other engineers route interface questions to her -- deep in one discipline, credible in adjacent ones, not yet demonstrating authority across multiple disciplines."
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L4",
+        "evidence": "Owns a subsystem (load-store unit) across a full development cycle spanning 2 tapeouts (NX-400 and NX-410) -- matches 5a L4 anchor of subsystem ownership across a full development cycle, not yet a full derivative product or platform-level ownership."
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L4",
+        "evidence": "Other engineers on adjacent blocks route interface questions through her rather than the architecture lead -- influencing adjacent teams, representing the block to partners, not yet function-wide alignment or cross-functional program influence."
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.68,
+    "governing_rule": "rule 2: lower level governs a split (scope of impact not unambiguously at the higher level)",
+    "alternative_level": "L5",
+    "alternative_reasoning": "One could argue the 8% IPC gain and cross-block deference signal broader authority approaching L5 (authority in one discipline, works across several). However, L5 requires ownership of a major subsystem or full derivative product with impact across the function AND adjacent functions, plus function-level influence driving cross-functional alignment. The evidence here shows adjacent-team deference on interface questions (L4 influence anchor) rather than function-level alignment-driving, and ownership is of a subsystem (not yet a major subsystem/full product) across two tapeouts of the same core family rather than spanning into adjacent functions. Given the small-source-company prior expecting downward drift, L4 is the more defensible read.",
+    "escalate": false,
+    "escalation_factor": "influence -- whether 'routes interface questions through her rather than the architecture lead' constitutes function-level influence (L5) or adjacent-team influence (L4) is the swing factor between L4 and L5",
+    "reasoning": "All six factors converge tightly on L4: subsystem-level ownership (load-store microarchitecture) across a full development cycle (2 tapeouts), self-directed problem-solving on an ambiguous technical challenge (new disambiguation scheme), deep single-discipline mastery with adjacent-block credibility, and influence limited to adjacent teams routing questions to her rather than broader function-level alignment or executive visibility. This falls short of L5, which requires ownership of a major subsystem or full derivative product plus function-and-adjacent-function impact and function-level influence -- here the influence and scope evidence describes peer/adjacent-team deference, not cross-functional or function-wide sway. No factor points below L4 either (this is clearly beyond L3 componet-only ownership), so this is not a true split requiring the lower-level rule to kick in for a downgrade, but I flag it under rule 2/rule 1 framing since scope of impact (subsystem across a product family) is the anchor holding this at L4 rather than pushing to L5 without more cross-functional evidence. Source org calibration (section 6): source is a 104-person late-stage private whole-company acquisition -- a small company under the ~150 threshold, so the prior expects titles/scope descriptions to map DOWN 1-2 levels typically due to shallower org depth and title inflation. My evidence-based result of L4 is consistent with this prior direction (i.e., not inflated to L5+ despite what could read as senior-sounding scope language like 'owns... microarchitecture'). This consistency raises my confidence rather than triggering an escalation signal. No platform_dependency field was provided, so no cap was applied to technical depth beyond what the evidence itself supports."
+  },
+  "input_tokens": 9632,
+  "output_tokens": 1745
+}

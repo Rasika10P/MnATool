@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L3",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L3",
+        "evidence": "Owns responsibility within the PMIC team, picking up more responsibility including layout review; impact contained to the team, not yet spanning the function"
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L3",
+        "evidence": "Described as a 'strong analog designer' picking up additional responsibility -- suggests independent work on defined problems, but no indication of setting own approach on ambiguous problems"
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L3",
+        "evidence": "No evidence of ambiguous, cross-domain, or open-ended problem framing -- work described is analog design plus layout review, defined problem types with known solution paths requiring judgment"
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L3",
+        "evidence": "'Strong analog designer' indicates proficiency in one discipline (analog); picking up layout review is an adjacent but still narrow extension, not evidence of deep authority or cross-discipline credibility at L4"
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L3",
+        "evidence": "Owns portions of PMIC block-level work and is expanding into layout review; no evidence of owning a full subsystem across a complete development cycle (L4) -- reads as block/module ownership"
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L2",
+        "evidence": "No evidence given of influence beyond immediate team work; job description does not describe peer or adjacent-team influence explicitly"
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.55,
+    "governing_rule": "rule 2: lower level governs a split",
+    "alternative_level": "L4",
+    "alternative_reasoning": "If 'picking up more responsibility including layout review' is read as already representing ownership of a broader PMIC subsystem scope across a development cycle (5a L4 anchor) with credibility in an adjacent discipline (layout, adjacent to analog design -- L4 technical depth anchor), the role could be argued at L4. This was not chosen because the description lacks absolute evidence of subsystem-level ownership or ambiguous-problem autonomy; the language remains relative ('more responsibility,' 'some layout review') rather than confirming full subsystem ownership, and per section 6 such relative language from a small source company should not be read at face value.",
+    "escalate": false,
+    "escalation_factor": "ownership_scope -- whether the layout review and PMIC responsibility constitute full block/module ownership (L3) or subsystem-level ownership across a full development cycle (L4) would resolve the close call between L3 and L4",
+    "reasoning": "The description is thin and largely relative language ('strong analog designer,' 'picking up more responsibility') rather than absolute scope evidence (no unit volumes, tapeout count, or subsystem ownership stated). Scope of impact, autonomy, problem complexity, technical depth, and ownership scope all point to L3 -- proficient, reliable delivery on a defined block/module (PMIC) with expanding but still narrow responsibility (layout review) that does not yet reach subsystem-level ownership across a full development cycle (L4 anchor). Influence reads lower (L2) with no team/peer influence described, but scope of impact is the primary tiebreaker per rule 1, and the cluster of evidence lands at L3. Per rule 2, where factors split (here between L2-ish influence and L3 elsewhere), the lower level does not govern because scope of impact is clearly at L3, not ambiguously higher -- so L3 is assigned rather than defaulting further down. Factor 5a (product lifecycle ownership, silicon engineering family) applied: evidence fits 'owns a block or module end to end' (L3), with early expansion toward subsystem ownership (L4) not yet realized. Source organization calibration: source is a whole-company, late-stage private, headcount 104 (under ~150) -- per section 6, small companies expect title/scope inflation, with titles mapping down 1-2 levels. My evidence-based result (L3) is consistent with this prior, since the underlying language ('picking up more responsibility,' vague scope) reads as inflated relative to absolute evidence, and the resulting L3 assignment already reflects that downward-mapping expectation rather than a higher title-implied level. This consistency supports the confidence level but the overall evidence is sparse (no absolute scope details, no team/influence data), which caps confidence at moderate rather than high."
+  },
+  "input_tokens": 9554,
+  "output_tokens": 1661
+}

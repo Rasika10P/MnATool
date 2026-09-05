@@ -1,0 +1,53 @@
+{
+  "decision": {
+    "track": "MGR",
+    "assigned_level": "M3",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "M3",
+        "evidence": "Owns a single 7-person microarchitecture team responsible for the NX-500/NX-600 core roadmap -- impact contained to a defined team/workstream, not yet across the function or business unit."
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "M4",
+        "evidence": "Holds final sign-off authority on performance model gates before RTL freeze, indicating accountability for outcomes with limited oversight on that specific decision point."
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "M3",
+        "evidence": "Problems are scoped to core roadmap execution (microarchitecture modeling and gating decisions) rather than open-ended, cross-domain strategic framing."
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "M3",
+        "evidence": "Has delegated hands-on modeling work to the team as of two tapeouts ago, indicating the role now sits above individual technical execution but description shows no evidence of cross-disciplinary authority beyond microarchitecture."
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L4",
+        "evidence": "Owns a subsystem (microarchitecture for the core roadmap) across a development cycle (NX-500/NX-600), consistent with 5a L4 anchor: 'owns a subsystem across a full development cycle.'"
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "M3",
+        "evidence": "Influence described is internal to the team and its immediate deliverable (sign-off gates); no evidence of influencing adjacent teams, function-level decisions, or executives."
+      },
+      {
+        "factor": "span_and_budget",
+        "level_indicated": "M3",
+        "evidence": "7 direct reports (within the 4-10 range for M3), hire/fire authority, and a discretionary tooling budget (~$150K/year) -- consistent with M3's 'no budget authority beyond requisitions' being slightly exceeded but far below M4's program-budget scale."
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.68,
+    "governing_rule": "rule 2: lower level governs a split (scope of impact not unambiguously at the higher level)",
+    "alternative_level": "M4",
+    "alternative_reasoning": "M4 was considered because of the final sign-off authority on performance model gates (an autonomy signal consistent with M4's 'accountable for outcomes without direct oversight' framing) and because the discretionary budget slightly exceeds M3's 'requisitions only' language. However, span (7 reports, single team, no team-lead layer, no program budget) and scope of impact (single team/subsystem, not multi-team or function-wide) do not support M4, and rule 2 requires the lower level to govern absent unambiguous higher-level scope of impact.",
+    "escalate": false,
+    "escalation_factor": "scope_of_impact -- specifically whether the NX-500/NX-600 roadmap ownership extends influence/decision authority beyond the immediate team into adjacent teams or the broader core-design function, which would tip autonomy and scope together toward M4",
+    "reasoning": "The role manages a single 7-person microarchitecture team owning the NX-500/NX-600 core roadmap -- scope of impact (the primary tiebreaker per rule 1) is bounded to a team/subsystem level, matching M3's IC-equivalent anchor (L4: owns a subsystem across a full development cycle). Span (7 reports, hire/fire authority, ~$150K discretionary budget) sits squarely in the M3 band (4-10 ICs, no budget authority beyond requisitions/small discretionary spend) rather than M4's 10-25 with program budget. Autonomy evidence (final sign-off on gates) points toward M4, and this is the one factor pulling upward, but per rule 2 the lower level governs a split unless scope of impact is unambiguously at the higher level -- here scope is clearly still single-team/subsystem, not cross-team or function-wide as required for M4 (which needs 'may include a team lead' and program budget ownership, and IC-equivalent L5 scope spanning multiple teams). The mention that hands-on modeling was delegated 'two tapeouts ago' reflects a management-track transition, not scope expansion, and per the non-negotiable rule, tenure/experience framing does not factor into the level. Source organization context (104 employees, late-stage private, whole-company) sets a prior that titles may map down 1-2 levels for small companies; an M3 outcome is consistent with or even generous relative to that prior, so no contradiction requiring escalation on that basis. Confidence is moderated by the autonomy factor's pull toward M4."
+  },
+  "input_tokens": 9632,
+  "output_tokens": 1744
+}

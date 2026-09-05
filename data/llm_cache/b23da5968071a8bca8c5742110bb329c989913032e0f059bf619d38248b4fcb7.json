@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L6",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L6",
+        "evidence": "Company-wide final authority on core PPA tradeoffs across the entire NX-400 through NX-600 roadmap; decisions shape multiple product generations."
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L6",
+        "evidence": "Sign-off authority on every core team's performance model before tapeout, without oversight described -- sets direction for the domain, accountable for outcomes."
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L6",
+        "evidence": "Cross-generation PPA tradeoffs across multiple core teams and roadmap stages -- strategic, open-ended, framing is part of the work."
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L6",
+        "evidence": "Sought out as final authority across all core teams' PPA models -- authority spanning multiple teams/disciplines within the roadmap, company-wide reach."
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L6",
+        "evidence": "Owns architecture-level PPA decisions for a product line (NX-400 through NX-600) across generations -- factor 5a L6 anchor."
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L6",
+        "evidence": "Every core team's performance model requires his sign-off -- influences business-unit-level roadmap decisions and is credible with all core teams company-wide."
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.62,
+    "governing_rule": "rule 4: external recognition required for L7+; internal reputation only caps this at L6 despite scope evidence otherwise suggesting L7",
+    "alternative_level": "L7",
+    "alternative_reasoning": "Scope of impact language ('company-wide final authority', 'entire roadmap', every team's sign-off) reads as company-wide impact and roadmap-spanning ownership, which are the literal L7 anchors for scope_of_impact and ownership_scope (5a). If external recognition existed, this would be a clear L7. But rule 4 explicitly bars inferring L7 from internal reputation, and the description affirmatively states there is no external recognition, so L7 is foreclosed regardless of scope strength.",
+    "escalate": false,
+    "escalation_factor": "External recognition (publications/patents/standards participation) -- explicitly absent here per the text, which is why L7 is foreclosed; if this changes the level would shift to L7.",
+    "reasoning": "Scope of impact, autonomy, ownership, and influence all point to company-wide, roadmap-spanning authority that would nominally indicate L7 (impact across the company, sign-off authority over every core team, architecture direction across the NX-400-600 roadmap). However, rule 4 is explicit and non-negotiable: L7 and above require external recognition -- publications, patents, standards bodies, or external reputation -- and this cannot be inferred from internal reputation alone. The job description explicitly states this person has never published, patented, or presented outside the company and that the reputation is entirely internal. This disqualifies L7 regardless of how strong the internal scope evidence is. The role is therefore capped at L6, which is fully supported by every factor (company-wide/business-unit impact, direction-setting autonomy, strategic open-ended problems, cross-team technical authority, architecture ownership across generations, business-unit-level influence)."
+  },
+  "input_tokens": 9625,
+  "output_tokens": 1305
+}

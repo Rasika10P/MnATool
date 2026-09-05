@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L2",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L2",
+        "evidence": "Built and owns a branch predictor sizing model for one core (NX-500), which set BTB capacity for the tapeout -- a single component's impact, contained within the team/project rather than the function."
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L3",
+        "evidence": "Review from senior architects was light-touch this cycle -- outcomes reviewed but approach less scrutinized than a new grad's typical onboarding, suggesting some independent execution on a defined problem."
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L2",
+        "evidence": "Sizing model for BTB capacity is a defined problem with a known solution approach (modeling/simulation), not described as ambiguous or requiring construction of new solution paths."
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L2",
+        "evidence": "First full year on the team -- still developing proficiency in the discipline (microarchitecture/branch prediction), no evidence of adjacent-discipline credibility."
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L3",
+        "evidence": "Owns the branch predictor sizing model end to end for this core, feeding directly into a real tapeout decision (BTB capacity) -- a discrete block/model owned fully."
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L2",
+        "evidence": "No evidence of influence beyond the immediate team; work is reviewed by senior architects rather than the engineer influencing peers or adjacent teams."
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.62,
+    "governing_rule": "rule 2: lower level governs a split (scope of impact not unambiguously at the higher level)",
+    "alternative_level": "L3",
+    "alternative_reasoning": "L3 is plausible if the sizing model's direct effect on a shipped tapeout decision is read as component-level ownership 'end to end' (5a: L3 anchor) with outcomes reviewed but approach not (autonomy L3 anchor), and light-touch review is read as full independent execution. I did not choose this because scope of impact and technical depth/breadth (still first-year, developing proficiency) are more clearly L2, and per rule 1 scope of impact is the primary tiebreaker -- the evidence describes a single model for one core, not impact felt broadly across the team's other workstreams or the function.",
+    "escalate": false,
+    "escalation_factor": "scope_of_impact -- whether the BTB sizing model's role in setting final tapeout capacity constitutes component-level ownership (L3) or task-level contribution within a team (L2) is the crux; more detail on whether this model is treated as a standalone owned deliverable vs. one input among many reviewed inputs would resolve it",
+    "reasoning": "Scope of impact is primary and is clearly contained to a single model/component within one core project -- L2 territory, bordering L3 given the sizing model is a real owned artifact that fed the tapeout. Ownership scope (5a) and autonomy point somewhat higher (L3), reflecting a discrete block owned end-to-end with lighter oversight than the prior new grad, but technical depth/breadth and influence are squarely L1-L2: this is explicitly the engineer's first full year, indicating still-developing proficiency, and there is no evidence of influence outside the immediate review chain. Per rule 2, when factors split across adjacent levels, the lower level governs unless scope of impact is unambiguously at the higher level -- here scope of impact evidence (single model for one core, impact contained within the team/project) does not unambiguously clear L3's 'impact across the function' bar. I weighted this as L2 overall, treating the ownership/autonomy signals as encouraging trajectory rather than sufficient to lift the whole rating, consistent with rule 3's spirit that narrow scope caps advancement even when a piece of work is well executed. Note: I explicitly excluded 'first full year' (tenure) as a determinant of level -- it is cited only as evidence of current technical depth/breadth (proficiency still developing), which is a valid factor 4 anchor, not as an experience-based justification per se."
+  },
+  "input_tokens": 9605,
+  "output_tokens": 1555
+}

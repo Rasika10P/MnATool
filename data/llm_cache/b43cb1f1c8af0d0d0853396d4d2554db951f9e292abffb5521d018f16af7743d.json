@@ -1,0 +1,53 @@
+{
+  "decision": {
+    "track": "MGR",
+    "assigned_level": "M3",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "M3",
+        "evidence": "Manages a 4-person RTL sub-team on the NX-400 digital front-end; impact confined to the sub-team and its block-level deliverables, not the broader function."
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "M3",
+        "evidence": "Runs sprint planning and code review sign-off for the group -- operational team management, no evidence of setting direction beyond the sub-team's defined workstream."
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "M3",
+        "evidence": "Problems are scoped to a single RTL sub-team's deliverables (clock/reset architecture, sprint execution) -- defined workstream, not cross-team or strategic ambiguity."
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "M3",
+        "evidence": "Personally owns clock/reset architecture RTL for the block -- deep in one discipline (digital design), no described breadth across disciplines."
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "M3",
+        "evidence": "Owns a block (clock/reset architecture RTL) end to end across a development cycle, consistent with subsystem/block-level ownership rather than a full subsystem or product."
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "M3",
+        "evidence": "Influence is within the immediate team -- code review sign-off and performance reviews for direct reports; no described influence on adjacent teams or partners."
+      },
+      {
+        "factor": "span_and_budget",
+        "level_indicated": "M3",
+        "evidence": "4 direct reports, all individual contributors, no budget authority beyond headcount requisitions -- matches M3 anchor of 4-10 ICs, no budget authority."
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.82,
+    "governing_rule": "rule 5: manager level is not automatic from headcount -- span corroborates but scope of impact and problem complexity (both M3-level here) govern the assignment",
+    "alternative_level": "M4",
+    "alternative_reasoning": "M4 was considered given the manager title and the fact the person still personally owns significant RTL (could suggest a hybrid tech-lead/manager scope), but M4 requires 10-25 people or a program budget and broader scope across teams -- neither is present here. The 4-person, single-sub-team, no-budget profile clearly caps at M3 under rule 2 (lower level governs a split) since scope of impact is not unambiguously at the higher level.",
+    "escalate": false,
+    "escalation_factor": "span_and_budget",
+    "reasoning": "All seven factors converge cleanly on M3: a 4-person all-IC sub-team, no budget authority beyond requisitions, sprint-level operational management, and personal ownership of a single block (clock/reset architecture RTL) rather than a subsystem or product. This matches the M3 anchor (4-10 direct reports, all ICs, no budget authority) and the L4 IC-equivalent scope (owns a subsystem/complex workstream) is not exceeded -- the person owns a block, which is sub-L4/M3 territory on factor 5a but the managerial scope of impact (leading a defined sub-team on a single block) still nets to M3 rather than a lower non-manager-track outcome, since people management begins at M3 and the span/scope evidence doesn't stretch to M4 (which requires 10-25 people or a program budget). Title 'Engineering Manager' is treated as evidence only, not as the level itself (rule 6); the described scope -- a small sub-team, block-level ownership, no budget -- is what drives the M3 assignment. Source org context (104 employees, late-stage private, whole company) fits the 'small company, under ~150' archetype where titles often map down 1-2 levels; here the described scope independently supports M3, which is consistent with (not contradicted by) that prior, so confidence is not reduced on that basis."
+  },
+  "input_tokens": 9622,
+  "output_tokens": 1466
+}

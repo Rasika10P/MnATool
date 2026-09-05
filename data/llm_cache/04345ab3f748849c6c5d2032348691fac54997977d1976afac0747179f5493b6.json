@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L6",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L6",
+        "evidence": "Owns PLL and clock generation IP reused across three product lines (NX-400/500/600) spanning 6 tapeouts -- decisions shape multiple product generations, matching the L6 anchor of impact across the business unit."
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L6",
+        "evidence": "Holds final sign-off authority on PLL closure for every tapeout in the set, indicating accountability for outcomes without oversight -- sets direction for the domain."
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L6",
+        "evidence": "Phase-noise budget methodology must work across three distinct product lines with different requirements, a strategic, open-ended problem where framing the methodology itself is part of the work."
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L5",
+        "evidence": "Deep authority specifically within PLL/clock generation analog design -- a single discipline with no evidence of breadth across multiple disciplines (e.g., digital, DV, systems). Per rule 3, deep-but-narrow technical work without cross-domain breadth caps at L5."
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L6",
+        "evidence": "Owns architecture (PLL/clock IP) reused across a product line (NX-400/500/600) across generations/tapeouts, and owns the phase-noise budget methodology adopted company-wide -- matches 5a L6 anchor of owning architecture for a product line across generations."
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L6",
+        "evidence": "Methodology adopted company-wide reflects influence beyond the immediate team/function into business-unit-level practice; mentors 4 designers directly but the company-wide methodology adoption is the stronger influence signal."
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.68,
+    "governing_rule": "rule 3: deep-but-narrow technical depth caps at L5, but scope of impact, ownership, and influence are unambiguously at L6, so per rule 2 exception scope of impact governs the overall level even though technical depth/breadth alone caps at L5",
+    "alternative_level": "L5",
+    "alternative_reasoning": "If technical depth/breadth is weighted heavily (rule 3's cap) and the \"company-wide\" methodology adoption is discounted as plausible over-statement from a 104-person company (where \"company-wide\" is a much smaller bar than at Meridian), the role could rate L5: authority in one discipline, owns a major subsystem/IP across a product line, without demonstrated cross-domain breadth. This is also more consistent with the section-6 prior for a sub-150-person source org, where titles are expected to map down 1-2 levels. I did not select this as primary because the described scope -- three named product lines, six tapeouts, unilateral sign-off, and a methodology explicitly adopted company-wide -- is absolute, concrete evidence rather than relative title inflation, and rule 2 directs scope of impact to govern when unambiguous.",
+    "escalate": false,
+    "escalation_factor": "scope_of_impact -- specifically whether \"adopted company-wide\" and the three-product-line ownership reflect genuine business-unit-level scope or are relative/inflated language from a 104-person source company; resolving the absolute size and organizational structure behind that claim would settle L5 vs L6.",
+    "reasoning": "This role shows narrow single-discipline depth (analog PLL/clock design), which per rule 3 would ordinarily cap the role at L5. However, scope of impact, ownership scope, autonomy, and influence all point clearly to L6: the role owns architecture for IP reused across three product lines and six tapeouts, holds unilateral sign-off authority company-wide, and has authored a phase-noise methodology adopted company-wide -- impact well beyond a single team or function, shaping multiple product generations. Rule 1 makes scope of impact the primary tiebreaker when factors split, and rule 2 allows scope of impact to govern over the lower level when it is unambiguously at the higher level. The mentoring of 4 designers is noted but is span-of-mentorship, not span-and-budget (this is IC track), and does not by itself drive level. No external publications/patents/standards-body recognition is described, so L7 (which requires external recognition per rule 4) is not supported despite the company-wide methodology influence being strong internally. Source org calibration: source is a whole company at ~104 headcount (small company, under ~150), where the expected drift per section 6 is that titles map DOWN 1-2 levels due to title inflation and shallow org depth. The evidence-based result here (L6) is notably high relative to that prior -- a \"Principal architect\" title from a 104-person company mapping to L6 (Principal Engineer, business-unit-wide impact) contradicts the expected downward-drift prior. This is a case where the absolute scope evidence (three product lines, 6 tapeouts, company-wide methodology, final sign-off authority) is unusually concrete and strong, which is exactly the kind of absolute evidence section 6 says should be trusted over relative title language. Still, the contradiction with the small-company prior lowers my confidence and this is a genuine close call between L5 and L6."
+  },
+  "input_tokens": 9635,
+  "output_tokens": 1942
+}

@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L1",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L1",
+        "evidence": "Scope limited to a single sub-block (CDC synchronizer and register-map RTL) within one larger PHY controller block; impact contained to the immediate team's block."
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L1",
+        "evidence": "Wrote and verified RTL 'under supervision' as a new-grad, indicating work assigned and reviewed in detail."
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L2",
+        "evidence": "CDC synchronizer and register-map design have known solution paths and established design patterns, though some judgment is applied by the engineer executing them."
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L1",
+        "evidence": "New-grad developing proficiency in RTL design; no evidence of proficiency without support or of adjacent-discipline credibility."
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L2",
+        "evidence": "Carried the sub-block through 1 tapeout (NX-100 A0), owning a defined module end to end, per factor 5a L1-L2/L3 boundary -- but described as 'under supervision' which pulls toward contributing to a block under direction."
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L1",
+        "evidence": "No evidence of influence beyond own work; communicates within the immediate team only."
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.8,
+    "governing_rule": "rule 2: lower level governs a split",
+    "alternative_level": "L2",
+    "alternative_reasoning": "Completing a full tapeout on an owned sub-block could argue for L2 (Engineer) if viewed as having moved past the pure 'developing proficiency' stage. However, the explicit 'under supervision' language and single sub-block scope (not yet a full component/workstream) keep this at L1 rather than L2, and certainly well short of L3's independent, reviewed-on-outcome-only bar.",
+    "escalate": false,
+    "escalation_factor": "autonomy",
+    "reasoning": "This is a new-grad RTL designer working under supervision on a single sub-block (CDC synchronizer, register-map RTL) within a larger PHY controller block. Scope of impact (factor 1) is squarely at L1-L2 -- work is contained to a single sub-block, not even a full defined component/workstream (which would indicate L3). Autonomy is explicitly 'under supervision,' matching the L1-L2 anchor of work assigned and reviewed in detail, not the L3 anchor of independent execution with only outcome review. Technical depth is that of someone still developing proficiency, consistent with L1. Ownership scope (5a) shows carrying a sub-block through one tapeout, which has some L3 flavor (owns a block end to end), but this is offset by the explicit 'under supervision' framing and lack of independent autonomy -- per rule 2, when factors split across adjacent levels, the lower level governs unless scope of impact unambiguously points higher, which it does not here (scope is explicitly sub-block, singular, first project). No influence beyond the immediate team. All factors point to L1, with ownership scope being the only one flirting with L2/L3, insufficient to lift the overall rating under rule 2."
+  },
+  "input_tokens": 9634,
+  "output_tokens": 1261
+}

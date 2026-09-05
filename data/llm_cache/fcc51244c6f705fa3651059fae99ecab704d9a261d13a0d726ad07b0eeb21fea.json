@@ -1,0 +1,53 @@
+{
+  "decision": {
+    "track": "MGR",
+    "assigned_level": "M3",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "M3",
+        "evidence": "Leads engineering on the company's single embedded product line; impact contained to firmware and hardware bring-up team, not multiple functions or business-unit-level decisions."
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "M3",
+        "evidence": "Sets sprint priorities and reviews team output, but does not set overall technical strategy -- that is set jointly by the two co-founders. Direction is received from above on strategy."
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "M3",
+        "evidence": "Problems are scoped within the current product's firmware and integration issues; broader roadmap set elsewhere -- defined problem space, not open-ended or cross-domain."
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L4",
+        "evidence": "Oversees firmware and hardware bring-up, adjacent disciplines, consistent with deep-in-one/credible-in-adjacent characterization; no evidence of company-wide sought-out authority."
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L4",
+        "evidence": "Owns delivery of a single embedded product line's firmware/integration workstream across a development cycle -- subsystem-level ownership, not a platform or multi-generation roadmap."
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "M3",
+        "evidence": "Represents engineering in weekly leadership standups (peer/adjacent-function representation) but does not set or shape overall company technical strategy, which is reserved to co-founders."
+      },
+      {
+        "factor": "span_and_budget",
+        "level_indicated": "M3",
+        "evidence": "8 direct reports, all individual contributors, matching the 4-10 IC-only range; no budget authority beyond headcount requisitions -- equipment and vendor spend approved by CFO."
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.82,
+    "governing_rule": "rule 6: title in the source document is evidence, not input -- level from described scope, never title",
+    "alternative_level": "M4",
+    "alternative_reasoning": "M4 was considered given the VP title and \"leads all engineering,\" but span (8 ICs, no team leads), budget (none beyond requisitions), and autonomy (strategy set by co-founders, not this role) all fall below the M4 anchors (10-25 people, program budget ownership, function-wide program-setting). Scope of impact is not unambiguously at the higher level per rule 2, so the lower level (M3) governs.",
+    "escalate": false,
+    "escalation_factor": "span_and_budget vs. scope_of_impact -- if the company's small size means engineering leadership inherently carries more effective organizational weight than the raw headcount/budget numbers suggest, that could push toward M4",
+    "reasoning": "Despite the VP title, every scope factor points to M3: 8 direct reports all ICs (M3 span band), no budget authority beyond requisitions (explicitly M3 anchor language), problems scoped to a single product's firmware/integration issues (not strategic or open-ended), and technical strategy explicitly reserved to the co-founders rather than this role. Influence is limited to representing engineering in standups, not shaping business-unit or company strategy. Ownership is at the subsystem/single-product-line level (L4-equivalent under 5a), consistent with M3's L4 IC-equivalent mapping. All factors converge cleanly on M3 with no split requiring rule 2's lower-level tiebreak. Per section 6, source context (40-person growth-stage whole-company) sets a prior that titles at small companies map down 1-2 levels from nominal title level -- a \"VP\" mapping to M3 is consistent with that expected drift, so this result is consistent with (not contradicting) the prior, which raises confidence rather than lowering it."
+  },
+  "input_tokens": 9710,
+  "output_tokens": 1455
+}

@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L4",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L4",
+        "evidence": "Work is 'ordinary core-team microarchitecture spec work' on the current NX-500 generation, shared with peers doing comparable scope -- impact is on a subsystem/workstream within the function, not across the business unit."
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L4",
+        "evidence": "Described as core-team spec work alongside peers, consistent with setting own approach on assigned ambiguous problems within a defined subsystem, rather than setting direction for a domain."
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L4",
+        "evidence": "Microarchitecture spec work implies ambiguous problems requiring constructed solution paths at the block/subsystem level, not cross-domain strategic framing."
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L4",
+        "evidence": "Work is described as ordinary microarchitecture spec work, i.e. deep in one discipline; no evidence of cross-disciplinary authority or being sought out company-wide."
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L4",
+        "evidence": "Owns microarchitecture spec work on a single product generation (NX-500) shared with peers -- consistent with owning a subsystem across a development cycle, not a full product/platform or multi-generation architecture."
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L3",
+        "evidence": "No evidence beyond doing comparable work alongside peers -- influence is not described as reaching adjacent teams or partners, appears limited to peer-level demonstrated work."
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.72,
+    "governing_rule": "rule 6: title in the source document is evidence, not input -- level from described scope, never from the title",
+    "alternative_level": "L3",
+    "alternative_reasoning": "Influence rates at L3, and if influence were treated as the tiebreaker this could pull the role down to L3. However, per rule 1, scope of impact is the primary tiebreaker, and scope of impact (subsystem-level, function-wide) plus the majority of other factors (autonomy, complexity, ownership, depth) cluster at L4, so L4 governs over the single lower influence rating.",
+    "escalate": false,
+    "escalation_factor": "influence -- if the shared peer scope reflects genuine cross-team representation rather than purely peer-level collaboration, the role could still hold at L4 but confidence would rise; if influence is confirmed as strictly intra-team, L3 becomes more plausible under a stricter reading of rule 1",
+    "reasoning": "Despite the 'Principal' title, the described day-to-day work is ordinary core-team microarchitecture spec work on a single product generation, shared with peers explicitly at a lower comparable level (Senior MTS). All factors point to subsystem-level ownership, function-level impact, and peer-level influence -- consistent with L4 (Staff Engineer), not L6 (Principal Engineer). Rule 3 also applies: this is deep, narrow technical work without demonstrated cross-domain breadth or organizational influence, which caps it well below L6 regardless of title. Source org context (104-person late-stage private company) sets a prior of title inflation with titles mapping down 1-2 levels, which is consistent with mapping a nominal 'Principal' title down to L4 -- this strengthens confidence rather than contradicting the prior. No platform_dependency field was given, so no factor-4 cap was applied beyond the evidence already limiting it to L4."
+  },
+  "input_tokens": 9599,
+  "output_tokens": 1354
+}

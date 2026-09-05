@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L4",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L4",
+        "evidence": "Owns the register-transfer implementation of the NX-210 interconnect fabric end to end, including arbitration and CDC logic -- a subsystem-level ownership with impact across the function, not just a single block."
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L4",
+        "evidence": "Has carried the subsystem through 2 tapeouts without escalation, indicating the person sets their own approach on ambiguous implementation problems and is consulted rather than directed."
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L4",
+        "evidence": "Arbitration and clock-domain-crossing logic within an interconnect fabric are ambiguous problems requiring constructed solution paths, not simply selection among known approaches."
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L4",
+        "evidence": "Deep in RTL design for a single subsystem (interconnect fabric); described as the informal go-to reviewer for other RTL engineers, showing credibility in the adjacent review space within the same discipline, but no evidence of cross-disciplinary breadth (e.g. verification, physical design, architecture)."
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L4",
+        "evidence": "Owns a subsystem (interconnect fabric) across a full development cycle -- two tapeouts -- matching the 5a L4 anchor of 'owns a subsystem across a full development cycle.'"
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L4",
+        "evidence": "Other RTL engineers informally check designs with this person before sign-off, showing influence beyond the immediate team into adjacent engineers' work, though not yet formal or function-wide."
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.68,
+    "governing_rule": "rule 3: deep-but-narrow technical work caps at L5, but here the evidence itself (single subsystem ownership, informal peer influence, no cross-domain breadth) converges on L4 rather than needing the cap invoked",
+    "alternative_level": "L5",
+    "alternative_reasoning": "L5 would require ownership of a major subsystem or full derivative product with authority working effectively across several disciplines, and function-level influence. The interconnect fabric ownership and two-tapeout track record are suggestive, but the informal, unofficial nature of the peer sign-off role and the absence of any evidence of cross-discipline work (verification, physical design, architecture) means influence and technical breadth do not clear the L5 bar. Per rule 2, the lower level governs since scope of impact is not unambiguously at L5.",
+    "escalate": false,
+    "escalation_factor": "influence -- specifically whether the informal design-review role becomes a formalized function-wide responsibility, which would be the deciding evidence for L5",
+    "reasoning": "All six factors converge cleanly on L4: subsystem-level ownership (interconnect fabric) carried through two tapeouts, self-directed execution without escalation, ambiguous CDC/arbitration problems requiring constructed solutions, deep single-discipline mastery with informal peer-review influence but no described cross-domain breadth or organizational influence beyond RTL peers. This is short of L5, which requires ownership of a major subsystem or full derivative product plus authority working effectively across several disciplines and function-level influence -- neither is evidenced here. The informal, not-yet-official nature of the peer sign-off role keeps influence at L4 rather than L5's function-level influence. Source organization context: source_headcount 104, late-stage private, whole company -- this is a small-company profile where the framework's expected drift is titles/scope mapping down 1-2 levels due to title inflation and shallow org depth. My evidence-based result of L4 is consistent with this prior (it does not over-credit the informal, unofficial 'go-to reviewer' status into a higher level), which raises confidence somewhat. However, this is a close call between L4 and L5 given the two-tapeout track record and emerging informal authority, so confidence is capped at moderate."
+  },
+  "input_tokens": 9624,
+  "output_tokens": 1528
+}

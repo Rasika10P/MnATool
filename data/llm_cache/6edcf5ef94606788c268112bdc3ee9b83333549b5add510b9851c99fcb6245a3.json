@@ -1,0 +1,48 @@
+{
+  "decision": {
+    "track": "IC",
+    "assigned_level": "L5",
+    "factor_ratings": [
+      {
+        "factor": "scope_of_impact",
+        "level_indicated": "L6",
+        "evidence": "Methodology is the mandatory sign-off gate for CTS closure across every NX-400 and NX-500 physical design handoff \u2014 impact spans the business unit's product lines, not just one team or function."
+      },
+      {
+        "factor": "autonomy",
+        "level_indicated": "L6",
+        "evidence": "Owns the methodology outright as the sign-off authority company-wide; sets the standard others must comply with, accountable for outcomes without oversight described."
+      },
+      {
+        "factor": "problem_complexity",
+        "level_indicated": "L5",
+        "evidence": "Skew-budgeting and CTS closure across multiple product generations involves competing constraints (timing, power, variability) but is a well-scoped technical domain, not open-ended strategic framing."
+      },
+      {
+        "factor": "technical_depth_breadth",
+        "level_indicated": "L5",
+        "evidence": "Deep authority in one narrow methodology area (CTS/skew-budgeting); explicitly 'has never worked outside this one methodology area' \u2014 no cross-disciplinary breadth described."
+      },
+      {
+        "factor": "ownership_scope",
+        "level_indicated": "L5",
+        "evidence": "Owns a methodology/process used as mandatory gate across two product lines (NX-400, NX-500) \u2014 a major cross-product process, but not full platform or roadmap ownership across product lines' architecture."
+      },
+      {
+        "factor": "influence",
+        "level_indicated": "L5",
+        "evidence": "Methodology mandates compliance from every physical design team doing CTS closure company-wide, indicating function-level and cross-team influence, but no evidence of executive or industry-level influence."
+      }
+    ],
+    "factor5_variant_applied": "5a",
+    "confidence": 0.62,
+    "governing_rule": "rule 3: deep-but-narrow technical work caps at L5",
+    "alternative_level": "L6",
+    "alternative_reasoning": "If scope of impact were treated as unambiguously dominant per rule 1's tiebreaker guidance (mandatory gate across all NX-400/500 handoffs, company-wide), L6 could be argued. But rule 3 explicitly overrides scope-driven elevation when the work is deep-but-narrow with no cross-domain breadth or broader organizational influence, which is squarely the case here. L6 was not chosen because the narrow, single-methodology profile fails the breadth and influence requirements for that level.",
+    "escalate": false,
+    "escalation_factor": "technical_depth_breadth vs. scope_of_impact -- whether the company-wide mandatory sign-off authority constitutes sufficient organizational influence to overcome the narrow-breadth cap",
+    "reasoning": "The role shows strong scope-of-impact signals (mandatory company-wide sign-off gate across two product lines) that could point toward L6. However, the JD is explicit that this person has never worked outside this one methodology area \u2014 no cross-domain breadth \u2014 and has no patents or external publications. Per rule 3, deep-but-narrow technical work without cross-domain breadth and organizational influence caps at L5 regardless of how broad the ownership of that narrow area is. There's also no external recognition (rule 4 required for L7+, moot here but confirms no path above L6 anyway). Influence is real but confined to enforcing a single methodology's compliance, not cross-functional strategic alignment or executive credibility. So despite scope_of_impact evidence trending toward L6, the technical depth/breadth cap governs and the role is leveled at L5. Ownership scope (5a) reflects owning a subsystem-level methodology/process across product lines, consistent with L5's 'major subsystem' anchor rather than L6's 'architecture for a product line across generations.'"
+  },
+  "input_tokens": 9630,
+  "output_tokens": 1382
+}
