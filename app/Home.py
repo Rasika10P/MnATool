@@ -6,17 +6,24 @@ agents/modeling_graph.py exactly as built for build order items 2-6. All orchest
 (mapping tables, scope extraction, per-employee error handling, stage sequencing) lives in
 app/pipeline.py; this file is rendering only.
 
-Upload is structural-validation only, not a second pipeline input yet -- every stage below
-still reads the committed data/parquet/nyx_census.xlsx regardless of what's uploaded (see
-app/pipeline.py's validate_uploaded_census docstring). Every model call
-agents/instrumented_model.py makes is disk-cached (agents/llm_cache.py): a first run against
-a cold cache makes real API calls (and is billed, hence the budget cap below); every later
-run of the same population is served entirely from cache, no live calls.
+Upload goes through gate 1 (build order item 5: "column mapping confirmation before
+ingest") before it can replace the committed census: on upload, app/pipeline.py's
+read_uploaded_workbook parses the file with no assumption about its headers, then
+agents/column_mapping_gate.py proposes a mapping to Meridian's own field names and pauses
+for a human to confirm or correct it. Only once every required field (Emp ID, Job Title,
+Dept, Location, Curr, Base -- tools/column_mapping.py's REQUIRED_COLUMNS) is mapped does
+app/pipeline.py's load_census_from_upload build employee records from it; until then (or if
+no file is uploaded at all) every stage below reads the committed
+data/parquet/nyx_census.xlsx. Every model call agents/instrumented_model.py makes is
+disk-cached (agents/llm_cache.py): a first run against a cold cache makes real API calls
+(and is billed, hence the budget cap below); every later run of the same population is
+served entirely from cache, no live calls.
 """
 
 from __future__ import annotations
 
 import sys
+import uuid
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -28,6 +35,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+from agents.column_mapping_gate import resume_column_mapping_review
 from agents.cost_logging import get_session_stats, reset_session_stats
 from agents.instrumented_model import CACHE_MODE_LIVE, DemoModeCacheMissError
 from agents.secrets import sync_secrets_to_env
@@ -40,14 +48,17 @@ from app.pipeline import (
     build_modeling_population,
     estimate_live_run_cost,
     load_census,
+    load_census_from_upload,
     load_level_titles,
+    read_uploaded_workbook,
     resolve_mapping,
     run_leveling_stage,
     run_modeling_stage,
     run_negotiation_stage,
     run_scope_extraction_stage,
-    validate_uploaded_census,
+    start_column_mapping_review_for_upload,
 )
+from tools.column_mapping import REQUIRED_COLUMNS, TARGET_COLUMNS
 
 sync_secrets_to_env()
 
@@ -103,10 +114,142 @@ def _render_framework_reference() -> None:
 # ---------------------------------------------------------------------------
 
 
-def _render_sidebar(mode: str, employees: list[dict]) -> tuple[float, bool]:
+def _active_census() -> tuple[list[dict], object]:
+    """The census this run actually uses -- an uploaded workbook once its column mapping has
+    cleared gate 1 (build order item 5), otherwise the committed Nyx census. Called fresh
+    each time rather than cached in a variable across the script run, so it always reflects
+    whatever st.session_state["uploaded_census"] holds at that exact moment (which the
+    sidebar's upload handling may have just set or cleared this same rerun)."""
+    uploaded = st.session_state.get("uploaded_census")
+    return uploaded if uploaded is not None else load_census()
+
+
+def _render_column_mapping_table(review: dict, df: pd.DataFrame) -> None:
+    """The confirmable mapping table for gate 1: one row per Meridian field, a dropdown of
+    the upload's actual raw columns (plus "not present") to pick the source for it, seeded
+    from whichever mapping the gate most recently proposed -- the fresh suggestion on a first
+    look, or the reviewer's own last submission on a reprompt after a missing required field,
+    so a correction never means re-entering fields that were already right.
+
+    Rendered in the main content area (called from main()), not the sidebar -- the sidebar
+    is too narrow for a 3-column table with real file header names in it; only the upload
+    widget and a one-line status live in the sidebar (_render_upload_section)."""
+    st.subheader("Confirm column mapping")
+    st.caption(f"Uploaded: **{review['file_name']}** ({len(df)} row(s), {len(df.columns)} column(s))")
+    payload = review["pause_payload"]
+    raw_options = ["— not present —"] + [str(c) for c in df.columns]
+    starting_mapping = payload["suggested_mapping"]
+    table = pd.DataFrame(
+        {
+            "Meridian field": TARGET_COLUMNS,
+            "Required": ["Yes" if c in REQUIRED_COLUMNS else "No" for c in TARGET_COLUMNS],
+            "Uploaded column": [starting_mapping.get(c) or "— not present —" for c in TARGET_COLUMNS],
+        }
+    )
+
+    if payload.get("missing_required"):
+        st.error(
+            "Still unmapped after your last confirmation — required field(s): "
+            f"**{', '.join(payload['missing_required'])}**. Pick a column for each before this "
+            "census can be used."
+        )
+    else:
+        st.caption(
+            "Gate 1: confirm the proposed mapping below, or correct any row, before this "
+            "census can be ingested. Required fields left unmapped will block the run."
+        )
+
+    editor_key = f"column-mapping-editor-{review['thread_id']}-{review['attempt']}"
+    edited = st.data_editor(
+        table,
+        column_config={
+            "Meridian field": st.column_config.TextColumn(disabled=True),
+            "Required": st.column_config.TextColumn(disabled=True),
+            "Uploaded column": st.column_config.SelectboxColumn(options=raw_options, required=True),
+        },
+        hide_index=True,
+        width="stretch",
+        key=editor_key,
+    )
+
+    if st.button("Confirm mapping", type="primary", key=f"confirm-mapping-{editor_key}"):
+        confirmed_mapping = {
+            row["Meridian field"]: (None if row["Uploaded column"] == "— not present —" else row["Uploaded column"])
+            for _, row in edited.iterrows()
+        }
+        result = resume_column_mapping_review(review["thread_id"], confirmed_mapping=confirmed_mapping)
+        if result.get("__interrupt__"):
+            # A required field is still unmapped -- validate_node looped back rather than
+            # ingesting. Show the reprompt with exactly what's still missing.
+            review["pause_payload"] = result["__interrupt__"][0].value
+            review["attempt"] += 1
+        else:
+            employees, source_org_context = load_census_from_upload(df, result["confirmed_mapping"])
+            st.session_state["uploaded_census"] = (employees, source_org_context)
+            review["confirmed"] = True
+        st.rerun()
+
+
+def _render_upload_section() -> None:
+    uploaded = st.file_uploader("Upload a census (.xlsx)", type=["xlsx"])
+    review = st.session_state.get("column_mapping_review")
+
+    if uploaded is None:
+        if review is not None:
+            st.caption(f"No file selected — {review['file_name']}'s mapping is still held; upload it again to resume, or:")
+            if st.button("Discard and use the committed census"):
+                st.session_state["column_mapping_review"] = None
+                st.session_state["uploaded_census"] = None
+                st.rerun()
+        return
+
+    if review is None or review["file_name"] != uploaded.name:
+        # A new upload (or a different file than whatever was last reviewed) -- (re)start
+        # gate 1 from scratch rather than reusing a stale thread_id/mapping from before.
+        ok, message, df = read_uploaded_workbook(uploaded)
+        if not ok:
+            st.error(message)
+            st.session_state["column_mapping_review"] = None
+            st.session_state["uploaded_census"] = None
+            return
+        thread_id = f"column-mapping-{uploaded.name}-{uuid.uuid4()}"
+        result = start_column_mapping_review_for_upload(uploaded.name, [str(c) for c in df.columns], thread_id)
+        st.session_state["column_mapping_review"] = {
+            "file_name": uploaded.name,
+            "thread_id": thread_id,
+            "pause_payload": result["__interrupt__"][0].value,
+            "dataframe": df,
+            "confirmed": False,
+            "attempt": 0,
+        }
+        st.session_state["uploaded_census"] = None
+        st.rerun()
+
+    review = st.session_state["column_mapping_review"]
+    if review["confirmed"]:
+        employees, _ = st.session_state["uploaded_census"]
+        st.success(f"Using **{review['file_name']}** — {len(employees)} employee(s), column mapping confirmed.")
+        if st.button("Discard and use the committed census instead"):
+            st.session_state["column_mapping_review"] = None
+            st.session_state["uploaded_census"] = None
+            st.rerun()
+    else:
+        st.warning("Column mapping needs confirmation before this census can be used — see below.")
+
+
+def _render_pending_column_mapping() -> None:
+    """Renders gate 1's confirmable table in the main content area when an uploaded
+    census's mapping hasn't cleared yet. A no-op otherwise, including once confirmed --
+    _render_upload_section's sidebar success message is enough at that point."""
+    review = st.session_state.get("column_mapping_review")
+    if review is not None and not review["confirmed"]:
+        _render_column_mapping_table(review, review["dataframe"])
+        st.divider()
+
+
+def _render_sidebar(mode: str) -> tuple[float, bool]:
     with st.sidebar:
         st.header("Census source")
-        st.caption("Currently running against the committed Nyx census (25 employees).")
 
         st.download_button(
             "Download census template (.xlsx)",
@@ -115,16 +258,11 @@ def _render_sidebar(mode: str, employees: list[dict]) -> tuple[float, bool]:
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         )
 
-        uploaded = st.file_uploader("Upload a census (.xlsx)", type=["xlsx"])
-        if uploaded is not None:
-            ok, message, df = validate_uploaded_census(uploaded)
-            if ok:
-                st.success(message)
-                st.caption("Not yet wired to the pipeline — the run below still uses the committed Nyx census.")
-                with st.expander("Preview"):
-                    st.dataframe(df, hide_index=True, width="stretch")
-            else:
-                st.error(message)
+        _render_upload_section()
+        if st.session_state.get("uploaded_census") is None:
+            st.caption("Currently running against the committed Nyx census.")
+
+        employees, _ = _active_census()
 
         st.divider()
         st.header("Run")
@@ -135,7 +273,7 @@ def _render_sidebar(mode: str, employees: list[dict]) -> tuple[float, bool]:
         if mode == CACHE_MODE_LIVE:
             st.caption(f"Estimated cost if run now: ~\\${estimate_live_run_cost(employees):.2f} (approximate)")
         budget_cap = st.number_input("Spend limit (USD)", min_value=0.5, max_value=50.0, value=5.0, step=0.5)
-        run_clicked = st.button("Map all 25 employees", type="primary")
+        run_clicked = st.button(f"Map all {len(employees)} employees", type="primary")
         cost_metrics_slot = st.container()
 
         return budget_cap, run_clicked, cost_metrics_slot
@@ -161,7 +299,7 @@ def _run_pipeline(budget_cap: float) -> None:
     reset_session_stats()
     reset_default_budget(budget_cap)
 
-    employees, source_org_context = load_census()
+    employees, source_org_context = _active_census()
     mappings = {e["employee_id"]: resolve_mapping(e) for e in employees}
     n_mapped = sum(1 for m in mappings.values() if m["mapped"])
 
@@ -260,7 +398,8 @@ def _level_distribution_chart() -> go.Figure:
         before_counts[crosswalk_level] += 1
 
         neg = st.session_state["negotiation_results"].get(emp_id)
-        final_level = neg["final_level"] if neg and "error" not in neg else crosswalk_level
+        resolved = neg and "error" not in neg and not neg.get("paused")
+        final_level = neg["final_level"] if resolved else crosswalk_level
         after_counts[final_level] += 1
 
     fig = go.Figure()
@@ -392,8 +531,16 @@ _BASIS_SHORT_LABELS = {
     "misread factor anchor": "factor anchor",
     "Meridian precedent": "precedent",
 }
-_VERDICT_LABELS = {"upheld": "upheld", "revised": "revised", "red_circled": "red-circled", "escalated": "escalated"}
-_VERDICT_CONNECTOR = {"upheld": "at", "revised": "to", "red_circled": "at", "escalated": "at"}
+_VERDICT_LABELS = {
+    "upheld": "upheld",
+    "revised": "revised",
+    "red_circled": "red-circled",
+    "escalated": "escalated",
+    "human_overridden": "overridden by a human",
+}
+_VERDICT_CONNECTOR = {
+    "upheld": "at", "revised": "to", "red_circled": "at", "escalated": "at", "human_overridden": "to",
+}
 
 
 def _short_rule_citation(governing_rule: str) -> str:
@@ -437,6 +584,12 @@ def _render_negotiation_detail(employee_id: str) -> None:
     if "error" in neg:
         st.error(f"Negotiation failed for {employee_id}: {neg['error']}")
         return
+    if neg.get("paused"):
+        st.warning(
+            f"**Paused — round limit hit** ({neg['interrupt_payload']['round_count']} rounds, unresolved). "
+            "Review it on the Round Limit page — nothing is decided until a human picks a level."
+        )
+        return
     if not neg["contested"]:
         st.success(_advocate_summary_line(neg["advocate_output"]))
         return
@@ -451,7 +604,7 @@ def _render_negotiation_detail(employee_id: str) -> None:
         f"**Final verdict: {verdict_label} at {neg['final_level']}** — {final_rule} "
         f"({neg['round_count']} round{plural})"
     )
-    if verdict in ("upheld", "red_circled"):
+    if verdict in ("upheld", "red_circled", "human_overridden"):
         st.success(verdict_line)
     elif verdict == "revised":
         st.info(verdict_line)
@@ -493,6 +646,7 @@ _STATUS_LABELS_BY_VERDICT = {
     "red_circled": "Contested — level held, pay protected",
     "revised": "Contested — level changed",
     "escalated": "Needs your review",
+    "human_overridden": "Contested — level set by a human",
 }
 
 
@@ -509,6 +663,8 @@ def _employee_status(employee_id: str) -> str:
         return "Not negotiated"
     if "error" in neg:
         return "Negotiation failed"
+    if neg.get("paused"):
+        return "Paused — round limit"
     if neg["contested"]:
         return _STATUS_LABELS_BY_VERDICT.get(neg["final_verdict"], neg["final_verdict"])
     return "Agreed"
@@ -660,11 +816,11 @@ def main() -> None:
     _render_framework_reference()
     st.divider()
 
-    # Cheap local file read, not an API call -- needed here (not just inside _run_pipeline)
-    # so the Live-mode cost estimate has real job-description text to size against before
-    # anyone clicks anything.
-    employees_for_estimate, _ = load_census()
-    budget_cap, run_clicked, cost_metrics_slot = _render_sidebar(mode, employees_for_estimate)
+    # _render_sidebar handles the upload + column-mapping gate, which can change what
+    # _active_census() returns partway through this function -- called again below rather
+    # than reusing a value captured before the sidebar ran.
+    budget_cap, run_clicked, cost_metrics_slot = _render_sidebar(mode)
+    _render_pending_column_mapping()
 
     if run_clicked:
         if mode == CACHE_MODE_LIVE:
@@ -675,6 +831,7 @@ def main() -> None:
 
     if st.session_state.get("pending_live_confirmation"):
         with st.container():
+            employees_for_estimate, _ = _active_census()
             estimate = estimate_live_run_cost(employees_for_estimate)
             st.warning(
                 f"**Live mode will make real API calls against your configured keys.** "

@@ -25,6 +25,15 @@ TARGET_COLUMNS = [
 # Plausible header spellings seen in the wild for each target field, beyond the target
 # column's own name (which is always tried first). Purely additive to the fallback identity
 # match -- an exact (normalized) match to the target name itself always wins first.
+# The subset of TARGET_COLUMNS the crosswalk pipeline cannot proceed without: without one of
+# these, a row can't be identified (Emp ID), leveled (Job Title), mapped to a Meridian family
+# (Dept) or geo (Location), or priced (Curr, Base). Bonus/Unvested Options/Start/Role Summary
+# are read where present but every downstream consumer already tolerates a missing value for
+# them (a null cell, or -- once the column-mapping gate lands -- a column absent entirely).
+# build order item 5's column-mapping gate (agents/column_mapping_gate.py) blocks ingest only
+# on a missing entry from this list, never on the other four.
+REQUIRED_COLUMNS = ["Emp ID", "Job Title", "Dept", "Location", "Curr", "Base"]
+
 FIELD_SYNONYMS: dict[str, list[str]] = {
     "Emp ID": ["employee id", "employee_id", "empid", "emp no", "employee number", "id"],
     "Job Title": ["title", "position", "job", "role title", "position title"],

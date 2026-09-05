@@ -12,7 +12,7 @@ import pytest
 
 import agents.column_mapping_gate as column_mapping_gate
 from agents.column_mapping_gate import resume_column_mapping_review, start_column_mapping_review
-from tools.column_mapping import TARGET_COLUMNS
+from tools.column_mapping import REQUIRED_COLUMNS, TARGET_COLUMNS
 
 
 @pytest.fixture(autouse=True)
@@ -33,6 +33,7 @@ def _state(**overrides) -> dict:
         "raw_columns": ["Employee ID", "Job Title", "Department", "Office", "Currency", "Base Salary"],
         "suggested_mapping": None,
         "confirmed_mapping": None,
+        "missing_required": None,
         "review_entry": None,
     }
     base.update(overrides)
@@ -83,15 +84,51 @@ def test_human_correction_overrides_a_wrong_suggestion(checkpoint_db, isolated_r
     assert logged["confirmed_mapping"]["Location"] == "Work Site"  # what the human actually chose
 
 
-def test_every_review_is_logged(checkpoint_db, isolated_review_log):
+def test_every_completed_review_is_logged(checkpoint_db, isolated_review_log):
     for i in range(2):
         thread_id = f"test-{uuid.uuid4()}"
         start_column_mapping_review(_state(source_name=f"upload-{i}.xlsx"), thread_id, db_path=checkpoint_db)
         confirmed = {c: None for c in TARGET_COLUMNS}
+        confirmed.update({c: c for c in REQUIRED_COLUMNS})  # the default state's raw_columns == TARGET_COLUMNS
         resume_column_mapping_review(thread_id, confirmed_mapping=confirmed, db_path=checkpoint_db)
 
     lines = isolated_review_log.read_text().strip().splitlines()
     assert len(lines) == 2
+
+
+def test_missing_required_column_blocks_and_reprompts_instead_of_logging(checkpoint_db, isolated_review_log):
+    # Every required column left unmapped -- validate_node must refuse to log this and pause
+    # again rather than silently accepting an unusable mapping.
+    thread_id = f"test-{uuid.uuid4()}"
+    start_column_mapping_review(_state(), thread_id, db_path=checkpoint_db)
+
+    confirmed = {c: None for c in TARGET_COLUMNS}
+    result = resume_column_mapping_review(thread_id, confirmed_mapping=confirmed, db_path=checkpoint_db)
+
+    assert "__interrupt__" in result
+    payload = result["__interrupt__"][0].value
+    assert set(payload["missing_required"]) == set(REQUIRED_COLUMNS)
+    # The reprompt shows the reviewer's own (incomplete) submission back, not the original
+    # suggestion -- nothing they already got right should need re-entering.
+    assert payload["suggested_mapping"] == confirmed
+    assert not isolated_review_log.exists() or isolated_review_log.read_text().strip() == ""
+
+
+def test_fixing_the_missing_required_column_after_a_reprompt_then_logs(checkpoint_db, isolated_review_log):
+    thread_id = f"test-{uuid.uuid4()}"
+    start_column_mapping_review(_state(), thread_id, db_path=checkpoint_db)
+
+    incomplete = {c: None for c in TARGET_COLUMNS}
+    blocked = resume_column_mapping_review(thread_id, confirmed_mapping=incomplete, db_path=checkpoint_db)
+    assert "__interrupt__" in blocked
+
+    complete = {**incomplete, **{c: c for c in REQUIRED_COLUMNS}}
+    result = resume_column_mapping_review(thread_id, confirmed_mapping=complete, db_path=checkpoint_db)
+
+    assert "__interrupt__" not in result
+    assert result["confirmed_mapping"] == complete
+    logged = json.loads(isolated_review_log.read_text().strip())
+    assert logged["confirmed_mapping"] == complete
 
 
 def test_resume_is_the_same_thread_the_pause_started(checkpoint_db):

@@ -31,11 +31,12 @@ from typing import Callable, Optional
 import pandas as pd
 
 from agents.advocate import contest_mapping
+from agents.column_mapping_gate import start_column_mapping_review
 from agents.cost_logging import PRICING
 from agents.leveling_batch_graph import run_batch_streaming
 from agents.model_router import get_model
 from agents.modeling_graph import run_modeling
-from agents.negotiation_graph import run_negotiation
+from agents.negotiation_graph import resume_negotiation, run_negotiation
 from agents.no_equivalent_gate import start_no_equivalent_review
 from agents.schemas import SourceOrgContext
 from agents.scope_extraction import extract_scope_profile_with_claude_fallback
@@ -107,13 +108,13 @@ def _split_title(title: str) -> tuple[str, str]:
     return head.strip(), tail.strip()
 
 
-def load_census() -> tuple[list[dict], SourceOrgContext]:
-    """Every row of the Nyx census, plus the one shared source_org_context (section 6) that
-    applies to the whole population -- Nyx is a single acquisition, not per-employee."""
-    census = pd.read_excel(CENSUS_PATH)
+def _load_source_org_context() -> SourceOrgContext:
+    """The one shared source_org_context (section 6) that applies to the whole population --
+    Nyx is a single acquisition, not per-employee, so this comes from the committed deal
+    metadata regardless of which census (committed or uploaded) supplies the employee rows
+    themselves -- an uploaded workbook has no equivalent of its own to read instead."""
     ctx_row = pd.read_parquet(ACQUISITION_CONTEXT_PATH).iloc[0]
-
-    source_org_context = SourceOrgContext(
+    return SourceOrgContext(
         source_headcount=int(ctx_row.source_headcount),
         source_stage=ctx_row.source_stage,
         source_type=ctx_row.source_type,
@@ -121,6 +122,14 @@ def load_census() -> tuple[list[dict], SourceOrgContext]:
         platform_dependency=ctx_row.platform_dependency,
     )
 
+
+def _employees_from_census_df(census: pd.DataFrame) -> list[dict]:
+    """Shared row-extraction logic behind both load_census() (the committed workbook, columns
+    already named exactly CENSUS_COLUMNS) and load_census_from_upload() (an uploaded workbook
+    already renamed to CENSUS_COLUMNS via a human-confirmed column mapping, gate 1 --
+    agents/column_mapping_gate.py). Assumes every CENSUS_COLUMNS name exists as a column;
+    load_census_from_upload is responsible for filling in any optional one that has no
+    mapped source column before calling this."""
     employees = []
     for _, row in census.iterrows():
         nyx_level, sub_family = _split_title(row["Job Title"])
@@ -143,7 +152,34 @@ def load_census() -> tuple[list[dict], SourceOrgContext]:
                 ),
             }
         )
-    return employees, source_org_context
+    return employees
+
+
+def load_census() -> tuple[list[dict], SourceOrgContext]:
+    """Every row of the committed Nyx census, plus the deal-level source_org_context."""
+    census = pd.read_excel(CENSUS_PATH)
+    return _employees_from_census_df(census), _load_source_org_context()
+
+
+def load_census_from_upload(df: pd.DataFrame, column_mapping: dict[str, str | None]) -> tuple[list[dict], SourceOrgContext]:
+    """Builds employee records from an uploaded workbook plus a human-confirmed column
+    mapping (build order item 5, gate 1 -- agents/column_mapping_gate.py), instead of the
+    committed nyx_census.xlsx. `column_mapping` is {target_column: raw_column_or_None} for
+    every entry in tools.column_mapping.TARGET_COLUMNS; the gate guarantees every
+    REQUIRED_COLUMNS entry is non-None before this is ever called -- callers must not invoke
+    this with a mapping still missing a required column.
+
+    Builds a fresh DataFrame keyed by Meridian's own column names rather than df.rename(),
+    which would risk a name collision if the uploaded file happens to already contain a
+    column literally named e.g. "Base" that isn't the one the mapping points at. A target
+    column with no mapped source (only possible for an optional one -- Bonus, Unvested
+    Options, Start, Role Summary) is filled with NaN so _employees_from_census_df's
+    row["..."] accesses see the same shape load_census() always has.
+    """
+    census = pd.DataFrame(
+        {target: (df[raw] if raw is not None else pd.NA) for target, raw in column_mapping.items()}
+    )
+    return _employees_from_census_df(census), _load_source_org_context()
 
 
 def resolve_mapping(employee: dict) -> dict:
@@ -292,6 +328,42 @@ def apply_manual_mapping(
     return employees, mappings, negotiation_results, modeling_result, modeling_excluded
 
 
+def apply_round_limit_resolution(
+    employee_id: str,
+    thread_id: str,
+    verdict: str,
+    override_level: str | None,
+    employees: list[dict],
+    decisions: dict[str, dict],
+    mappings: dict[str, dict],
+    negotiation_results: dict[str, dict],
+) -> tuple[dict, dict | None, dict]:
+    """Applies a human's verdict at gate 3 (build order item 5: "forced escalation ... when
+    negotiation hits the round limit") to one employee paused at round_limit_gate_node, then
+    re-runs modeling for the whole population -- same re-run discipline as
+    apply_manual_mapping above (modeling is a fixed 3 calls total regardless of headcount,
+    so re-running it for one employee's resolution is cheap).
+
+    verdict is "accepted_escalation" (hand off; the original crosswalk level stands, same as
+    the old auto-forced behavior) or "overridden" (override_level is what the human set
+    directly instead of accepting escalation). agents.negotiation_graph.resume_negotiation
+    does the actual resume against thread_id -- the same thread the paused run was left on,
+    so this reaches the identical checkpointed state rather than starting a new negotiation.
+
+    Returns new (negotiation_results, modeling_result, modeling_excluded) for the caller to
+    write back into st.session_state -- mutates nothing in place, same convention as
+    apply_manual_mapping.
+    """
+    result = resume_negotiation(thread_id, verdict=verdict, override_level=override_level)
+    result["rounds"] = _dedupe_by_round(result["rounds"])
+    result["gate_checks"] = _dedupe_by_round(result["gate_checks"])
+
+    negotiation_results = {**negotiation_results, employee_id: result}
+    population, modeling_excluded = build_modeling_population(employees, decisions, mappings, negotiation_results)
+    modeling_result = run_modeling_stage(population)
+    return negotiation_results, modeling_result, modeling_excluded
+
+
 def estimate_live_run_cost(employees: list[dict]) -> float:
     """Rough pre-run estimate for a full live crosswalk, shown at the Live-mode confirm step
     (app/Home.py) before a run that bypasses the cache entirely. Uses the same chars/4 token
@@ -407,6 +479,18 @@ def _run_negotiation_for_employee(
     else:
         candidate_salary = 0.0  # never reaches the equity gate on an uncontested case
 
+    # A fresh thread_id every call, not one fixed per employee_id: NegotiationState.rounds
+    # and .gate_checks use an additive (operator.add) reducer, and LangGraph's SqliteSaver
+    # checkpoint for a thread_id persists on disk across process runs. A fixed thread_id
+    # here meant every repeated "Run crosswalk" click -- this session, or a fresh
+    # `streamlit run` days later -- kept appending to whatever that employee's rounds list
+    # already held from every earlier run, rather than starting clean (confirmed directly:
+    # one employee's rounds list held 10 duplicate round-1 entries after ~10 pipeline runs
+    # against the same fixed thread_id). agents/leveling_batch_graph.py's
+    # run_batch_streaming already uses uuid4() for the same reason. Kept in a variable
+    # (rather than inlined into the run_negotiation call, as before) because the round-limit
+    # pause below needs the exact same thread_id later to resume this run.
+    thread_id = f"streamlit-negotiation-{employee['employee_id']}-{uuid.uuid4()}"
     result = run_negotiation(
         case_id=f"CASE-{employee['employee_id']}",
         employee_id=employee["employee_id"],
@@ -417,17 +501,25 @@ def _run_negotiation_for_employee(
         candidate_geo_code=mapping["geo_code"],
         candidate_salary=candidate_salary,
         source_org_context=source_org_context,
-        # A fresh thread_id every call, not one fixed per employee_id: NegotiationState.rounds
-        # and .gate_checks use an additive (operator.add) reducer, and LangGraph's SqliteSaver
-        # checkpoint for a thread_id persists on disk across process runs. A fixed thread_id
-        # here meant every repeated "Run crosswalk" click -- this session, or a fresh
-        # `streamlit run` days later -- kept appending to whatever that employee's rounds list
-        # already held from every earlier run, rather than starting clean (confirmed directly:
-        # one employee's rounds list held 10 duplicate round-1 entries after ~10 pipeline runs
-        # against the same fixed thread_id). agents/leveling_batch_graph.py's
-        # run_batch_streaming already uses uuid4() for the same reason.
-        thread_id=f"streamlit-negotiation-{employee['employee_id']}-{uuid.uuid4()}",
+        thread_id=thread_id,
     )
+
+    # Gate 3 (build order item 5): unresolved after two rounds, paused at
+    # round_limit_gate_node rather than auto-finalized. app.invoke() returns the full
+    # accumulated state (rounds, gate_checks, contested -- confirmed directly against
+    # agents/negotiation_graph.py, not assumed) alongside "__interrupt__", so nothing here is
+    # a completed negotiation yet: final_verdict/final_level are still None.
+    # app/pages/3_Round_Limit.py resumes this exact thread_id once a human decides.
+    if result.get("__interrupt__"):
+        return {
+            "paused": True,
+            "thread_id": thread_id,
+            "interrupt_payload": result["__interrupt__"][0].value,
+            "contested": result["contested"],
+            "rounds": _dedupe_by_round(result["rounds"]),
+            "gate_checks": _dedupe_by_round(result["gate_checks"]),
+        }
+
     result["rounds"] = _dedupe_by_round(result["rounds"])
     result["gate_checks"] = _dedupe_by_round(result["gate_checks"])
     return result
@@ -508,6 +600,8 @@ def build_modeling_population(
         neg_result = negotiation_results.get(emp_id)
         if neg_result is None or "error" in neg_result:
             continue  # already surfaced via the negotiation stage's own error
+        if neg_result.get("paused"):
+            continue  # gate 3: paused at the round limit, waiting on app/pages/3_Round_Limit.py
 
         final_level = neg_result["final_level"]
         job_id = f"{mapping['job_prefix']}-{final_level}"
@@ -619,24 +713,38 @@ def build_census_template() -> bytes:
     return buffer.getvalue()
 
 
-def validate_uploaded_census(file) -> tuple[bool, str, pd.DataFrame | None]:
-    """Structural validation only -- confirms an uploaded workbook has the expected columns
-    and returns the parsed rows for a preview. Does not feed the upload into the pipeline:
-    every stage above still reads the committed Nyx census (CENSUS_PATH) regardless of what
-    validates here. Wiring a validated upload into the actual run is future work, not
-    something to silently half-implement by pointing the real pipeline at unvetted data.
+def read_uploaded_workbook(file) -> tuple[bool, str, pd.DataFrame | None]:
+    """Parses an uploaded workbook with no assumption about its column names -- an acquired
+    company's real census will not use Meridian's own headers, so unlike the exact-match
+    check this replaces (formerly validate_uploaded_census, which rejected anything but a
+    perfect CENSUS_COLUMNS match), this only confirms the file is readable at all and has at
+    least one column. Getting from "some columns" to "the right Meridian fields" is exactly
+    what the column-mapping gate below is for (build order item 5, gate 1) -- this function
+    doesn't attempt it.
     """
     try:
         df = pd.read_excel(file)
     except Exception as e:
         return False, f"Could not read this file as an Excel workbook: {e}", None
 
-    missing = [c for c in CENSUS_COLUMNS if c not in df.columns]
-    extra = [c for c in df.columns if c not in CENSUS_COLUMNS]
-    if missing:
-        reason = f"Missing required column(s): {', '.join(missing)}."
-        if extra:
-            reason += f" Unexpected column(s) present: {', '.join(extra)}."
-        return False, reason, None
+    if df.empty and len(df.columns) == 0:
+        return False, "This workbook has no columns to map.", None
 
-    return True, f"{len(df)} employee(s) found, all required columns present.", df
+    return True, f"{len(df)} row(s), {len(df.columns)} column(s) found.", df
+
+
+def start_column_mapping_review_for_upload(source_name: str, raw_columns: list[str], thread_id: str) -> dict:
+    """Starts the column-mapping gate (build order item 5, gate 1) for one uploaded
+    workbook's header row. Thin adapter from this module's own (source_name, raw_columns) to
+    agents.column_mapping_gate's state -- returns start_column_mapping_review's raw result;
+    check result["__interrupt__"] for the payload (a pre-computed suggestion, never a blank
+    form)."""
+    initial_state = {
+        "source_name": source_name,
+        "raw_columns": raw_columns,
+        "suggested_mapping": None,
+        "confirmed_mapping": None,
+        "missing_required": None,
+        "review_entry": None,
+    }
+    return start_column_mapping_review(initial_state, thread_id)
